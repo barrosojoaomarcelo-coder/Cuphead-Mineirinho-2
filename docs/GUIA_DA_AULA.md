@@ -89,3 +89,7 @@ Todos devem conseguir acompanhar o caminho inteiro de uma ação, mesmo quando o
 ## Arquivos acrescentados no perfil difícil
 
 boss_attacks.py usa tuplas e dicionários para os números do ZIP, sem dataclasses. animation.py usa Surface e transform.smoothscale para poses elásticas e guarda as imagens prontas em um dicionário limitado. O loop continua fazendo uma atualização por quadro. Na bola rápida, Rect.clipline verifica o caminho entre a posição anterior e a atual. A divisão em responsabilidades está também no arquivo DIVISAO_DA_EQUIPE.md, na raiz.
+
+## Leitura da terceira fase
+
+Leia primeiro Servant.update em piramide.py: posição, velocidade, escolha de quadro, image, rect, hitbox e kill. Depois veja PyramidLaser, que usa Rect.clipline em uma lista de segmentos. piramide_attacks.py prepara um dicionário de aviso e, ao vencer o prazo, cria os sprites. O grupo minions usa groupcollide contra os pães; a vida do chefe continua interna. A colisão do anel vazado usa a equação simples de uma elipse e é uma parte que vai além do handout. A integração completa está em COMO_INTEGRAR_FASE_3.md.

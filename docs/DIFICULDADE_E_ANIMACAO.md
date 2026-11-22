@@ -4,7 +4,7 @@
 
 O pacote A_Fornalha_do_Castelo_Boss_Dificil.zip usa outro motor, com dataclasses e subdivisão do tempo. Para manter a organização próxima da aula, foram portadas suas regras de ataque para Sprites, Groups, listas e dicionários do projeto atual. Nenhuma fase foi substituída por uma tela vazia.
 
-Os quatro dicionários HARD_ATTACKS em boss_attacks.py reproduzem exatamente os 40 parâmetros por nível do perfil homônimo do ZIP. Vida do dragão: 480. Três vidas, tiro a cada 1/12 segundo, velocidade do jogador 310, salto 680 e dash de 0,21 segundo foram preservados.
+Os quatro dicionários HARD_ATTACKS em boss_attacks.py reproduzem exatamente os 40 parâmetros por nível do perfil homônimo do ZIP. Vida do dragão: 480. Três vidas, velocidade do jogador 310, salto 680 e dash de 0,21 segundo foram preservados. Nesta edição de três chefes, o tiro do jogador foi acelerado a pedido do grupo para 20/s a 1800 pixels/s.
 
 | Parâmetro | Nível 1 | Nível 2 | Nível 3 | Nível 4 |
 | --- | --- | --- | --- | --- |

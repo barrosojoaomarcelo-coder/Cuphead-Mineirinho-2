@@ -4,10 +4,10 @@ Equipe: Davi, Moisés e João Marcelo. Entrega: segunda-feira, 23/11/2026, até 
 
 ## Moisés — regras e sprites
 
-Arquivos: config.py, sprites.py, engine.py attacks.py e comilao.py.
+Arquivos: config.py, sprites.py, engine.py, attacks.py, comilao.py, boss_attacks.py, piramide.py e piramide_attacks.py.
 
 1. Estudar Bread.update, Player.update, GameModel.step e check_collisions.
-2. Conferir pulo, dash e dano nos dois chefes; ajustar os tempos de aviso e os seis ataques do Comilão.
+2. Conferir pulo, dash e dano nos três chefes; ajustar os tempos de aviso e os ataques do Comilão e os trajetos/reflexos da Pirâmide.
 3. Fazer melhorias e correções reais de jogabilidade, explicando o problema e o resultado no pull request.
 4. Ao mudar uma regra, revisar os testes correspondentes.
 
@@ -29,7 +29,7 @@ Revisor: João Marcelo. As escolhas de animação ficam em assets.py; as regras 
 Arquivos: main.py, requirements.txt, INICIAR_WINDOWS.bat, documentação.
 
 1. Estudar initialize, game_screen, handle_event, update_game e draw_screen.
-2. Conferir menu → história → dragão → Comilão, treino da fase 2, pausa, derrota, repetição da fase atual, ajuda e cliques com janela redimensionada.
+2. Conferir menu → história → dragão → Comilão → Pirâmide → encerramento, treino das fases 2 e 3, pausa, derrota, repetição da fase atual, ajuda e cliques com janela redimensionada.
 3. Fazer uma melhoria real no fluxo ou corrigir um problema da instalação/interface.
 4. Coordenar integração, gravação do vídeo e documentação final; cada colega corrige sua própria parte.
 
@@ -46,7 +46,7 @@ Revisor: Moisés.
 | Segunda, 10h–11h | Conferir versão remota, acesso do professor, vídeo e link do Blackboard. |
 | Segunda, 11h–12h | Margem para imprevistos na entrega. |
 
-O escopo atualizado inclui página inicial, introdução narrativa e três fases, começando pelo dragão. Preparar a progressão entre fases e compartilhar movimento, tiro, colisões e vidas. A fase 2 já tem o Comilão das referências do grupo; a fase 3 ainda precisa ser definida e implementada. Implementar e testar cada etapa antes de integrá-la, mantendo uma versão jogável. A divisão por áreas acima continua como referência técnica; a liderança de cada fase deve ser combinada pelo grupo.
+O escopo atualizado inclui página inicial, introdução narrativa e três fases, começando pelo dragão. Preparar a progressão entre fases e compartilhar movimento, tiro, colisões e vidas. A fase 2 já tem o Comilão das referências do grupo; a fase 3 foi implementada como o Olho da Pirâmide, com duas formas. Implementar e testar cada etapa antes de integrá-la, mantendo uma versão jogável. A divisão por áreas acima continua como referência técnica; as responsabilidades por área continuam distribuídas entre os três integrantes.
 
 ## Checklist do grupo
 

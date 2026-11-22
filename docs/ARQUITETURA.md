@@ -41,3 +41,9 @@ Moisés altera regras e caixas; Davi altera imagem, som e escolha de animações
 boss_attacks.py contém os 40 parâmetros por nível do perfil recebido em dicionários. attacks.py prepara, avisa e dispara dez famílias de ataques. Boss.move_mouth anima a altura das fileiras; clear_attacks limpa também a pose e todas as sequências pendentes. Fire.previous_center permite conferir o trajeto de projéteis rápidos por Rect.clipline. comilao.py usa a mesma lista scheduled para ondas de espinhos e avisos de golpes seguintes.
 
 animation.py escolhe deformações visuais discretas e guarda imagens reaproveitáveis em assets["animated"], limitado a 256 entradas. Não há alteração da hitbox por efeito visual. As folhas do Comilão têm 12 quadros. O recorde salvo inclui ruleset para separar a versão difícil da anterior.
+
+## Terceiro cenário
+
+STAGES tem três entradas. Índice 2 seleciona o Olho da Pirâmide, cuja vida é compartilhada entre Piramide (corpo principal/direito) e PyramidSide (esquerdo, ativo somente após a transformação). boss.phase continua sendo um dos quatro níveis internos: 1/2 na primeira forma, 3/4 na segunda.
+
+O grupo minions contém Servant; seus tiros recebidos não tiram vida do chefe. EnergyRing e PyramidLaser ficam em beams e implementam touches. clear_attacks limpa também criaturas e invocações pendentes. safe_floor_lanes calcula as marcas verdes usando os mesmos segmentos do ataque. O intervalo de tiro preserva a fração restante entre quadros para manter 20 disparos/s; a vida do chefe é atualizada por acerto até uma mudança de estado, evitando contar dano depois da vitória.

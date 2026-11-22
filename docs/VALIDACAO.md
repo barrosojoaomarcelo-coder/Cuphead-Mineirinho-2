@@ -1,34 +1,38 @@
-# Validação — perfil difícil e animações
+# Validação — três chefes e terceira fase
 
-Data: 22/11/2026. Ambiente local: Windows, Python 3.12.14, Pygame 2.6.1 e vídeo/áudio virtuais do SDL.
+Data: 22/11/2026. Windows, Python 3.12.14, Pygame 2.6.1 e dispositivos virtuais SDL.
 
 ## Resultado
 
-Comando: python -m unittest discover -s tests -q
+python -m unittest discover -s tests -q
 
-**58 testes aprovados**, sem falhas ou testes ignorados. São os 47 casos anteriores adaptados aos novos valores e 11 casos adicionais de dificuldade e animação.
+**77 testes aprovados**, sem falhas ou testes ignorados. Os 58 casos anteriores foram mantidos, com expectativas atualizadas para a existência da fase 3 e os tiros a 20/s; foram acrescentados 19 casos da Pirâmide e da integração.
 
-A comparação com boss_attacks.py do ZIP fornecido confirmou os **40 parâmetros de cada um dos quatro níveis do dragão**, sem diferenças. Vida do chefe: 480, como no ZIP. A portabilidade conserva os números, mas usa o loop simples do projeto; não promete equivalência numérica quadro a quadro com o outro motor.
+Os tiros mantêm 20 disparos/s em 30/60/120 atualizações por segundo, com velocidade de 1800 pixels/s. Os testes conferem também a origem do tiro, o reinício do intervalo e o fim de uma luta com dois acertos simultâneos.
 
-## Esquivas sem proteção adicional
+## Terceiro chefe
 
-- Rajadas horizontais: quatro níveis × duas ordens de altura × duas posições × 30/60/120 atualizações por segundo; pulo nas baixas e agachamento nas altas, mantendo três vidas.
-- Duas bolas gigantes: níveis 3 e 4, duas posições, 30/60/120 atualizações por segundo; dois pulos separados, mantendo três vidas.
-- Comilão: combo final de língua baixa/alta/baixa em 30/60/120 atualizações por segundo; pulo/agachamento conservam três vidas. Cada golpe tem um aviso próprio de pelo menos 0,72 s.
-- Três ondas de espinhos do Comilão: quatro posições iniciais; andar para o corredor anunciado conserva três vidas.
+- Os dois olhos recebem tiros e descontam a mesma vida; o olho esquerdo não recebe dano na primeira forma.
+- Serpentes/morcegos avançam na direção do jogador e podem ser destruídos; isso não desconta vida do chefe. O contato tira uma vida e respeita a proteção normal após dano.
+- Os seis ataques da primeira forma recebem aviso antes do lançamento. O centro vazio dos anéis não causa dano.
+- Anéis altos passam sobre o jogador no chão; os baixos permitem pulo em 30/60/120 atualizações por segundo, sem proteção adicional nos testes de esquiva.
+- Cruzamento, losango, reflexão no chão e mira refletida têm faixas seguras verificadas nos níveis internos 3 e 4, em 30/60/120 atualizações por segundo. O raio horizontal baixo permite pulo e o alto passa sobre o jogador no chão.
+- A mira refletida fica fixada no aviso; não segue o jogador depois. Cada raio atinge uma vez, e o dash protege.
+- A transformação ocorre em metade da vida e limpa criaturas, anéis e invocações agendadas. A pausa congela tudo.
+- O fluxo chega ao terceiro chefe após o Comilão, reinicia a fase atual e retorna ao menu após a vitória final. As três telas não exibem barra de vida de chefe.
 
-Outros casos verificam direção fixa, volume/altura das fileiras, exclusividade da segunda bola agendada, pausa, limpeza em morte/vitória/transformação/reinício, colisão no trajeto de projétil rápido, 12 poses distintas por forma, hitbox independente da deformação e limite de 256 imagens de animação em cache. Um jogador parado perde suas três vidas no combate natural do dragão.
+As lutas completas dos três chefes chegam à vitória com 480 pontos de dano por pães reais, em 30/60/120 atualizações por segundo. Somente esses testes de fluxo usam proteção prolongada; não medem dificuldade humana. As regras difíceis do dragão continuam com os mesmos 40 parâmetros por nível do ZIP anterior.
 
-As lutas completas dos dois chefes continuam chegando à vitória em 30/60/120 atualizações por segundo, agora com 480 acertos. Somente esses testes de fluxo usam proteção prolongada; isso não mede dificuldade humana.
+## Conferência visual
 
-## Verificação visual e desempenho
+Foram inspecionados menu, pirâmide base, serpentes, anéis, dois olhos, losango, reflexão e encerramento. A prévia contém 188 quadros, aproximadamente 19 segundos, capturados do jogo. É uma demonstração de padrões: os ataques são selecionados e o personagem é reposicionado entre trechos para mostrar as faixas seguras; não representa uma partida humana completa. Não foi ativada proteção extra nessa captura.
 
-Foram renderizados e inspecionados o menu com identificação da versão difícil, o dragão abaixando para a rajada, as duas formas do Comilão, o alinhamento dos raios/língua, a chuva e o corredor seguro. A prévia docs/comilao-animacao.gif contém 122 quadros e 12,2 segundos de execução gravada, incluindo a transformação, sem proteção de teste. O jogador terminou essa amostra com duas vidas.
+Amostra de atualização e desenho durante a captura: média de 10,37 ms por quadro; percentil 95 de 17,87 ms. O vídeo virtual não garante a mesma taxa nos computadores do grupo.
 
-Amostra local de update e desenho durante a captura: média de 9,35 ms; percentil 95 de 18,08 ms por quadro. Não é uma garantia de desempenho em outros computadores. As imagens transformadas e os flashes são reaproveitados pelo cache.
+## Entrega e limites
 
-## Pacote e limites
+Os 77 testes também passaram no projeto extraído do ZIP final, usando uma instalação nova do Pygame 2.6.1. A integridade dos dois ZIPs foi conferida; o patch binário foi aplicado sobre uma cópia limpa do commit anterior e seus arquivos foram comparados à entrega completa.
 
-O pacote contém 68 arquivos. O ZIP é extraído em pasta nova e todos os conteúdos são comparados por SHA-256 antes da entrega; os testes são executados também na cópia extraída.
+A entrega completa deve ser extraída em pasta nova e conferida com os testes. A atualização é relativa ao commit e6a50a641ec8695ac4b2df7c527809268f147042; consulte COMO_INTEGRAR_FASE_3.md antes de aplicar sobre trabalho de colegas. O patch inclui arquivos binários e permite verificar conflitos antes da aplicação.
 
-O grupo precisa jogar com teclado físico, ouvir os volumes e testar a instalação nos três computadores. A terceira fase e o encerramento ainda estão pendentes. Os resultados são locais; atualizar uma branch não significa integrar à main nem executar testes remotos.
+O grupo ainda precisa jogar com teclado físico, avaliar dificuldade e volumes, testar instalação nos três computadores, gravar o vídeo de apresentação e concluir créditos/histórico de IA. A validação local não equivale a testes remotos ou integração à main.
