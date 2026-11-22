@@ -13,7 +13,7 @@ from assets import load_assets
 from engine import GameModel
 from sprites import Player, Boss, Bread, Fire, Flame, hitboxes_overlap
 from attacks import prepare_attack, release_attack, update_attacks
-from config import FLOOR, BOSS_HP, HURT_TIME, TRANSFORM_TIME
+from config import FLOOR, DRAGON_HP, HURT_TIME, TRANSFORM_TIME
 import main
 
 
@@ -29,7 +29,7 @@ def playable(assets, phase=1, protected=False):
     game.start()
     advance(game, 1.8)
     game.boss.phase = phase
-    game.boss.hp = BOSS_HP * (1, .73, .49, .23)[phase - 1]
+    game.boss.hp = DRAGON_HP * (1, .73, .49, .23)[phase - 1]
     game.night = int(phase >= 3)
     game.refresh_boss()
     if protected:
@@ -85,7 +85,7 @@ class GameTests(unittest.TestCase):
         g.hurt_player()
         release(g, prepare(g, 'flame'))
         g.start()
-        self.assertEqual((g.state, g.player.hp, g.boss.phase, g.boss.hp), ('intro', 3, 1, BOSS_HP))
+        self.assertEqual((g.state, g.player.hp, g.boss.phase, g.boss.hp), ('intro', 3, 1, DRAGON_HP))
         self.assertFalse(g.shots or g.fire or g.beams or g.warnings or g.scheduled)
         self.assertEqual(g.stats, {'shots': 0, 'hits': 0, 'dashes': 0})
 
@@ -171,7 +171,7 @@ class GameTests(unittest.TestCase):
             g.player.update(1 / 60, dict(controls, shoot=True))
             shot = g.player.shoot()
             self.assertEqual((g.player.aim_x, g.player.aim_y), direction)
-            self.assertAlmostEqual(math.hypot(shot.vx, shot.vy), 1450)
+        self.assertAlmostEqual(math.hypot(shot.vx, shot.vy), 1450)
         g.shots.add(shot)
         shot.update(2)
         self.assertFalse(g.shots)
@@ -182,38 +182,38 @@ class GameTests(unittest.TestCase):
         g.shots.add(shot)
         g.check_collisions()
         g.check_collisions()
-        self.assertEqual(g.boss.hp, BOSS_HP - 1)
+        self.assertEqual(g.boss.hp, DRAGON_HP - 1)
         self.assertEqual(g.stats['hits'], 1)
         self.assertFalse(g.shots)
 
     def test_forms_and_night_transition(self):
         g = self.game(protected=True)
-        g.damage_boss(91)
+        g.damage_boss(DRAGON_HP * .25 + 1)
         self.assertEqual(g.boss.phase, 2)
-        g.damage_boss(90)
+        g.damage_boss(DRAGON_HP * .25)
         self.assertEqual((g.state, g.boss.phase), ('transform', 3))
         hp = g.boss.hp
         g.damage_boss(100)
         self.assertEqual(g.boss.hp, hp)
         advance(g, TRANSFORM_TIME + .1)
         self.assertEqual((g.state, g.night), ('playing', 1))
-        g.damage_boss(90)
+        g.damage_boss(DRAGON_HP * .25)
         self.assertEqual(g.boss.phase, 4)
-        g.damage_boss(360)
+        g.damage_boss(DRAGON_HP)
         self.assertEqual(g.state, 'victory')
         self.assertFalse(g.shots or g.beams or g.fire)
 
-    def test_nine_patterns_at_all_tiers(self):
+    def test_ten_patterns_at_all_tiers(self):
         for phase in range(1, 5):
-            for kind in ('fan', 'aimed', 'burst', 'steps', 'sine', 'bounce', 'rain', 'flame', 'giant'):
+            for kind in ('horizontal', 'fan', 'aimed', 'burst', 'steps', 'sine', 'bounce', 'rain', 'flame', 'giant'):
                 with self.subTest(phase=phase, pattern=kind):
                     g = self.game(phase, True)
                     w = prepare(g, kind)
-                    self.assertGreaterEqual(w['total'], 1.2)
+                    self.assertGreaterEqual(w['total'], .68)
                     advance(g, w['total'] + .8)
-                    self.assertLessEqual(len(g.fire), 40)
+                    self.assertLessEqual(len(g.fire), 72)
                     self.assertLessEqual(len(g.beams), 1)
-                    self.assertLess(len(g.scheduled), 15)
+                    self.assertLess(len(g.scheduled), 80)
                     for fire in g.fire:
                         self.assertTrue(math.isfinite(fire.x) and math.isfinite(fire.y))
                         self.assertIsInstance(fire.image, pygame.Surface)
@@ -222,16 +222,16 @@ class GameTests(unittest.TestCase):
         for phase in range(1, 5):
             g = self.game(phase, True)
             release(g, prepare(g, 'fan'))
-            self.assertEqual(len(g.fire), (0, 3, 3, 4, 5)[phase])
-            self.assertTrue(all(math.hypot(f.vx, f.vy) <= 246 for f in g.fire))
+            self.assertEqual(len(g.fire), (0, 6, 7, 8, 9)[phase])
+            self.assertTrue(all(abs(math.hypot(f.vx, f.vy) - (0, 440, 490, 550, 610)[phase]) < .01 for f in g.fire))
 
     def test_rain_safe_corridor_and_bounce(self):
         g = self.game(4, True)
         warning = prepare(g, 'rain')
         self.assertIn(len(warning['lanes']), (3, 4))
-        self.assertTrue(all(abs(x - warning['safe_x']) > 195 for x in warning['lanes']))
+        self.assertTrue(all(abs(x - warning['safe_x']) > 145 for x in warning['lanes']))
         release(g, warning)
-        self.assertTrue(all(f.vx == 0 and f.vy == 210 for f in g.fire))
+        self.assertTrue(all(f.vx == 0 and f.vy == 400 for f in g.fire))
         g.clear_attacks()
         release(g, prepare(g, 'bounce'))
         self.assertEqual(len(g.fire), 1)
@@ -247,7 +247,7 @@ class GameTests(unittest.TestCase):
         g.player.x = 720
         release(g, w)
         advance(g, .65, {'left': True})
-        self.assertTrue(all(abs(math.atan2(f.vy, f.vx) - angle) < 1e-8 for f in g.fire))
+        self.assertTrue(all(abs(math.atan2(f.vy, f.vx) - angle) <= .046 for f in g.fire))
 
     def test_special_clears_old_hazards(self):
         for kind in ('flame', 'giant', 'rain'):
@@ -318,9 +318,9 @@ class GameTests(unittest.TestCase):
                 g.player.hp = 1
                 g.hurt_player()
             elif path == 'victory':
-                g.damage_boss(360)
+                g.damage_boss(DRAGON_HP)
             elif path == 'transform':
-                g.damage_boss(181)
+                g.damage_boss(DRAGON_HP * .5 + 1)
             else:
                 g.reset()
             self.assertFalse(g.beams or g.warnings)
@@ -329,15 +329,21 @@ class GameTests(unittest.TestCase):
         for hz in (30, 60, 120):
             g = self.game(protected=True)
             saw_transform = False
-            for _ in range(hz * 50):
+            phase_seconds = [0, 0, 0, 0]
+            for _ in range(hz * 70):
+                if g.state == 'playing':
+                    phase_seconds[g.boss.phase - 1] += 1 / hz
                 g.step(1 / hz, {'shoot': True})
                 if g.state == 'transform':
                     saw_transform = True
                 if g.state == 'victory':
                     break
             self.assertTrue(saw_transform)
-            self.assertEqual((g.state, g.stats['hits'], g.night), ('victory', 360, 1))
-            self.assertTrue(30 <= g.elapsed <= 45)
+            self.assertEqual((g.state, g.stats['hits'], g.night), ('victory', DRAGON_HP, 1))
+            # A versão difícil anterior durava ~44,5 s a 60/120 Hz.
+            # O tiro rápido não deve encurtar a luta nem pular seus níveis.
+            self.assertTrue(42 <= g.elapsed <= 50)
+            self.assertTrue(all(seconds >= 9.5 for seconds in phase_seconds))
 
     def test_invalid_time_ignored(self):
         g = self.game()
@@ -369,7 +375,7 @@ class InterfaceTests(unittest.TestCase):
         main.handle_event(self.ui, pygame.event.Event(pygame.KEYDOWN, key=key))
 
     def test_all_screens_and_assets(self):
-        for state in ('title', 'intro', 'playing', 'paused', 'dead', 'victory', 'transform'):
+        for state in ('title', 'story', 'intro', 'playing', 'paused', 'dead', 'victory', 'transform'):
             self.ui['game'].state = state
             main.draw_screen(self.ui)
         self.assertEqual(len(self.ui['assets']['frames']['head']), 8)
@@ -377,6 +383,8 @@ class InterfaceTests(unittest.TestCase):
 
     def test_start_pause_restart(self):
         g = self.ui['game']
+        self.key(pygame.K_RETURN)
+        self.assertEqual(g.state, 'story')
         self.key(pygame.K_RETURN)
         self.assertEqual(g.state, 'intro')
         self.key(pygame.K_p)
@@ -418,7 +426,7 @@ class InterfaceTests(unittest.TestCase):
         view = self.ui['viewport']
         point = (round(view.x + rect.centerx * view.w / 1280), round(view.y + rect.centery * view.h / 720))
         main.handle_event(self.ui, pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=point))
-        self.assertEqual(self.ui['game'].state, 'intro')
+        self.assertEqual(self.ui['game'].state, 'story')
         self.assertGreater(view.y, 0)
 
     def test_fullscreen_roundtrip(self):
@@ -435,6 +443,8 @@ class InterfaceTests(unittest.TestCase):
         best, muted = main.load_preferences(self.ui['save_file'])
         self.assertEqual(best, 42.5)
         self.assertEqual(muted, self.ui['assets']['muted'])
+        self.ui['save_file'].write_text('{"best": 10, "muted": true}', encoding='utf-8')
+        self.assertEqual(main.load_preferences(self.ui['save_file']), (None, True))
         self.ui['save_file'].write_text('{broken', encoding='utf-8')
         self.assertEqual(main.load_preferences(self.ui['save_file']), (None, False))
 

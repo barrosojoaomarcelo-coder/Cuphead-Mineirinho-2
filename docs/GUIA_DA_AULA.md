@@ -10,7 +10,8 @@ Referência: https://insper.github.io/DesignDeSoftware/pygame/handout/.
 4. sprites.py: veja primeiro Bread, depois Fire, Player, Boss e Flame.
 5. engine.py: criação dos grupos, atualização, colisões, vida e estados.
 6. attacks.py: comece pelo caso fan, depois leia os outros padrões.
-7. scene.py e audio.py: desenho de interface e reprodução dos sons.
+7. comilao.py: compare os ataques e sprites da fase 2 com os do dragão.
+8. scene.py e audio.py: desenho de interface e reprodução dos sons.
 
 ## Relação com o exemplo da aula
 
@@ -26,8 +27,8 @@ Referência: https://insper.github.io/DesignDeSoftware/pygame/handout/.
 | Remover uma bala com kill | Bread.update e Fire.update |
 | spritecollide e groupcollide | GameModel.check_collisions |
 | pygame.mixer.Sound | audio.load_sounds |
-| Estados do jogo | title, intro, playing, transform, paused, dead e victory |
-| Separação por arquivos | main, config, assets, sprites, engine, attacks, scene e audio |
+| Estados do jogo | title, story, intro, playing, transform, paused, dead e victory |
+| Separação por arquivos | main, config, assets, sprites, engine, attacks, comilao, scene e audio |
 
 ## Um quadro do jogo
 
@@ -59,7 +60,9 @@ Há uma atualização por quadro, sem subpassos internos. O limite de 0,05 segun
 
 O jogo mantém trigonometria para mirar e fazer ondas, aceleração/gravidade para o salto, uma curta tolerância para pular perto do chão, spritesheets, persistência em JSON e ajuste da imagem ao tamanho da janela. Essas partes são necessárias para manter esta proposta de jogo e estão separadas em funções que podem ser estudadas individualmente.
 
-Não é uma cópia literal do Asteroids do handout. É a mesma estrutura básica aplicada à luta contra o dragão.
+Não é uma cópia literal do Asteroids do handout. É a mesma estrutura básica aplicada às lutas contra o dragão e o Comilão.
+
+Na segunda fase, Comilao herda de Boss para reutilizar vida, temporizadores e a transformação. Tongue, EyeRay e Spike também são Sprites. Os dois primeiros usam Rect.clipline nos segmentos do ataque; os espinhos usam hitbox. stage_index escolhe o cenário; boss.phase é o nível de ataque dentro de uma luta.
 
 ## Simplificações desta edição
 
@@ -82,3 +85,11 @@ Davi: como uma folha vira uma lista de quadros? Como o programa escolhe o quadro
 João Marcelo: qual é a ordem do loop? Como um clique é convertido para a arena? O que pausa o jogo e onde o recorde é salvo?
 
 Todos devem conseguir acompanhar o caminho inteiro de uma ação, mesmo quando o arquivo principal é responsabilidade de outro colega.
+
+## Arquivos acrescentados no perfil difícil
+
+boss_attacks.py usa tuplas e dicionários para os números do ZIP, sem dataclasses. animation.py usa Surface e transform.smoothscale para poses elásticas e guarda as imagens prontas em um dicionário limitado. O loop continua fazendo uma atualização por quadro. Na bola rápida, Rect.clipline verifica o caminho entre a posição anterior e a atual. A divisão em responsabilidades está também no arquivo DIVISAO_DA_EQUIPE.md, na raiz.
+
+## Leitura da terceira fase
+
+Leia primeiro Servant.update em piramide.py: posição, velocidade, escolha de quadro, image, rect, hitbox e kill. Depois veja PyramidLaser, que usa Rect.clipline em uma lista de segmentos. piramide_attacks.py prepara um dicionário de aviso e, ao vencer o prazo, cria os sprites. O grupo minions usa groupcollide contra os pães; a vida do chefe continua interna. A colisão do anel vazado usa a equação simples de uma elipse e é uma parte que vai além do handout. A integração completa está em COMO_INTEGRAR_FASE_3.md.

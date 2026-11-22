@@ -14,6 +14,8 @@ from audio import start_music, update_volume
 from engine import GameModel
 from scene import Renderer
 
+RULESET = 'dragao-zip480-outros800-2026-11'
+
 
 def save_folder():
     """Dados pessoais ficam fora da pasta do código."""
@@ -30,6 +32,8 @@ def load_preferences(filename):
         with open(filename, encoding='utf-8') as file:
             data = json.load(file)
         best = data.get('best')
+        if data.get('ruleset') != RULESET:
+            best = None  # O recorde antigo não compara lutas com regras diferentes.
         if type(best) not in (int, float) or not math.isfinite(best) or best <= 0:
             best = None
         return best, data.get('muted') is True
@@ -42,7 +46,7 @@ def save_preferences(ui):
         filename = ui['save_file']
         filename.parent.mkdir(parents=True, exist_ok=True)
         with open(filename, 'w', encoding='utf-8') as file:
-            json.dump({'best': ui['best'], 'muted': ui['assets']['muted']}, file)
+            json.dump({'best': ui['best'], 'muted': ui['assets']['muted'], 'ruleset': RULESET}, file)
     except OSError:
         pass  # Ainda é possível jogar sem gravar o recorde.
 
@@ -107,9 +111,27 @@ def button_action(ui, name):
     elif name == 'play':
         if game.state == 'paused':
             game.resume()
-        else:
+        elif game.state == 'title':
+            game.start_story()
+        elif game.state == 'story':
             game.start()
-            ui['renderer'].particles.clear()
+        elif game.state == 'victory':
+            if not game.next_stage():
+                game.reset()
+        elif game.state == 'dead':
+            game.start(game.stage_index)
+        else:
+            return
+        ui['renderer'].particles.clear()
+    elif name == 'practice':
+        game.start(1)
+        ui['renderer'].particles.clear()
+    elif name == 'practice3':
+        game.start(2)
+        ui['renderer'].particles.clear()
+    elif name == 'menu':
+        game.reset()
+        ui['renderer'].particles.clear()
 
 
 def handle_key(ui, key):
@@ -125,18 +147,21 @@ def handle_key(ui, key):
         if key in (pygame.K_ESCAPE, pygame.K_RETURN, pygame.K_KP_ENTER):
             toggle_help(ui)
     elif key in (pygame.K_RETURN, pygame.K_KP_ENTER):
-        if game.state in ('title', 'dead', 'victory', 'paused'):
+        if game.state in ('title', 'story', 'dead', 'victory', 'paused'):
             button_action(ui, 'play')
     elif key in (pygame.K_ESCAPE, pygame.K_p):
         if game.state == 'paused':
             game.resume()
-        elif game.state in ('title', 'dead', 'victory'):
+        elif game.state in ('story', 'dead', 'victory'):
+            if key == pygame.K_ESCAPE:
+                button_action(ui, 'menu')
+        elif game.state == 'title':
             if key == pygame.K_ESCAPE:
                 ui['running'] = False
         else:
             game.pause()
     elif key == pygame.K_r and game.state != 'title':
-        game.start()
+        game.start(game.stage_index)
         ui['renderer'].particles.clear()
 
 
@@ -178,7 +203,7 @@ def update_game(ui, dt, controls):
     game = ui['game']
     game.step(dt, controls)
     ui['renderer'].update(dt, game)
-    if game.state == 'victory':
+    if game.state == 'victory' and game.stage_index == 0:
         if ui['best'] is None or game.elapsed < ui['best']:
             ui['best'] = game.elapsed
             save_preferences(ui)
@@ -227,11 +252,14 @@ def main():
     parser.add_argument('--mute', action='store_true')
     parser.add_argument('--frames', type=int, help='encerrar após N quadros para testar')
     parser.add_argument('--screenshot', type=Path)
+    parser.add_argument('--stage', type=int, choices=(1, 2, 3), help='abrir uma fase diretamente')
     args = parser.parse_args()
     if args.frames is not None and args.frames < 1:
         parser.error('--frames deve ser maior que zero')
     try:
         ui = initialize(muted=args.mute)
+        if args.stage is not None:
+            ui['game'].start(args.stage - 1)
         game_screen(ui, args.frames, args.screenshot)
     except (pygame.error, FileNotFoundError) as error:
         print('Não foi possível iniciar:', error)

@@ -8,6 +8,11 @@ import config as c
 from sprites import Player, Boss, hitboxes_overlap
 from audio import play_sound
 from attacks import update_attacks
+from comilao import Comilao, update_comilao
+from piramide import Piramide, PyramidSide
+from piramide_attacks import update_piramide
+
+STAGES = ('Dragão Vermelho', 'Chefe Comilão', 'Olho da Pirâmide')
 
 
 class GameModel:
@@ -17,32 +22,58 @@ class GameModel:
         self.assets = assets
         self.reset()
 
-    def reset(self):
+    def reset(self, stage_index=0):
         """Cria uma partida limpa e devolve o jogo ao menu."""
         self.state = 'title'
+        self.stage_index = stage_index
         self.previous_state = 'playing'
         self.elapsed = 0
         self.state_time = 0
         self.night = 0
         self.pattern_index = 0
         self.breath_count = 0
+        self.horizontal_count = 0
         self.attack_timer = .85
         self.warnings = []
         self.scheduled = []
         self.stats = {'shots': 0, 'hits': 0, 'dashes': 0}
         self.player = Player(self.assets)
         self.boss = Boss(self.assets)
+        if stage_index == 0:
+            self.boss.hp = self.boss.max_hp = c.DRAGON_HP
+            self.player.shot_speed = c.DRAGON_SHOT_SPEED
+            self.player.shot_interval = c.DRAGON_SHOT_INTERVAL
+        elif stage_index == 1:
+            self.boss = Comilao(self.assets)
+        elif stage_index == 2:
+            self.boss = Piramide(self.assets)
         self.player_group = pygame.sprite.Group(self.player)
         self.boss_group = pygame.sprite.Group(self.boss)
+        if stage_index == 2:
+            self.boss_group.add(PyramidSide(self.boss))
         self.shots = pygame.sprite.Group()
         self.fire = pygame.sprite.Group()
         self.beams = pygame.sprite.Group()
+        self.minions = pygame.sprite.Group()
 
-    def start(self):
+    def start(self, stage_index=0):
         """Enter começa uma nova partida com uma breve apresentação."""
-        self.reset()
+        if stage_index not in range(len(STAGES)):
+            return False
+        self.reset(stage_index)
         self.state = 'intro'
         play_sound(self.assets, 'start')
+        return True
+
+    def start_story(self):
+        self.reset()
+        self.state = 'story'
+
+    def next_stage(self):
+        """Avança após vencer; o terceiro chefe encerra a aventura."""
+        if self.state == 'victory' and self.stage_index + 1 < len(STAGES):
+            return self.start(self.stage_index + 1)
+        return False
 
     def pause(self):
         if self.state in ('playing', 'intro', 'transform'):
@@ -59,7 +90,7 @@ class GameModel:
         """Uma atualização por quadro; dt é o tempo em segundos de Clock.tick."""
         if not math.isfinite(dt) or dt <= 0:
             return
-        if self.state in ('title', 'paused', 'dead', 'victory'):
+        if self.state in ('title', 'story', 'paused', 'dead', 'victory'):
             return
         dt = min(dt, .05)  # Evita um salto grande após uma travada da janela.
         self.state_time += dt
@@ -75,13 +106,26 @@ class GameModel:
         limit = 920
         if self.boss.phase >= 3:
             limit = 860
-        self.player_group.update(dt, controls, True, limit)
+        if self.stage_index == 1:
+            limit = 850
+        left_limit = 53
+        if self.stage_index == 2:
+            limit = 930
+            if self.boss.phase >= 3:
+                left_limit, limit = 195, 1085
+        self.player_group.update(dt, controls, True, limit, left_limit)
         self.boss_group.update(dt, self.elapsed, self.state)
         self.player_actions()
-        update_attacks(self, dt)
+        if self.stage_index == 2:
+            update_piramide(self, dt)
+        elif self.stage_index == 1:
+            update_comilao(self, dt)
+        else:
+            update_attacks(self, dt)
         self.shots.update(dt)
         self.fire.update(dt)
         self.beams.update(dt)
+        self.minions.update(dt)
         self.check_collisions()
         self.refresh_boss()
 
@@ -97,7 +141,7 @@ class GameModel:
             play_sound(self.assets, 'dash')
         if p.shooting and p.shot_cooldown <= .000001:
             self.shots.add(p.shoot())
-            p.shot_cooldown = c.SHOT_INTERVAL
+            p.shot_cooldown += p.shot_interval
             self.stats['shots'] += 1
             play_sound(self.assets, 'shoot')
 
@@ -118,11 +162,22 @@ class GameModel:
         """Usa groupcollide e spritecollide com caixas de colisão menores."""
         hits = pygame.sprite.groupcollide(self.boss_group, self.shots, False, True, hitboxes_overlap)
         for boss, shots in hits.items():
-            self.stats['hits'] += len(shots)
-            self.damage_boss(len(shots))
+            for shot in shots:
+                if self.state != 'playing':
+                    break
+                self.stats['hits'] += 1
+                self.damage_boss(1)
             play_sound(self.assets, 'hit')
         if self.state != 'playing':
             return
+        minion_hits = pygame.sprite.groupcollide(self.minions, self.shots, False, True, hitboxes_overlap)
+        for servant, shots in minion_hits.items():
+            servant.hp -= len(shots)
+            if servant.hp <= 0:
+                servant.kill()
+            play_sound(self.assets, 'hit')
+        if pygame.sprite.spritecollide(self.player, self.minions, True, hitboxes_overlap):
+            self.hurt_player()
         hits = pygame.sprite.spritecollide(self.player, self.fire, True, hitboxes_overlap)
         if len(hits) > 0:
             self.hurt_player()
@@ -130,16 +185,21 @@ class GameModel:
             if beam.touches(self.player):
                 beam.touched = True
                 self.hurt_player()
-        if hitboxes_overlap(self.player, self.boss):
+        if pygame.sprite.spritecollide(self.player, self.boss_group, False, hitboxes_overlap):
             self.hurt_player()
 
     def clear_attacks(self):
         self.fire.empty()
         self.beams.empty()
+        self.minions.empty()
         self.warnings.clear()
         self.scheduled.clear()
         self.boss.warning = None
         self.boss.breathing = False
+        self.boss.horizontal = None
+        self.boss.dip_active = False
+        self.boss.dip_y = 0
+        self.boss.pulse = 0
 
     def damage_boss(self, amount):
         """Vida do chefe decide os níveis, a transformação e a vitória."""
@@ -181,12 +241,14 @@ class GameModel:
         self.shots.empty()
         self.pattern_index = 0
         self.breath_count = 0
+        self.horizontal_count = 0
         play_sound(self.assets, 'transform')
 
     def update_transformation(self, dt, controls):
         self.boss.transform = min(1, self.state_time / c.TRANSFORM_TIME)
         self.night = self.boss.transform
-        self.player_group.update(dt, controls, False, 860)
+        left_limit, right_limit = (195, 1085) if self.stage_index == 2 else (53, 860)
+        self.player_group.update(dt, controls, False, right_limit, left_limit)
         self.boss_group.update(dt, self.elapsed, self.state)
         if self.state_time >= c.TRANSFORM_TIME:
             self.state = 'playing'

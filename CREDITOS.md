@@ -36,3 +36,17 @@ Os 14 WAV em assets/sounds foram exportados dos efeitos e da pequena trilha sint
 Pygame 2.6.1: https://www.pygame.org/. A biblioteca é instalada por requirements.txt e não é distribuída dentro deste pacote.
 
 A adaptação e a simplificação foram produzidas com auxílio de Codex/ChatGPT. O grupo deve completar o histórico e a declaração de uso em USO_DE_IA.md.
+
+## Novas artes do Comilão — 22/11/2026
+
+Referência do personagem: Chefe Comilão, de Mineirinho, indicado pelo grupo. O grupo forneceu dois desenhos próprios de formas/ataques e uma captura como referência de cenário. Cuphead é referência de combate e apresentação.
+
+assets/comilao-corpo.png, assets/comilao-boca.png e assets/vale-comilao.png foram gerados pela ferramenta de imagens integrada do Codex/ChatGPT, a partir dessas referências. Não são sprites oficiais extraídos dos jogos. Os prompts e a função de cada referência estão em docs/ARTES_COMILAO.md. Raios, língua e espinhos são desenhados pelo Pygame. A equipe deve conferir as regras da disciplina para declarar e usar esse material.
+
+## Versão difícil e novas animações
+
+Regras da fase 1 adaptadas de A_Fornalha_do_Castelo_Boss_Dificil.zip, fornecido pelo grupo em 22/11/2026; a autoria externa do conteúdo recebido deve ser confirmada pelo grupo. assets/comilao-corpo-animado.png e assets/comilao-boca-animada.png foram gerados pela ferramenta integrada de imagens do Codex/ChatGPT a partir das folhas anteriores. Prompts em docs/ARTES_COMILAO.md. Nenhum sprite oficial de Cuphead foi extraído. Efeitos de alongamento, compressão, rastros, estrelas e nuvem são desenhados pelo Pygame.
+
+## Fase 3 — Olho da Pirâmide
+
+Nome descritivo adotado para esta implementação. O grupo forneceu duas capturas do cenário/chefe, dois esboços de formas e ataques e uma imagem dos seres invocados. As seis artes novas em assets/piramide-*.png e assets/servo-*.png foram geradas pela ferramenta integrada de imagens do Codex/ChatGPT, usando essas referências e a arte do protagonista para manter o estilo. Os prompts estão em docs/ARTES_PIRAMIDE.md. Lasers e anéis são desenhados pelo Pygame. Não foram extraídos sprites oficiais dos jogos de referência.

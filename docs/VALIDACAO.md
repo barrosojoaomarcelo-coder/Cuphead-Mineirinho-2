@@ -1,34 +1,52 @@
-# Validação da versão simplificada
+# Validação — três chefes e terceira fase
 
-Data: 22/11/2026. Ambiente local: Windows, Python 3.12.14, Pygame 2.6.1 e SDL 2.28.4. Foram usados dispositivos virtuais do SDL para vídeo e áudio.
+Data: 22/11/2026. Windows, Python 3.12.14, Pygame 2.6.1 e dispositivos virtuais SDL.
 
-## Testes de comportamento
+## Resultado
 
-Comando: python -m unittest discover -s tests -v
+python -m unittest discover -s tests -q
 
-Resultado: **36 testes aprovados**, sem falhas ou testes ignorados.
+**81 testes aprovados**, sem falhas ou testes ignorados. Os 79 casos anteriores foram mantidos; os novos verificam a arma de cada cenário ao trocar/reiniciar e a alternância das fileiras após a transformação do dragão. As lutas completas também verificam que cada nível interno dura pelo menos 9,5 segundos com tiro contínuo e acertos reais.
 
-- 26 testes das regras e sprites: grupos reais do Pygame, movimento e limites, pulo variável e antecipado, dash, dano e vidas, pausa, cadência e origem dos tiros, mira, remoção de projéteis, colisões, transformação, vitória e nove padrões nos quatro níveis.
-- 10 testes da aplicação: carregamento dos recursos e telas, início/pausa/reinício, ajuda, foco, redimensionamento/cliques, tela cheia, preferências, recorde e encerramento.
+O dragão mantém 12 disparos/s a 1450 pixels/s; Comilão e Pirâmide mantêm 20 disparos/s a 1800 pixels/s, em 30/60/120 atualizações por segundo. Os testes conferem também a origem do tiro, o reinício do intervalo e o fim de uma luta com dois acertos simultâneos.
 
-Além dos casos individuais, a suíte joga até a vitória em 30, 60 e 120 atualizações por segundo, com uma transformação e 360 acertos. Os testes de esquiva conferem pulo e dash no sopro baixo e permanência no chão/agachamento no sopro alto.
+## Terceiro chefe
 
-## Execução integrada e imagens
+- Os dois olhos recebem tiros e descontam a mesma vida; o olho esquerdo não recebe dano na primeira forma.
+- Serpentes/morcegos avançam na direção do jogador e podem ser destruídos; isso não desconta vida do chefe. O contato tira uma vida e respeita a proteção normal após dano.
+- Os seis ataques da primeira forma recebem aviso antes do lançamento. O centro vazio dos anéis não causa dano.
+- Anéis altos passam sobre o jogador no chão; os baixos permitem pulo em 30/60/120 atualizações por segundo, sem proteção adicional nos testes de esquiva.
+- Cruzamento, losango, reflexão no chão e mira refletida têm faixas seguras verificadas nos níveis internos 3 e 4, em 30/60/120 atualizações por segundo. O raio horizontal baixo permite pulo e o alto passa sobre o jogador no chão.
+- A mira refletida fica fixada no aviso; não segue o jogador depois. Cada raio atinge uma vez, e o dash protege.
+- A transformação ocorre em metade da vida e limpa criaturas, anéis e invocações agendadas. A pausa congela tudo.
+- O fluxo chega ao terceiro chefe após o Comilão, reinicia a fase atual e retorna ao menu após a vitória final. As três telas não exibem barra de vida de chefe.
 
-Um roteiro com main.update_game e main.draw_screen percorreu a luta com proteção prolongada apenas no teste. A vitória ocorreu com 360 acertos em aproximadamente 34,48 segundos no cronômetro da partida. Foram amostrados 544 quadros de desenho nessa execução.
+As lutas completas chegam à vitória com 480 pontos de dano no dragão e 800 nos demais chefes, por pães reais, em 30/60/120 atualizações por segundo. Somente esses testes de fluxo usam proteção prolongada; não medem dificuldade humana. As regras difíceis do dragão continuam com os mesmos 40 parâmetros por nível do ZIP anterior. Foram comparados boss_attacks.py e attacks.py ao commit e6a50a6: nenhuma mudança.
 
-Também foram renderizadas as 36 combinações de nove padrões x quatro níveis, além de menu, ajuda, pausa, derrota, vitória e transformação. O sopro foi exercitado com o jogador próximo ao chefe para conferir que sua imagem fica limitada ao tamanho da arena.
+## Recuperação da dificuldade
 
-Foram inspecionadas imagens do menu, da segunda forma, do sopro e do leque. docs/preview.png é uma captura produzida pelo Pygame.
+A 60 atualizações/s, contando transformação e viagem dos tiros, sem esquivas:
 
-## Diferenças intencionais em relação à versão anterior
+| Chefe | Versão difícil anterior (480 / 12 tiros/s) | Edição atual (perfil por cenário) |
+| --- | --- | --- |
+| Dragão | 44,483 s | 44,467 s |
+| Comilão | 44,417 s | 44,283 s |
+| Pirâmide | Ainda não existia | 45,217 s |
 
-Esta edição usa uma atualização por quadro e colisões por pygame.Rect. Antes, o motor usava subpassos internos e alguns testes geométricos próprios de círculo/segmento. Os controles, os nove padrões, os parâmetros principais e o objetivo foram mantidos; não se promete uma simulação numericamente idêntica em cada quadro. As bordas das colisões e alguns instantes de movimento podem variar ligeiramente.
+A medição isola o tempo mínimo do combate, com proteção apenas para o teste de fluxo. A pessoa que precisa parar de atirar para esquivar leva mais tempo. Nesta edição, o dragão usa diretamente 480 pontos, 12 tiros/s e velocidade 1450 do ZIP, em vez de compensar a arma rápida apenas pela vida. Os outros chefes continuam com a arma rápida. A auditoria direta dos 160 valores está em AUDITORIA_DRAGAO_ZIP.md.
 
-As antigas referências numéricas do JavaScript não foram apresentadas como testes desta versão. A suíte atual verifica comportamentos do jogo após a simplificação.
+Sem proteção de teste, segurar tiro parado resulta em derrota nos três cenários, em 30/60/120 atualizações/s. As rotas de laser também foram verificadas com movimento real, partindo de cinco posições, nos dois níveis finais e nas três taxas. O controle espera 0,15 s antes de reagir e usa um dash inicial nas travessias maiores; a proteção desse dash já acabou quando o laser dispara. Não há reposicionamento durante essas esquivas. Os testes anteriores de pulo/agachamento, combos, anéis e corredores seguros continuam aprovados.
 
-## Conferência do grupo antes da entrega
+## Conferência visual
 
-A execução virtual não substitui jogar com teclado físico, ouvir os volumes, avaliar a dificuldade com pessoas e testar a instalação no computador da apresentação. O iniciador Windows depende de Python disponível no computador; Python 3.12 é a versão recomendada e testada diretamente.
+Foram inspecionados menu, pirâmide base, serpentes, anéis, dois olhos, losango, reflexão e encerramento. A prévia contém 188 quadros, aproximadamente 19 segundos, capturados do jogo. É uma demonstração de padrões: os ataques são selecionados e o personagem é reposicionado entre trechos para mostrar as faixas seguras; não representa uma partida humana completa. Não foi ativada proteção extra nessa captura.
 
-O fluxo do GitHub está preparado para Windows/Linux com Python 3.10 e 3.12, mas a execução remota só será confirmada depois da publicação. A validação local foi feita em Windows/Python 3.12. O pacote não foi publicado no GitHub nesta tarefa.
+Amostra de atualização e desenho durante a captura: média de 10,37 ms por quadro; percentil 95 de 17,87 ms. O vídeo virtual não garante a mesma taxa nos computadores do grupo.
+
+## Entrega e limites
+
+Os 81 testes também passaram no projeto extraído do ZIP final, usando Pygame 2.6.1. A integridade dos dois ZIPs foi conferida; o patch foi aplicado sobre uma cópia limpa do commit 306ffd4 e seus arquivos foram comparados à entrega completa.
+
+A entrega completa deve ser extraída em pasta nova e conferida com os testes. A atualização de dificuldade é relativa ao commit 306ffd40f7c3ec1b7661129f6eb481b51d301b36; consulte COMO_ATUALIZAR_DIFICULDADE.md antes de aplicar sobre trabalho de colegas. O patch permite verificar conflitos antes da aplicação e não exige baixar as artes outra vez.
+
+O grupo ainda precisa jogar com teclado físico, avaliar dificuldade e volumes, testar instalação nos três computadores, gravar o vídeo de apresentação e concluir créditos/histórico de IA. A validação local não equivale a testes remotos ou integração à main.

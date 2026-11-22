@@ -33,7 +33,7 @@ def load_assets():
     """Imagens e sons ficam prontos antes do loop, como no exemplo da aula."""
     with open(ROOT / 'assets' / 'manifest.json', encoding='utf-8') as file:
         manifest = json.load(file)
-    assets = {'manifest': manifest, 'frames': {}, 'flipped': {}, 'muted': False}
+    assets = {'manifest': manifest, 'frames': {}, 'flipped': {}, 'muted': False, 'animated': {}}
     for name, spec in manifest['player']['actions'].items():
         frames = load_sheet(spec, (174, 174))
         assets['frames'][name] = frames
@@ -42,6 +42,20 @@ def load_assets():
             assets['flipped'][name].append(pygame.transform.flip(frame, True, False))
     for name, spec in manifest['dragon'].items():
         assets['frames'][name] = load_sheet(spec, (442, 442))
+    for name in ('comilao-corpo', 'comilao-boca'):
+        filename = 'comilao-corpo-animado' if name == 'comilao-corpo' else 'comilao-boca-animada'
+        spec = {'url': 'assets/' + filename + '.png', 'cols': 4, 'rows': 3, 'count': 12}
+        assets['frames'][name] = load_sheet(spec, (442, 442))
+    assets['valley'] = load_image('assets/vale-comilao.png', (WIDTH, HEIGHT))
+    assets['pyramid'] = load_image('assets/piramide-cenario.png', (WIDTH, HEIGHT))
+    sheets = [('piramide-base', 4, 3, 12, (500, 500)),
+              ('piramide-olho-esquerdo', 3, 2, 6, (300, 480)),
+              ('piramide-olho-direito', 3, 2, 6, (300, 480)),
+              ('servo-serpente', 3, 2, 6, (80, 110)),
+              ('servo-morcego', 3, 2, 6, (112, 100))]
+    for name, cols, rows, count, size in sheets:
+        spec = {'url': 'assets/' + name + '.png', 'cols': cols, 'rows': rows, 'count': count}
+        assets['frames'][name] = load_sheet(spec, size)
     assets['day'] = load_image(manifest['background']['day'], (WIDTH, HEIGHT))
     assets['night'] = load_image(manifest['background']['night'], (WIDTH, HEIGHT))
     assets['bread'] = load_image(manifest['bread']['url'], (22, 22))
