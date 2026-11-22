@@ -163,11 +163,16 @@ class ComilaoTests(unittest.TestCase):
             g = self.game()
             g.attack_timer = .1
             g.player.invulnerable = 1000  # Verifica fluxo; não mede dificuldade humana.
+            phase_seconds = [0, 0, 0, 0]
             for _ in range(hz * 85):
+                if g.state == 'playing':
+                    phase_seconds[g.boss.phase - 1] += 1 / hz
                 g.step(1 / hz, {'shoot': True})
                 if g.state == 'victory':
                     break
             self.assertEqual((g.state, g.stats['hits'], g.player.hp), ('victory', BOSS_HP, 3))
+            self.assertTrue(42 <= g.elapsed <= 50)
+            self.assertTrue(all(seconds >= 9.5 for seconds in phase_seconds))
 
 
 if __name__ == '__main__':

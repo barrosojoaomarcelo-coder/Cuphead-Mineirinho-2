@@ -329,7 +329,10 @@ class GameTests(unittest.TestCase):
         for hz in (30, 60, 120):
             g = self.game(protected=True)
             saw_transform = False
+            phase_seconds = [0, 0, 0, 0]
             for _ in range(hz * 70):
+                if g.state == 'playing':
+                    phase_seconds[g.boss.phase - 1] += 1 / hz
                 g.step(1 / hz, {'shoot': True})
                 if g.state == 'transform':
                     saw_transform = True
@@ -337,7 +340,10 @@ class GameTests(unittest.TestCase):
                     break
             self.assertTrue(saw_transform)
             self.assertEqual((g.state, g.stats['hits'], g.night), ('victory', BOSS_HP, 1))
-            self.assertTrue(24 <= g.elapsed <= 40)
+            # A versão difícil anterior durava ~44,5 s a 60/120 Hz.
+            # O tiro rápido não deve encurtar a luta nem pular seus níveis.
+            self.assertTrue(42 <= g.elapsed <= 50)
+            self.assertTrue(all(seconds >= 9.5 for seconds in phase_seconds))
 
     def test_invalid_time_ignored(self):
         g = self.game()

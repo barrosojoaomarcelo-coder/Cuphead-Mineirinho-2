@@ -7,6 +7,8 @@ import main
 from attacks import prepare_attack
 from boss_attacks import HARD_ATTACKS
 from comilao import prepare_comilao
+from engine import GameModel
+from piramide_attacks import prepare_piramide
 from sprites import Fire, hitboxes_overlap
 from test_game import advance, playable
 
@@ -108,6 +110,49 @@ class HardAttackTests(unittest.TestCase):
         g.attack_timer = .1
         advance(g, 24)
         self.assertEqual((g.player.hp, g.state), (0, 'dead'))
+
+    def test_holding_fire_without_dodging_cannot_win_any_stage(self):
+        for stage in range(3):
+            for hz in (30, 60, 120):
+                with self.subTest(stage=stage, hz=hz):
+                    g = GameModel(self.assets)
+                    g.start(stage)
+                    advance(g, 1.8, hz=hz)
+                    for _ in range(60 * hz):
+                        g.step(1 / hz, {'shoot': True})
+                        if g.state in ('victory', 'dead'):
+                            break
+                    self.assertEqual((g.state, g.player.hp), ('dead', 0))
+
+    def test_pyramid_safe_lanes_are_reachable_with_movement_and_dash(self):
+        for phase in (3, 4):
+            for kind in ('cross', 'diamond', 'floor', 'ricochet'):
+                for x in (220, 450, 640, 850, 1080):
+                    for hz in (30, 60, 120):
+                        with self.subTest(phase=phase, kind=kind, x=x, hz=hz):
+                            g = GameModel(self.assets)
+                            g.start(2)
+                            advance(g, 1.8, hz=hz)
+                            g.boss.phase = phase
+                            g.boss.hp = g.boss.max_hp * (.49 if phase == 3 else .23)
+                            g.player.x = x
+                            g.player.refresh_image()
+                            g.boss_group.update(0, g.elapsed, 'playing')
+                            w = prepare_piramide(g, kind)
+                            g.attack_timer = 999
+                            # Alvo dentro da faixa, sem mudar posição durante a esquiva.
+                            targets = [max(left + 12, min(x, right - 12))
+                                       for left, right in w['safe']]
+                            target = min(targets, key=lambda spot: abs(spot - x))
+                            # Reserva 0,15 s para reação. O dash é acionado uma
+                            # vez, longe do instante ativo: sua proteção não cobre o raio.
+                            advance(g, .15, hz=hz)
+                            use_dash = abs(target - x) > 180
+                            for tick in range(round((w['total'] + .5) * hz)):
+                                delta = target - g.player.x
+                                g.step(1 / hz, {'right': delta > 5, 'left': delta < -5,
+                                               'dash': use_dash and tick == 0})
+                            self.assertEqual(g.player.hp, 3)
 
     def test_comilao_final_combo_has_three_individually_warned_strikes(self):
         g = self.comilao(4)

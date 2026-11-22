@@ -222,13 +222,18 @@ class PyramidTests(unittest.TestCase):
             g.attack_timer = .1
             g.player.invulnerable = 1000  # Só testa o fluxo completo, não a dificuldade.
             transformed = False
+            phase_seconds = [0, 0, 0, 0]
             for _ in range(hz * 70):
+                if g.state == 'playing':
+                    phase_seconds[g.boss.phase - 1] += 1 / hz
                 g.step(1 / hz, {'shoot': True})
                 transformed = transformed or g.state == 'transform'
                 if g.state == 'victory':
                     break
             self.assertTrue(transformed)
             self.assertEqual((g.state, g.boss.hp, g.stats['hits']), ('victory', 0, BOSS_HP))
+            self.assertTrue(42 <= g.elapsed <= 50)
+            self.assertTrue(all(seconds >= 9.5 for seconds in phase_seconds))
             self.assertFalse(g.minions or g.beams or g.scheduled)
 
 
