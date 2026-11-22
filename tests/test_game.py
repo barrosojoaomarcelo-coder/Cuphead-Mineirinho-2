@@ -13,7 +13,7 @@ from assets import load_assets
 from engine import GameModel
 from sprites import Player, Boss, Bread, Fire, Flame, hitboxes_overlap
 from attacks import prepare_attack, release_attack, update_attacks
-from config import FLOOR, BOSS_HP, HURT_TIME, TRANSFORM_TIME
+from config import FLOOR, DRAGON_HP, HURT_TIME, TRANSFORM_TIME
 import main
 
 
@@ -29,7 +29,7 @@ def playable(assets, phase=1, protected=False):
     game.start()
     advance(game, 1.8)
     game.boss.phase = phase
-    game.boss.hp = BOSS_HP * (1, .73, .49, .23)[phase - 1]
+    game.boss.hp = DRAGON_HP * (1, .73, .49, .23)[phase - 1]
     game.night = int(phase >= 3)
     game.refresh_boss()
     if protected:
@@ -85,7 +85,7 @@ class GameTests(unittest.TestCase):
         g.hurt_player()
         release(g, prepare(g, 'flame'))
         g.start()
-        self.assertEqual((g.state, g.player.hp, g.boss.phase, g.boss.hp), ('intro', 3, 1, BOSS_HP))
+        self.assertEqual((g.state, g.player.hp, g.boss.phase, g.boss.hp), ('intro', 3, 1, DRAGON_HP))
         self.assertFalse(g.shots or g.fire or g.beams or g.warnings or g.scheduled)
         self.assertEqual(g.stats, {'shots': 0, 'hits': 0, 'dashes': 0})
 
@@ -157,7 +157,7 @@ class GameTests(unittest.TestCase):
     def test_shot_cadence_and_fingertip(self):
         g = self.game(protected=True)
         advance(g, 1, {'shoot': True})
-        self.assertEqual(g.stats['shots'], 20)
+        self.assertEqual(g.stats['shots'], 12)
         p = g.player
         shot = p.shoot()
         muzzle = self.assets['manifest']['player']['actions'][p.action]['muzzles'][p.frame]
@@ -171,7 +171,7 @@ class GameTests(unittest.TestCase):
             g.player.update(1 / 60, dict(controls, shoot=True))
             shot = g.player.shoot()
             self.assertEqual((g.player.aim_x, g.player.aim_y), direction)
-        self.assertAlmostEqual(math.hypot(shot.vx, shot.vy), 1800)
+        self.assertAlmostEqual(math.hypot(shot.vx, shot.vy), 1450)
         g.shots.add(shot)
         shot.update(2)
         self.assertFalse(g.shots)
@@ -182,24 +182,24 @@ class GameTests(unittest.TestCase):
         g.shots.add(shot)
         g.check_collisions()
         g.check_collisions()
-        self.assertEqual(g.boss.hp, BOSS_HP - 1)
+        self.assertEqual(g.boss.hp, DRAGON_HP - 1)
         self.assertEqual(g.stats['hits'], 1)
         self.assertFalse(g.shots)
 
     def test_forms_and_night_transition(self):
         g = self.game(protected=True)
-        g.damage_boss(BOSS_HP * .25 + 1)
+        g.damage_boss(DRAGON_HP * .25 + 1)
         self.assertEqual(g.boss.phase, 2)
-        g.damage_boss(BOSS_HP * .25)
+        g.damage_boss(DRAGON_HP * .25)
         self.assertEqual((g.state, g.boss.phase), ('transform', 3))
         hp = g.boss.hp
         g.damage_boss(100)
         self.assertEqual(g.boss.hp, hp)
         advance(g, TRANSFORM_TIME + .1)
         self.assertEqual((g.state, g.night), ('playing', 1))
-        g.damage_boss(BOSS_HP * .25)
+        g.damage_boss(DRAGON_HP * .25)
         self.assertEqual(g.boss.phase, 4)
-        g.damage_boss(BOSS_HP)
+        g.damage_boss(DRAGON_HP)
         self.assertEqual(g.state, 'victory')
         self.assertFalse(g.shots or g.beams or g.fire)
 
@@ -318,9 +318,9 @@ class GameTests(unittest.TestCase):
                 g.player.hp = 1
                 g.hurt_player()
             elif path == 'victory':
-                g.damage_boss(BOSS_HP)
+                g.damage_boss(DRAGON_HP)
             elif path == 'transform':
-                g.damage_boss(BOSS_HP * .5 + 1)
+                g.damage_boss(DRAGON_HP * .5 + 1)
             else:
                 g.reset()
             self.assertFalse(g.beams or g.warnings)
@@ -339,7 +339,7 @@ class GameTests(unittest.TestCase):
                 if g.state == 'victory':
                     break
             self.assertTrue(saw_transform)
-            self.assertEqual((g.state, g.stats['hits'], g.night), ('victory', BOSS_HP, 1))
+            self.assertEqual((g.state, g.stats['hits'], g.night), ('victory', DRAGON_HP, 1))
             # A versão difícil anterior durava ~44,5 s a 60/120 Hz.
             # O tiro rápido não deve encurtar a luta nem pular seus níveis.
             self.assertTrue(42 <= g.elapsed <= 50)

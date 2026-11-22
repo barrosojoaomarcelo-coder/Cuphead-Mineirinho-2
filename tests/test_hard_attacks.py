@@ -124,6 +124,31 @@ class HardAttackTests(unittest.TestCase):
                             break
                     self.assertEqual((g.state, g.player.hp), ('dead', 0))
 
+    def test_dragon_zip_weapon_is_restored_without_leaking_to_other_stages(self):
+        for hz in (30, 60, 120):
+            g = GameModel(self.assets)
+            for stage in (0, 1, 2, 0):
+                with self.subTest(stage=stage, hz=hz):
+                    g.start(stage)
+                    advance(g, 1.8, hz=hz)
+                    g.attack_timer = 999
+                    expected_hp, expected_shots, expected_speed = (480, 12, 1450) if stage == 0 else (800, 20, 1800)
+                    self.assertEqual((g.boss.hp, g.boss.max_hp), (expected_hp, expected_hp))
+                    advance(g, 1, {'shoot': True}, hz=hz)
+                    self.assertEqual(g.stats['shots'], expected_shots)
+                    shot = g.player.shoot()
+                    self.assertAlmostEqual(math.hypot(shot.vx, shot.vy), expected_speed)
+
+    def test_dragon_transformation_restarts_horizontal_sequence_like_zip(self):
+        for previous_count in (0, 1, 2, 3):
+            g, _ = self.dragon()
+            g.horizontal_count = previous_count
+            g.damage_boss(g.boss.max_hp * .5)
+            self.assertEqual(g.horizontal_count, 0)
+            advance(g, 3.7)
+            w = prepare_attack(g, 'horizontal')
+            self.assertEqual(w['rows'][0]['mode'], 'high')
+
     def test_pyramid_safe_lanes_are_reachable_with_movement_and_dash(self):
         for phase in (3, 4):
             for kind in ('cross', 'diamond', 'floor', 'ricochet'):
