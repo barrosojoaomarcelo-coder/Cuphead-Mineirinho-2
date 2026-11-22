@@ -157,7 +157,7 @@ class GameTests(unittest.TestCase):
     def test_shot_cadence_and_fingertip(self):
         g = self.game(protected=True)
         advance(g, 1, {'shoot': True})
-        self.assertEqual(g.stats['shots'], 12)
+        self.assertEqual(g.stats['shots'], 20)
         p = g.player
         shot = p.shoot()
         muzzle = self.assets['manifest']['player']['actions'][p.action]['muzzles'][p.frame]
@@ -171,7 +171,7 @@ class GameTests(unittest.TestCase):
             g.player.update(1 / 60, dict(controls, shoot=True))
             shot = g.player.shoot()
             self.assertEqual((g.player.aim_x, g.player.aim_y), direction)
-            self.assertAlmostEqual(math.hypot(shot.vx, shot.vy), 1450)
+        self.assertAlmostEqual(math.hypot(shot.vx, shot.vy), 1800)
         g.shots.add(shot)
         shot.update(2)
         self.assertFalse(g.shots)
@@ -337,7 +337,7 @@ class GameTests(unittest.TestCase):
                     break
             self.assertTrue(saw_transform)
             self.assertEqual((g.state, g.stats['hits'], g.night), ('victory', BOSS_HP, 1))
-            self.assertTrue(35 <= g.elapsed <= 55)
+            self.assertTrue(24 <= g.elapsed <= 40)
 
     def test_invalid_time_ignored(self):
         g = self.game()

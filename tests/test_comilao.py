@@ -35,7 +35,7 @@ class ComilaoTests(unittest.TestCase):
         game.attack_timer = 999
         return game
 
-    def test_campaign_needs_victory_and_stops_at_undefined_third_boss(self):
+    def test_campaign_advances_from_dragon_to_comilao_to_pyramid(self):
         g = GameModel(self.ui['assets'])
         g.start_story()
         self.assertEqual(g.state, 'story')
@@ -47,9 +47,13 @@ class ComilaoTests(unittest.TestCase):
         self.assertEqual((g.stage_index, g.state, g.player.hp), (1, 'intro', 3))
         advance(g, 1.8)
         g.damage_boss(BOSS_HP)
+        self.assertTrue(g.next_stage())
+        self.assertEqual((g.stage_index, g.state), (2, 'intro'))
+        advance(g, 1.8)
+        g.damage_boss(BOSS_HP)
         self.assertFalse(g.next_stage())
-        self.assertFalse(g.start(2))
-        self.assertEqual((g.stage_index, g.state), (1, 'victory'))
+        self.assertFalse(g.start(3))
+        self.assertEqual((g.stage_index, g.state), (2, 'victory'))
 
     def test_telegraphs_precede_all_six_attacks(self):
         for kind in ('eye', 'low', 'high', 'sweep', 'spikes', 'moving'):
@@ -128,7 +132,7 @@ class ComilaoTests(unittest.TestCase):
         self.assertEqual((g.stage_index, g.player.hp, g.state), (1, 3, 'intro'))
         g.state = 'victory'
         main.handle_key(self.ui, pygame.K_RETURN)
-        self.assertEqual(g.state, 'title')
+        self.assertEqual((g.stage_index, g.state), (2, 'intro'))
 
     def test_pause_freezes_tongue_and_terminal_states_clear_it(self):
         for state in ('dead', 'victory', 'transform'):
