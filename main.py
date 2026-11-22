@@ -14,7 +14,7 @@ from audio import start_music, update_volume
 from engine import GameModel
 from scene import Renderer
 
-RULESET = 'dificil-2026-11'
+RULESET = 'tres-chefes-20tiros-2026-11'
 
 
 def save_folder():
@@ -125,6 +125,9 @@ def button_action(ui, name):
         ui['renderer'].particles.clear()
     elif name == 'practice':
         game.start(1)
+        ui['renderer'].particles.clear()
+    elif name == 'practice3':
+        game.start(2)
         ui['renderer'].particles.clear()
     elif name == 'menu':
         game.reset()
@@ -249,11 +252,14 @@ def main():
     parser.add_argument('--mute', action='store_true')
     parser.add_argument('--frames', type=int, help='encerrar após N quadros para testar')
     parser.add_argument('--screenshot', type=Path)
+    parser.add_argument('--stage', type=int, choices=(1, 2, 3), help='abrir uma fase diretamente')
     args = parser.parse_args()
     if args.frames is not None and args.frames < 1:
         parser.error('--frames deve ser maior que zero')
     try:
         ui = initialize(muted=args.mute)
+        if args.stage is not None:
+            ui['game'].start(args.stage - 1)
         game_screen(ui, args.frames, args.screenshot)
     except (pygame.error, FileNotFoundError) as error:
         print('Não foi possível iniciar:', error)

@@ -51,18 +51,21 @@ class Player(pygame.sprite.Sprite):
         self.landed = False
         self.refresh_image()
 
-    def update(self, dt, controls, can_dash=True, limit=920):
+    def update(self, dt, controls, can_dash=True, limit=920, left_limit=53):
         """Lê controles, movimenta e sincroniza imagem/caixa de colisão."""
+        was_shooting = self.shooting
         self.dashed = False
         self.jumped = False
         self.landed = False
         self.invulnerable = max(0, self.invulnerable - dt)
         self.dash_cooldown = max(0, self.dash_cooldown - dt)
-        self.shot_cooldown = max(0, self.shot_cooldown - dt)
+        self.shot_cooldown = max(-dt, self.shot_cooldown - dt)
         self.land_time = max(0, self.land_time - dt)
         self.anim_time += dt
         self.handle_input(controls, can_dash)
-        self.move(dt, limit)
+        if self.shooting and not was_shooting:
+            self.shot_cooldown = max(0, self.shot_cooldown)
+        self.move(dt, limit, left_limit)
         self.previous_input = controls.copy()
         self.refresh_image()
 
@@ -97,7 +100,7 @@ class Player(pygame.sprite.Sprite):
             self.vy = 0
             self.dashed = True
 
-    def move(self, dt, limit):
+    def move(self, dt, limit, left_limit=53):
         """Aplica aceleração, gravidade, salto e limites da arena."""
         self.jump_buffer = max(0, self.jump_buffer - dt)
         # Pequenas tolerâncias tornam o pulo próximo ao chão mais confortável.
@@ -125,7 +128,7 @@ class Player(pygame.sprite.Sprite):
             target = self.direction * speed
             self.vx += clamp(target - self.vx, -acceleration * dt, acceleration * dt)
             self.vy += GRAVITY * dt
-        self.x = clamp(self.x + self.vx * dt, 53, limit)
+        self.x = clamp(self.x + self.vx * dt, left_limit, limit)
         self.y += self.vy * dt
         if self.y >= FLOOR:
             if not self.on_ground and self.vy > 180:

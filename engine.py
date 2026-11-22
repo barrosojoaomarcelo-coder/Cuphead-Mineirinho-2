@@ -9,8 +9,10 @@ from sprites import Player, Boss, hitboxes_overlap
 from audio import play_sound
 from attacks import update_attacks
 from comilao import Comilao, update_comilao
+from piramide import Piramide, PyramidSide
+from piramide_attacks import update_piramide
 
-STAGES = ('Dragão Vermelho', 'Chefe Comilão')
+STAGES = ('Dragão Vermelho', 'Chefe Comilão', 'Olho da Pirâmide')
 
 
 class GameModel:
@@ -39,15 +41,20 @@ class GameModel:
         self.boss = Boss(self.assets)
         if stage_index == 1:
             self.boss = Comilao(self.assets)
+        elif stage_index == 2:
+            self.boss = Piramide(self.assets)
         self.player_group = pygame.sprite.Group(self.player)
         self.boss_group = pygame.sprite.Group(self.boss)
+        if stage_index == 2:
+            self.boss_group.add(PyramidSide(self.boss))
         self.shots = pygame.sprite.Group()
         self.fire = pygame.sprite.Group()
         self.beams = pygame.sprite.Group()
+        self.minions = pygame.sprite.Group()
 
     def start(self, stage_index=0):
         """Enter começa uma nova partida com uma breve apresentação."""
-        if stage_index not in (0, 1):
+        if stage_index not in range(len(STAGES)):
             return False
         self.reset(stage_index)
         self.state = 'intro'
@@ -59,9 +66,9 @@ class GameModel:
         self.state = 'story'
 
     def next_stage(self):
-        """Só avança após vencer; o terceiro chefe ainda será definido pelo grupo."""
-        if self.state == 'victory' and self.stage_index == 0:
-            return self.start(1)
+        """Avança após vencer; o terceiro chefe encerra a aventura."""
+        if self.state == 'victory' and self.stage_index + 1 < len(STAGES):
+            return self.start(self.stage_index + 1)
         return False
 
     def pause(self):
@@ -97,16 +104,24 @@ class GameModel:
             limit = 860
         if self.stage_index == 1:
             limit = 850
-        self.player_group.update(dt, controls, True, limit)
+        left_limit = 53
+        if self.stage_index == 2:
+            limit = 930
+            if self.boss.phase >= 3:
+                left_limit, limit = 195, 1085
+        self.player_group.update(dt, controls, True, limit, left_limit)
         self.boss_group.update(dt, self.elapsed, self.state)
         self.player_actions()
-        if self.stage_index == 1:
+        if self.stage_index == 2:
+            update_piramide(self, dt)
+        elif self.stage_index == 1:
             update_comilao(self, dt)
         else:
             update_attacks(self, dt)
         self.shots.update(dt)
         self.fire.update(dt)
         self.beams.update(dt)
+        self.minions.update(dt)
         self.check_collisions()
         self.refresh_boss()
 
@@ -122,7 +137,7 @@ class GameModel:
             play_sound(self.assets, 'dash')
         if p.shooting and p.shot_cooldown <= .000001:
             self.shots.add(p.shoot())
-            p.shot_cooldown = c.SHOT_INTERVAL
+            p.shot_cooldown += c.SHOT_INTERVAL
             self.stats['shots'] += 1
             play_sound(self.assets, 'shoot')
 
@@ -143,11 +158,22 @@ class GameModel:
         """Usa groupcollide e spritecollide com caixas de colisão menores."""
         hits = pygame.sprite.groupcollide(self.boss_group, self.shots, False, True, hitboxes_overlap)
         for boss, shots in hits.items():
-            self.stats['hits'] += len(shots)
-            self.damage_boss(len(shots))
+            for shot in shots:
+                if self.state != 'playing':
+                    break
+                self.stats['hits'] += 1
+                self.damage_boss(1)
             play_sound(self.assets, 'hit')
         if self.state != 'playing':
             return
+        minion_hits = pygame.sprite.groupcollide(self.minions, self.shots, False, True, hitboxes_overlap)
+        for servant, shots in minion_hits.items():
+            servant.hp -= len(shots)
+            if servant.hp <= 0:
+                servant.kill()
+            play_sound(self.assets, 'hit')
+        if pygame.sprite.spritecollide(self.player, self.minions, True, hitboxes_overlap):
+            self.hurt_player()
         hits = pygame.sprite.spritecollide(self.player, self.fire, True, hitboxes_overlap)
         if len(hits) > 0:
             self.hurt_player()
@@ -155,12 +181,13 @@ class GameModel:
             if beam.touches(self.player):
                 beam.touched = True
                 self.hurt_player()
-        if hitboxes_overlap(self.player, self.boss):
+        if pygame.sprite.spritecollide(self.player, self.boss_group, False, hitboxes_overlap):
             self.hurt_player()
 
     def clear_attacks(self):
         self.fire.empty()
         self.beams.empty()
+        self.minions.empty()
         self.warnings.clear()
         self.scheduled.clear()
         self.boss.warning = None
@@ -215,7 +242,8 @@ class GameModel:
     def update_transformation(self, dt, controls):
         self.boss.transform = min(1, self.state_time / c.TRANSFORM_TIME)
         self.night = self.boss.transform
-        self.player_group.update(dt, controls, False, 860)
+        left_limit, right_limit = (195, 1085) if self.stage_index == 2 else (53, 860)
+        self.player_group.update(dt, controls, False, right_limit, left_limit)
         self.boss_group.update(dt, self.elapsed, self.state)
         if self.state_time >= c.TRANSFORM_TIME:
             self.state = 'playing'

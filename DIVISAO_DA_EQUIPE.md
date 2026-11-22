@@ -4,15 +4,15 @@ Entrega: segunda-feira, 23/11/2026, até 12h, horário de São Paulo. Esta divis
 
 | Integrante | Branch pessoal existente | Área de responsabilidade | Arquivos principais |
 | --- | --- | --- | --- |
-| Moisés (@mguedesjr) | moises | Regras, dificuldade, movimento, tiros, colisões e ataques dos dois chefes | config.py, sprites.py, engine.py, attacks.py, boss_attacks.py, comilao.py e testes das regras |
+| Moisés (@mguedesjr) | moises | Regras, dificuldade, movimento, tiros, colisões e ataques dos três chefes | config.py, sprites.py, engine.py, attacks.py, boss_attacks.py, comilao.py, piramide.py, piramide_attacks.py e testes das regras |
 | Davi (@davimoreiraesteves-beep) | davi | Artes, animação, efeitos visuais, avisos e som | assets.py, animation.py, scene.py, audio.py e assets/ |
 | João Marcelo (@barrosojoaomarcelo-coder) | cajarelo | Página inicial, introdução, entradas, passagem entre fases, instalação e entrega | main.py, INICIAR_WINDOWS.bat, requirements.txt e documentação |
 
 ## Tarefas de revisão desta versão
 
-- Moisés: jogar as rajadas baixas/altas, as duas bolas gigantes e os combos do Comilão; ajustar os números em boss_attacks.py se necessário; manter os testes passando e explicar suas alterações.
+- Moisés: jogar as rajadas baixas/altas, as duas bolas gigantes e os combos do Comilão e as faixas de fuga da Pirâmide; ajustar os números em boss_attacks.py se necessário; manter os testes passando e explicar suas alterações.
 - Davi: conferir as 12 poses de cada forma, o alinhamento do olho/língua, o tempo dos avisos e o volume; completar os créditos das artes recebidas e registrar suas melhorias.
-- João Marcelo: testar menu → história → dragão → Comilão, treino direto, pausa, derrota e reinício; conferir instalação nos três computadores e coordenar vídeo/README/entrega.
+- João Marcelo: testar menu → história → dragão → Comilão → Pirâmide → encerramento, treino direto, pausa, derrota e reinício; conferir instalação nos três computadores e coordenar vídeo/README/entrega.
 
 Revisores: Davi revisa Moisés; João revisa Davi; Moisés revisa João. Cada um registra contribuições próprias reais. A base e as novas animações foram preparadas com auxílio de IA; a atribuição de responsabilidade não é declaração de autoria anterior.
 
@@ -22,4 +22,4 @@ A versão nova está na branch codex/fase-2-comilao, no pedido de revisão #1. A
 
 ## Terceira fase
 
-O terceiro chefe ainda precisa ser definido pelo grupo. Depois da definição, Moisés implementa suas regras, Davi suas artes/sons e João o integra ao fluxo e ao encerramento. Não é apresentado como uma fase pronta neste pacote.
+A terceira fase agora é o Olho da Pirâmide, com duas formas. Moisés revisa invocações, anéis, vida compartilhada e colisões dos cinco padrões de laser; Davi revisa poses, efeitos, cenário e leitura dos avisos; João revisa a passagem após o Comilão, o treino direto e o encerramento. Cada integrante deve jogar e registrar suas contribuições reais.

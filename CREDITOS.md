@@ -46,3 +46,7 @@ assets/comilao-corpo.png, assets/comilao-boca.png e assets/vale-comilao.png fora
 ## Versão difícil e novas animações
 
 Regras da fase 1 adaptadas de A_Fornalha_do_Castelo_Boss_Dificil.zip, fornecido pelo grupo em 22/11/2026; a autoria externa do conteúdo recebido deve ser confirmada pelo grupo. assets/comilao-corpo-animado.png e assets/comilao-boca-animada.png foram gerados pela ferramenta integrada de imagens do Codex/ChatGPT a partir das folhas anteriores. Prompts em docs/ARTES_COMILAO.md. Nenhum sprite oficial de Cuphead foi extraído. Efeitos de alongamento, compressão, rastros, estrelas e nuvem são desenhados pelo Pygame.
+
+## Fase 3 — Olho da Pirâmide
+
+Nome descritivo adotado para esta implementação. O grupo forneceu duas capturas do cenário/chefe, dois esboços de formas e ataques e uma imagem dos seres invocados. As seis artes novas em assets/piramide-*.png e assets/servo-*.png foram geradas pela ferramenta integrada de imagens do Codex/ChatGPT, usando essas referências e a arte do protagonista para manter o estilo. Os prompts estão em docs/ARTES_PIRAMIDE.md. Lasers e anéis são desenhados pelo Pygame. Não foram extraídos sprites oficiais dos jogos de referência.

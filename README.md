@@ -1,6 +1,6 @@
 # A Fornalha do Castelo — versão próxima da aula
 
-Jogo de ação lateral em **Python + Pygame**, inspirado em **Cuphead**. O protagonista mineiro atira pães de queijo e enfrenta o Dragão Vermelho na fase 1 e o Chefe Comilão na fase 2, ambos com duas formas. A terceira fase ainda será desenvolvida.
+Jogo de ação lateral em **Python + Pygame**, inspirado em **Cuphead**. O protagonista mineiro enfrenta três chefes, com duas formas cada: Dragão Vermelho, Chefe Comilão e Olho da Pirâmide. As três fases, a introdução, a passagem entre cenários e o encerramento estão implementados.
 
 **Integrantes:** Davi, Moisés e João Marcelo.  
 **Repositório:** [Cuphead-Mineirinho-2](https://github.com/barrosojoaomarcelo-coder/Cuphead-Mineirinho-2).
@@ -16,6 +16,18 @@ A fase 1 incorpora o perfil HARD_ATTACKS de A_Fornalha_do_Castelo_Boss_Dificil.z
 O Comilão também tem 480 pontos de vida, intervalos menores, até cinco raios, combos de língua com aviso individual e até três ondas de espinhos com faixa segura. As duas formas têm 12 poses novas: respiração, piscada, preparação, disparo e recuperação. O personagem e o dragão usam compressão/alongamento visual, com rastros de dash, estrelas de impacto e nuvem na transformação. São recursos inspirados em animação cartunesca dos anos 1930, sem usar sprites oficiais de Cuphead.
 
 Use S ou seta para baixo para agachar nas fileiras horizontais altas; pule as baixas. O recorde do perfil anterior é separado do novo, preservando a preferência de som. Consulte [os detalhes do balanceamento](docs/DIFICULDADE_E_ANIMACAO.md).
+
+## Fase 3 — Olho da Pirâmide
+
+A luta acontece nas ruínas de um lago roxo, conforme as referências do grupo. Na primeira forma, a pirâmide invoca serpentes e morcegos de um olho e dispara anéis de energia baixos, altos e alternados. As criaturas podem ser destruídas pelos tiros.
+
+Ao perder metade da vida, o chefe se divide em dois olhos nas laterais. Eles compartilham a mesma vida e usam lasers horizontais, cruzados, em losango, com reflexo no chão e com mira fixada antes do disparo. Os caminhos aparecem antes dos raios; as faixas verdes indicam espaço seguro para o jogador em pé.
+
+O jogo tem **três vidas por fase, 20 tiros por segundo a 1800 pixels/s e nenhuma barra de vida dos chefes**. A evolução aparece nas formas e nos padrões. As regras de ataques difíceis do dragão e do Comilão continuam presentes. O novo ritmo de tiro tem recorde separado do anterior.
+
+[Guia para integrar a fase 3 à versão anterior](COMO_INTEGRAR_FASE_3.md) · [Artes e prompts](docs/ARTES_PIRAMIDE.md)
+
+![Segunda forma da pirâmide](docs/piramide-forma2.png)
 
 ## Como executar
 
@@ -60,9 +72,9 @@ A partida pausa ao perder o foco da janela ou abrir a ajuda durante a luta.
 - Menu, instruções, pausa, derrota, vitória, reinício, redimensionamento e tela cheia.
 - Recorde do dragão e preferência de som salvos na pasta de dados do usuário.
 
-## Fluxo completo planejado
+## Fluxo do jogo
 
-**Página inicial → Introdução → Fase 1: Dragão → Fase 2: Comilão → Fase 3 → Encerramento.**
+**Página inicial → Introdução → Fase 1: Dragão → Fase 2: Comilão → Fase 3: Pirâmide → Encerramento.**
 
 As três fases fazem parte do escopo do jogo. A primeira fase é a luta contra o dragão, incluindo suas duas formas; essas formas não são as fases 2 e 3.
 
@@ -72,15 +84,15 @@ As três fases fazem parte do escopo do jogo. A primeira fase é a luta contra o
 | Introdução narrativa antes da primeira fase | Implementada, antes do dragão |
 | Fase 1 — Dragão | Implementada, com duas formas |
 | Fase 2 — Chefe Comilão | Implementada, com duas formas e seis ataques |
-| Fase 3 | A definir e desenvolver |
+| Fase 3 — Olho da Pirâmide | Implementada, com duas formas, criaturas, anéis e cinco padrões de laser |
 | Transição Dragão → Comilão | Implementada; Enter na vitória da fase 1 |
-| Encerramento após a fase 3 | Pendente, junto com o terceiro chefe |
+| Transição Comilão → Pirâmide e encerramento | Implementados |
 
-Manter controles, movimento, tiro, colisões e vidas em uma base comum. Cada fase deve ter seus dados e regras específicas separados, preservando o estilo simples do handout. Não apresentar as fases futuras como prontas antes de implementá-las e testá-las.
+As três fases compartilham movimento, tiro, colisões e vidas, com ataques específicos separados em módulos. A estrutura mantém funções, dicionários, Sprites e Groups.
 
-Use COMEÇAR A AVENTURA para jogar a sequência. TREINAR A FASE 2 abre o Comilão diretamente. Cada cenário começa com três vidas; R repete o cenário atual. Esc nas telas de história e resultado volta ao menu. A barra no topo mostra a vida do chefe.
+Use COMEÇAR A AVENTURA para jogar a sequência. Os botões TREINAR A FASE 2 e TREINAR A FASE 3 abrem os chefes diretamente. Cada cenário começa com três vidas; R repete o cenário atual. Esc nas telas de história e resultado volta ao menu. O topo mostra as vidas do jogador, o tempo e o nome do chefe; sua vida permanece interna.
 
-A terceira fase faz parte do projeto final, mas este pacote implementa somente as duas primeiras. Não há modo multijogador ou controles de toque.
+Não há modo multijogador ou controles de toque.
 
 ## Como o código se aproxima da aula
 
@@ -101,7 +113,7 @@ Foram retirados dataclass, a função de ligação da posição do tiro, a fila 
 
 | Integrante | Responsabilidade | Arquivos |
 | --- | --- | --- |
-| Moisés | Movimento, colisões, ataques e dificuldade | config.py, sprites.py, engine.py, attacks.py, comilao.py, boss_attacks.py |
+| Moisés | Movimento, colisões, ataques e dificuldade | config.py, sprites.py, engine.py, attacks.py, comilao.py, boss_attacks.py, piramide.py, piramide_attacks.py |
 | Davi | Carregamento, animações, desenho e áudio | assets.py, animation.py, scene.py, audio.py, assets/ |
 | João Marcelo | Janela, teclado, menus, instalação e integração | main.py, requirements.txt, INICIAR_WINDOWS.bat, documentação |
 
@@ -114,6 +126,8 @@ python -m unittest discover -s tests -v
 ~~~
 
 Os testes usam dispositivos virtuais do SDL para não abrir janelas. O Pygame precisa estar instalado. Os detalhes e limites da verificação estão em [VALIDACAO.md](docs/VALIDACAO.md).
+
+Para abrir a fase 3 diretamente, use python main.py --stage 3.
 
 Para testar apenas a abertura e salvar uma imagem:
 
@@ -129,6 +143,6 @@ python main.py --frames 5 --screenshot abertura.png
 
 Referência criativa: **Cuphead**, da Studio MDHR — [site oficial](https://cupheadgame.com/). A inspiração está no combate contra chefes, nos tiros, nas esquivas e na apresentação cartunesca.
 
-As artes da fase 1 vieram do ZIP do grupo. As três novas imagens da fase 2 foram geradas com IA a partir dos desenhos e da referência de cenário enviados pelo grupo. Os prompts estão em [ARTES_COMILAO.md](docs/ARTES_COMILAO.md). A origem dos recursos recebidos deve ser confirmada em [CREDITOS.md](CREDITOS.md).
+As artes da fase 1 vieram do ZIP do grupo. As três novas imagens da fase 2 foram geradas com IA a partir dos desenhos e da referência de cenário enviados pelo grupo. Os prompts estão em [ARTES_COMILAO.md](docs/ARTES_COMILAO.md). As seis imagens da fase 3 também foram geradas com IA a partir dos esboços do grupo; os prompts estão em [ARTES_PIRAMIDE.md](docs/ARTES_PIRAMIDE.md). A origem dos recursos recebidos deve ser confirmada em [CREDITOS.md](CREDITOS.md).
 
 Esta base foi adaptada e simplificada com auxílio de Codex/ChatGPT. A equipe deve compreender o código, declarar o uso de IA e anexar o histórico conforme as orientações da disciplina. Veja [USO_DE_IA.md](USO_DE_IA.md).
