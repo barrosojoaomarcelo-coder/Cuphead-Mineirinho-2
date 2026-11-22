@@ -6,7 +6,7 @@ initialize carrega o jogo. game_screen contém o loop. handle_event cuida da jan
 
 O dicionário ui guarda janela, relógio, tela de desenho, botões, preferências e referências ao jogo e aos recursos. O arquivo preferences.json fica na pasta de dados do usuário, fora do repositório. Para testes, FORNALHA_SAVE_DIR define outra pasta.
 
-## Moisés — engine.py, sprites.py, attacks.py e config.py
+## Moisés — engine.py, sprites.py, attacks.py, comilao.py e config.py
 
 GameModel cria o jogador, o chefe e seus grupos. Os grupos shots, fire e beams representam tiros, bolas de fogo e sopros. Os grupos chamam update nos seus sprites; a apresentação chama draw.
 
@@ -16,7 +16,11 @@ step recebe dt em segundos e controles left, right, up, down, jump, shoot e dash
 
 attacks.py guarda os nove padrões, seus avisos e os disparos agendados. Um aviso registra a direção; a bola gigante e o sopro não perseguem o jogador depois de anunciados.
 
-Estados: title, intro, playing, transform, paused, dead e victory. As fases de ataque 1 e 2 usam o corpo do dragão; 3 e 4 usam a cabeça. A transformação passa do dia para a noite e limpa ataques antigos.
+Estados: title, story, intro, playing, transform, paused, dead e victory. story é a introdução narrativa; intro é a chamada curta antes de cada luta. As fases de ataque 1 e 2 usam o corpo do dragão; 3 e 4 usam a cabeça. Na fase do dragão, a transformação passa do dia para a noite. As duas transformações limpam ataques antigos.
+
+Atenção aos dois números: stage_index seleciona o cenário (0 dragão, 1 Comilão); boss.phase seleciona o nível de ataque dentro de cada luta (1/2 corpo, 3/4 segunda forma). Não são a mesma coisa. start(índice) começa um cenário com três vidas, start_story abre a narrativa e next_stage só avança após uma vitória. A fase 3 ainda não tem implementação.
+
+comilao.py contém Comilao (subclasse de Boss), EyeRay, Tongue e Spike. As regras chamam update_comilao somente no segundo cenário. Língua e raios usam Rect.clipline nos mesmos segmentos desenhados, com uma margem para a espessura; os espinhos usam hitbox. Os avisos registram os pontos antes do disparo e não seguem o jogador. draw_comilao_warning é a única função de apresentação específica deste módulo; Davi pode ajustá-la em acordo com Moisés.
 
 ## Davi — assets.py, scene.py e audio.py
 

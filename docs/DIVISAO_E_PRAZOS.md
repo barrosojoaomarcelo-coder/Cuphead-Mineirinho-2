@@ -4,10 +4,10 @@ Equipe: Davi, Moisés e João Marcelo. Entrega: segunda-feira, 23/11/2026, até 
 
 ## Moisés — regras e sprites
 
-Arquivos: config.py, sprites.py, engine.py e attacks.py.
+Arquivos: config.py, sprites.py, engine.py attacks.py e comilao.py.
 
 1. Estudar Bread.update, Player.update, GameModel.step e check_collisions.
-2. Conferir pulo, dash, dano e os nove padrões nas duas formas.
+2. Conferir pulo, dash e dano nos dois chefes; ajustar os tempos de aviso e os seis ataques do Comilão.
 3. Fazer melhorias e correções reais de jogabilidade, explicando o problema e o resultado no pull request.
 4. Ao mudar uma regra, revisar os testes correspondentes.
 
@@ -19,17 +19,17 @@ Arquivos: assets.py, scene.py, audio.py, assets/player/, demais imagens e assets
 
 1. Estudar load_assets, load_sheet, player_pose e o desenho da interface.
 2. Conferir animações, leitura dos avisos, alinhamento do tiro e volume dos WAV.
-3. Fazer uma melhoria visual ou sonora real e mostrar como verificar seu resultado.
+3. Revisar as artes do Comilão nas duas formas, a origem dos raios e da língua e as marcas de espinhos; registrar uma melhoria visual ou sonora real.
 4. Completar CREDITOS.md com a procedência das artes e de novos sons.
 
 Revisor: João Marcelo. As escolhas de animação ficam em assets.py; as regras de movimento continuam com Moisés.
 
 ## João Marcelo — aplicação e entrega
 
-Arquivos: main.py, requirements.txt, INICIAR_WINDOWS.bat, documentação e .github/.
+Arquivos: main.py, requirements.txt, INICIAR_WINDOWS.bat, documentação.
 
 1. Estudar initialize, game_screen, handle_event, update_game e draw_screen.
-2. Conferir início, pausa, ajuda, reinício, tela cheia e cliques com a janela redimensionada.
+2. Conferir menu → história → dragão → Comilão, treino da fase 2, pausa, derrota, repetição da fase atual, ajuda e cliques com janela redimensionada.
 3. Fazer uma melhoria real no fluxo ou corrigir um problema da instalação/interface.
 4. Coordenar integração, gravação do vídeo e documentação final; cada colega corrige sua própria parte.
 
@@ -46,7 +46,7 @@ Revisor: Moisés.
 | Segunda, 10h–11h | Conferir versão remota, acesso do professor, vídeo e link do Blackboard. |
 | Segunda, 11h–12h | Margem para imprevistos na entrega. |
 
-Não iniciar os chefes II e III nesse intervalo. Priorizar uma luta completa e estável.
+O escopo atualizado inclui página inicial, introdução narrativa e três fases, começando pelo dragão. Preparar a progressão entre fases e compartilhar movimento, tiro, colisões e vidas. A fase 2 já tem o Comilão das referências do grupo; a fase 3 ainda precisa ser definida e implementada. Implementar e testar cada etapa antes de integrá-la, mantendo uma versão jogável. A divisão por áreas acima continua como referência técnica; a liderança de cada fase deve ser combinada pelo grupo.
 
 ## Checklist do grupo
 

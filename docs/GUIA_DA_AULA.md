@@ -10,7 +10,8 @@ Referência: https://insper.github.io/DesignDeSoftware/pygame/handout/.
 4. sprites.py: veja primeiro Bread, depois Fire, Player, Boss e Flame.
 5. engine.py: criação dos grupos, atualização, colisões, vida e estados.
 6. attacks.py: comece pelo caso fan, depois leia os outros padrões.
-7. scene.py e audio.py: desenho de interface e reprodução dos sons.
+7. comilao.py: compare os ataques e sprites da fase 2 com os do dragão.
+8. scene.py e audio.py: desenho de interface e reprodução dos sons.
 
 ## Relação com o exemplo da aula
 
@@ -26,8 +27,8 @@ Referência: https://insper.github.io/DesignDeSoftware/pygame/handout/.
 | Remover uma bala com kill | Bread.update e Fire.update |
 | spritecollide e groupcollide | GameModel.check_collisions |
 | pygame.mixer.Sound | audio.load_sounds |
-| Estados do jogo | title, intro, playing, transform, paused, dead e victory |
-| Separação por arquivos | main, config, assets, sprites, engine, attacks, scene e audio |
+| Estados do jogo | title, story, intro, playing, transform, paused, dead e victory |
+| Separação por arquivos | main, config, assets, sprites, engine, attacks, comilao, scene e audio |
 
 ## Um quadro do jogo
 
@@ -59,7 +60,9 @@ Há uma atualização por quadro, sem subpassos internos. O limite de 0,05 segun
 
 O jogo mantém trigonometria para mirar e fazer ondas, aceleração/gravidade para o salto, uma curta tolerância para pular perto do chão, spritesheets, persistência em JSON e ajuste da imagem ao tamanho da janela. Essas partes são necessárias para manter esta proposta de jogo e estão separadas em funções que podem ser estudadas individualmente.
 
-Não é uma cópia literal do Asteroids do handout. É a mesma estrutura básica aplicada à luta contra o dragão.
+Não é uma cópia literal do Asteroids do handout. É a mesma estrutura básica aplicada às lutas contra o dragão e o Comilão.
+
+Na segunda fase, Comilao herda de Boss para reutilizar vida, temporizadores e a transformação. Tongue, EyeRay e Spike também são Sprites. Os dois primeiros usam Rect.clipline nos segmentos do ataque; os espinhos usam hitbox. stage_index escolhe o cenário; boss.phase é o nível de ataque dentro de uma luta.
 
 ## Simplificações desta edição
 

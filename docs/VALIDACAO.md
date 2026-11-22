@@ -1,34 +1,29 @@
-# Validação da versão simplificada
+# Validação — Dragão e Chefe Comilão
 
-Data: 22/11/2026. Ambiente local: Windows, Python 3.12.14, Pygame 2.6.1 e SDL 2.28.4. Foram usados dispositivos virtuais do SDL para vídeo e áudio.
+Data: 22/11/2026. Ambiente local: Windows, Python 3.12.14 e Pygame 2.6.1. Vídeo/áudio virtuais do SDL.
 
-## Testes de comportamento
+## Resultado
 
 Comando: python -m unittest discover -s tests -v
 
-Resultado: **36 testes aprovados**, sem falhas ou testes ignorados.
+**47 testes aprovados, sem falhas ou testes ignorados.** Os 36 casos anteriores continuam aprovados, com as expectativas do menu atualizadas para incluir a história. Outros 11 casos verificam a fase 2 e a passagem entre cenários.
 
-- 26 testes das regras e sprites: grupos reais do Pygame, movimento e limites, pulo variável e antecipado, dash, dano e vidas, pausa, cadência e origem dos tiros, mira, remoção de projéteis, colisões, transformação, vitória e nove padrões nos quatro níveis.
-- 10 testes da aplicação: carregamento dos recursos e telas, início/pausa/reinício, ajuda, foco, redimensionamento/cliques, tela cheia, preferências, recorde e encerramento.
+Cobertura nova: avanço somente após vitória; ausência de um terceiro chefe jogável; seis ataques sempre precedidos por aviso; direções dos raios fixadas no aviso; língua baixa causa um único dano; língua alta passa sobre jogador no chão; pulo e dash evitam a língua baixa; faixa segura dos espinhos; remoção de ataques; segunda forma; pausa; reinício na fase atual; telas; transparência das artes; separação do recorde do dragão.
 
-Além dos casos individuais, a suíte joga até a vitória em 30, 60 e 120 atualizações por segundo, com uma transformação e 360 acertos. Os testes de esquiva conferem pulo e dash no sopro baixo e permanência no chão/agachamento no sopro alto.
+As duas lutas chegaram à vitória com 360 acertos em 30, 60 e 120 atualizações por segundo. Nesses casos foi ativada proteção prolongada somente no teste: isso verifica o fluxo, não a dificuldade para uma pessoa. O jogo normal começa com três vidas.
 
-## Execução integrada e imagens
+## Verificação visual
 
-Um roteiro com main.update_game e main.draw_screen percorreu a luta com proteção prolongada apenas no teste. A vitória ocorreu com 360 acertos em aproximadamente 34,48 segundos no cronômetro da partida. Foram amostrados 544 quadros de desenho nessa execução.
+Foram renderizados e inspecionados menu, história, dragão, corpo do Comilão, aviso dos raios, língua estendida, segunda forma e vitória da fase 2. Também foram renderizados os espinhos e seus avisos. Capturas representativas estão em docs/preview.png, docs/comilao-corpo.png e docs/comilao-boca.png.
 
-Também foram renderizadas as 36 combinações de nove padrões x quatro níveis, além de menu, ajuda, pausa, derrota, vitória e transformação. O sopro foi exercitado com o jogador próximo ao chefe para conferir que sua imagem fica limitada ao tamanho da arena.
+Um roteiro adicional usou main.update_game e main.draw_screen por 180 quadros na fase 2, incluindo tiros e espinhos: média local de 15,67 ms por quadro; percentil 95 de 25,44 ms. É uma amostra local com saída de vídeo virtual, não uma garantia de desempenho em todos os computadores.
 
-Foram inspecionadas imagens do menu, da segunda forma, do sopro e do leque. docs/preview.png é uma captura produzida pelo Pygame.
+## Pacote ZIP
 
-## Diferenças intencionais em relação à versão anterior
+O pacote final contém 60 arquivos. Foi extraído em uma pasta nova; os 60 conteúdos foram comparados por SHA-256 com a pasta de origem. Os 47 testes também passaram na cópia extraída.
 
-Esta edição usa uma atualização por quadro e colisões por pygame.Rect. Antes, o motor usava subpassos internos e alguns testes geométricos próprios de círculo/segmento. Os controles, os nove padrões, os parâmetros principais e o objetivo foram mantidos; não se promete uma simulação numericamente idêntica em cada quadro. As bordas das colisões e alguns instantes de movimento podem variar ligeiramente.
+## Limites e pendências
 
-As antigas referências numéricas do JavaScript não foram apresentadas como testes desta versão. A suíte atual verifica comportamentos do jogo após a simplificação.
+A execução virtual não substitui jogar com teclado físico, ouvir volumes e avaliar dificuldade com pessoas. O grupo precisa testar nos três computadores e gravar o vídeo. O iniciador Windows requer Python e internet na primeira instalação. A terceira fase e o encerramento completo ainda não estão implementados.
 
-## Conferência do grupo antes da entrega
-
-A execução virtual não substitui jogar com teclado físico, ouvir os volumes, avaliar a dificuldade com pessoas e testar a instalação no computador da apresentação. O iniciador Windows depende de Python disponível no computador; Python 3.12 é a versão recomendada e testada diretamente.
-
-O fluxo do GitHub está preparado para Windows/Linux com Python 3.10 e 3.12, mas a execução remota só será confirmada depois da publicação. A validação local foi feita em Windows/Python 3.12. O pacote não foi publicado no GitHub nesta tarefa.
+Os resultados acima são locais. A publicação em uma branch não significa que o jogo foi integrado à main ou que uma verificação remota tenha sido executada.
