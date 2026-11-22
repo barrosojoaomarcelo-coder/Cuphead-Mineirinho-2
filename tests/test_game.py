@@ -369,7 +369,7 @@ class InterfaceTests(unittest.TestCase):
         main.handle_event(self.ui, pygame.event.Event(pygame.KEYDOWN, key=key))
 
     def test_all_screens_and_assets(self):
-        for state in ('title', 'intro', 'playing', 'paused', 'dead', 'victory', 'transform'):
+        for state in ('title', 'story', 'intro', 'playing', 'paused', 'dead', 'victory', 'transform'):
             self.ui['game'].state = state
             main.draw_screen(self.ui)
         self.assertEqual(len(self.ui['assets']['frames']['head']), 8)
@@ -377,6 +377,8 @@ class InterfaceTests(unittest.TestCase):
 
     def test_start_pause_restart(self):
         g = self.ui['game']
+        self.key(pygame.K_RETURN)
+        self.assertEqual(g.state, 'story')
         self.key(pygame.K_RETURN)
         self.assertEqual(g.state, 'intro')
         self.key(pygame.K_p)
@@ -418,7 +420,7 @@ class InterfaceTests(unittest.TestCase):
         view = self.ui['viewport']
         point = (round(view.x + rect.centerx * view.w / 1280), round(view.y + rect.centery * view.h / 720))
         main.handle_event(self.ui, pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=point))
-        self.assertEqual(self.ui['game'].state, 'intro')
+        self.assertEqual(self.ui['game'].state, 'story')
         self.assertGreater(view.y, 0)
 
     def test_fullscreen_roundtrip(self):
