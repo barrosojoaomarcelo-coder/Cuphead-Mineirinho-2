@@ -1,62 +1,43 @@
-# Divisão de trabalho — versão simplificada
+# Divisão e prazos — três fases
 
-Equipe: Davi, Moisés e João Marcelo. Entrega: segunda-feira, 23/11/2026, até 12h, horário de São Paulo. Meta interna: versão remota conferida até 10h.
+Equipe: Davi, Moisés e João Marcelo. Entrega: segunda-feira, 23/11/2026, até 12h, horário de São Paulo. Metas internas: main testada até 10h e envio conferido até 11h.
+
+Use [TAREFAS_ATE_SEGUNDA.md](../TAREFAS_ATE_SEGUNDA.md) como checklist principal, incluindo as referências oficiais verificadas e as pendências reais.
 
 ## Moisés — regras e sprites
 
-Arquivos: config.py, sprites.py, engine.py, attacks.py, comilao.py, boss_attacks.py, piramide.py e piramide_attacks.py.
+Branch moises. Revisar Player.update, Bread.update, GameModel.step, colisões e mudança de forma em config.py, sprites.py, engine.py, attacks.py, boss_attacks.py, comilao.py, piramide.py, piramide_attacks.py e testes.
 
-1. Estudar Bread.update, Player.update, GameModel.step e check_collisions.
-2. Conferir pulo, dash e dano nos três chefes; ajustar os tempos de aviso e os ataques do Comilão e os trajetos/reflexos da Pirâmide.
-3. Fazer melhorias e correções reais de jogabilidade, explicando o problema e o resultado no pull request.
-4. Ao mudar uma regra, revisar os testes correspondentes.
-
-Revisor: Davi. Alterações de hitbox ou posição devem ser combinadas com quem cuida das artes.
+Comparar a fase do dragão com o ZIP difícil; jogar rajadas, gigantes e sopro. Testar combos do Comilão e criaturas, anéis e rotas de laser da Pirâmide. Corrigir falhas reais e explicar o resultado no PR; ao alterar uma regra, revisar os testes. Davi revisa. Combinar mudanças de hitbox/posição com Davi.
 
 ## Davi — artes, animação e som
 
-Arquivos: assets.py, animation.py, scene.py, audio.py, assets/player/, demais imagens e assets/sounds/.
+Branch davi. Revisar load_assets, folhas de animação, desenho e reprodução dos sons em assets.py, animation.py, scene.py, audio.py e assets/.
 
-1. Estudar load_assets, load_sheet, player_pose e o desenho da interface.
-2. Conferir animações, leitura dos avisos, alinhamento do tiro e volume dos WAV.
-3. Revisar as artes do Comilão nas duas formas, a origem dos raios e da língua e as marcas de espinhos; registrar uma melhoria visual ou sonora real.
-4. Completar CREDITOS.md com a procedência das artes e de novos sons.
-
-Revisor: João Marcelo. As escolhas de animação ficam em assets.py; as regras de movimento continuam com Moisés.
+Jogar as três fases observando avisos e correspondência entre desenho e perigo. Conferir emissões, volumes e vidas. Completar as fontes das artes iniciais em CREDITOS.md e registrar novos recursos. João revisa. Se o acesso de Davi ainda estiver pendente, João resolve o convite e Davi aceita.
 
 ## João Marcelo — aplicação e entrega
 
-Arquivos: main.py, requirements.txt, INICIAR_WINDOWS.bat, documentação.
+Branch cajarelo. Revisar initialize, handle_event, update_game e draw_screen em main.py; conferir requirements.txt, INICIAR_WINDOWS.bat, README e documentação.
 
-1. Estudar initialize, game_screen, handle_event, update_game e draw_screen.
-2. Conferir menu → história → dragão → Comilão → Pirâmide → encerramento, treino das fases 2 e 3, pausa, derrota, repetição da fase atual, ajuda e cliques com janela redimensionada.
-3. Fazer uma melhoria real no fluxo ou corrigir um problema da instalação/interface.
-4. Coordenar integração, gravação do vídeo e documentação final; cada colega corrige sua própria parte.
+Testar fluxo completo, treinos, ajuda, pausa, derrota, reinício, redimensionamento e encerramento. Coordenar correções aprovadas, revisão/integração do pedido #1 à main, vídeo e entrega. Moisés revisa; cada colega continua corrigindo sua própria parte.
 
-Revisor: Moisés.
-
-## Etapas finais a partir de domingo, 22/11
+## Marcos de hoje e amanhã
 
 | Momento | Resultado esperado |
 | --- | --- |
-| Primeira hora com o novo pacote | Os três conseguem jogar; a base é publicada identificando a adaptação com IA; cada um abre uma issue. |
-| Antes da rodada final de domingo | Uma contribuição real de cada integrante integrada e revisada. |
-| Domingo à noite | Encerrar novas funcionalidades; jogar nos três computadores; corrigir falhas; fechar créditos, README e vídeo. |
-| Segunda, 8h–10h | Baixar uma cópia nova e executar usando apenas o README. |
-| Segunda, 10h–11h | Conferir versão remota, acesso do professor, vídeo e link do Blackboard. |
-| Segunda, 11h–12h | Margem para imprevistos na entrega. |
+| Hoje, ao começar | Trabalho local registrado; cada um baixa sua branch pessoal atualizada e testa instalação |
+| Hoje, antes da rodada final | Revisão cruzada e correções necessárias documentadas |
+| Hoje à noite | Encerrar novas funcionalidades; jogar com teclado físico, ouvir sons; fechar vídeo, fontes e histórico de IA |
+| Segunda, 8h–10h | Integrar versão aprovada e correções à main; testar um clone novo seguindo o README |
+| Segunda, 10h–11h | Conferir acesso, vídeo, endereço no Blackboard e pendências de formulários |
+| Segunda, 11h–12h | Reserva para imprevistos de entrega; evitar novas funcionalidades |
+| Segunda, 12h–14h | Os três participam da Feira de Jogos |
 
-O escopo atualizado inclui página inicial, introdução narrativa e três fases, começando pelo dragão. Preparar a progressão entre fases e compartilhar movimento, tiro, colisões e vidas. A fase 2 já tem o Comilão das referências do grupo; a fase 3 foi implementada como o Olho da Pirâmide, com duas formas. Implementar e testar cada etapa antes de integrá-la, mantendo uma versão jogável. A divisão por áreas acima continua como referência técnica; as responsabilidades por área continuam distribuídas entre os três integrantes.
+Os horários intermediários são a organização do grupo. João coordena integração/documentação; Moisés confere regras; Davi confere mídia/créditos. Todos precisam executar, compreender e revisar a versão final.
 
-## Checklist do grupo
+## Atualizar sem perder trabalho
 
-- [ ] Instalação e jogo conferidos nos computadores reais.
-- [ ] Vitória, derrota e reinício funcionando.
-- [ ] Sons ouvidos e dificuldade avaliada com pessoas.
-- [ ] Contribuições e revisões dos três registradas no Git.
-- [ ] Todos entendem o caminho de uma tecla até a ação desenhada.
-- [ ] README com integrantes, execução e vídeo acessível.
-- [ ] Créditos das artes e registro/anexo de IA completados.
-- [ ] Professor com acesso e link enviado no Blackboard.
+Esta operação distribui a base de três fases às branches pessoais. Antes de pull, executar git status e fazer commit do trabalho pendente. Depois trocar para a branch da própria pessoa e executar git pull --ff-only origin NOME. Se divergir, revisar os históricos, executar git fetch origin e fazer merge da branch correspondente; não usar force push ou reset. Veja os comandos em [CONTRIBUTING.md](../CONTRIBUTING.md).
 
-A divisão acima é uma atribuição de responsabilidades futuras. A base simplificada foi preparada com auxílio de IA; não representa autoria individual anterior dos integrantes.
+A main permanece aguardando o pedido #1. João coordena sua revisão e integração antes do teste final e da entrega. Sincronização e testes automáticos não substituem revisão humana nem registram autoria individual da base assistida por IA.

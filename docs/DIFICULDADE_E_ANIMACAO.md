@@ -4,9 +4,9 @@
 
 O pacote A_Fornalha_do_Castelo_Boss_Dificil.zip usa outro motor, com dataclasses e subdivisão do tempo. Para manter a organização próxima da aula, foram portadas suas regras de ataque para Sprites, Groups, listas e dicionários do projeto atual. Nenhuma fase foi substituída por uma tela vazia.
 
-Os quatro dicionários HARD_ATTACKS em boss_attacks.py reproduzem exatamente os 40 parâmetros por nível do perfil homônimo do ZIP. A versão difícil anterior tinha 480 pontos de vida e 12 tiros/s. A edição inicial de três chefes passou a 20 tiros/s a 1800 pixels/s, mas manteve 480 pontos; isso encurtou a luta. A correção usa 800 pontos nos três chefes: 800 / 20 = 480 / 12 = 40 segundos de fogo que acerta o alvo. Três vidas, velocidade do jogador 310, salto 680 e dash de 0,21 segundo foram preservados.
+Os quatro dicionários HARD_ATTACKS em boss_attacks.py reproduzem exatamente os 40 parâmetros por nível do ZIP. O dragão usa também sua vida e arma originais: 480 pontos, 12 tiros/s a 1450 pixels/s. Comilão e Pirâmide usam 800 pontos e 20 tiros/s a 1800 pixels/s. Três vidas, velocidade do jogador 310, salto 680 e dash de 0,21 segundo foram preservados.
 
-Em simulação de fluxo com tiro contínuo, a luta contra o dragão passou de 44,483 s na versão anterior para 44,350 s nesta correção, a 60 atualizações/s. A proteção usada nessa medição serve somente para isolar duração e progressão. Não mede dificuldade humana. Os ataques, quantidades, velocidades, avisos e intervalos do dragão continuam iguais aos da versão difícil anterior. A 30 atualizações/s, a cadência antiga caía para cerca de 10 tiros/s; a atual mantém 20/s em 30/60/120, evitando dificuldade dependente do computador.
+A conferência direta do ZIP comparou 160 valores de ataque, sem diferenças, e identificou o reinício de horizontal_count na transformação, agora corrigido. A duração de fluxo do dragão nesta edição é 44,467 s a 60/120 atualizações/s e 44,500 s a 30. A proteção usada nessa medição serve somente para isolar duração e progressão; não mede dificuldade humana. A cadência mantém 12/s em 30/60/120, sem tornar a arma dependente do computador. Consulte AUDITORIA_DRAGAO_ZIP.md para os limites da equivalência entre os motores.
 
 | Parâmetro | Nível 1 | Nível 2 | Nível 3 | Nível 4 |
 | --- | --- | --- | --- | --- |
