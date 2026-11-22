@@ -5,7 +5,7 @@ Davi cuida das imagens e das escolhas de animação em assets.py.
 import math
 import pygame
 from config import (FLOOR, LIVES, BOSS_HP, PLAYER_SPEED, GRAVITY, JUMP_SPEED,
-                    SHOT_SPEED, DASH_SPEED, DASH_TIME, DASH_COOLDOWN, clamp)
+                    SHOT_SPEED, SHOT_INTERVAL, DASH_SPEED, DASH_TIME, DASH_COOLDOWN, clamp)
 from assets import player_pose, fire_image, flame_image
 from animation import animated_frame
 
@@ -37,6 +37,8 @@ class Player(pygame.sprite.Sprite):
         self.dash_cooldown = 0
         self.invulnerable = 0
         self.shot_cooldown = 0
+        self.shot_speed = SHOT_SPEED
+        self.shot_interval = SHOT_INTERVAL
         self.anim_time = 0
         self.jump_age = 0
         self.land_time = 0
@@ -180,7 +182,7 @@ class Player(pygame.sprite.Sprite):
             y = self.y - 83
             if self.crouch:
                 y = self.y - 54
-        return Bread(self.assets, x, y, self.aim_x, self.aim_y)
+        return Bread(self.assets, x, y, self.aim_x, self.aim_y, self.shot_speed)
 
 
 class Boss(pygame.sprite.Sprite):
@@ -292,15 +294,15 @@ class Boss(pygame.sprite.Sprite):
 class Bread(pygame.sprite.Sprite):
     """Tiro do jogador; kill() o remove de todos os grupos."""
 
-    def __init__(self, assets, x, y, aim_x, aim_y):
+    def __init__(self, assets, x, y, aim_x, aim_y, speed=SHOT_SPEED):
         pygame.sprite.Sprite.__init__(self)
         self.base_image = assets['bread']
         self.x, self.y = x, y
         length = math.hypot(aim_x, aim_y)
         if length == 0:
             length = 1
-        self.vx = aim_x / length * SHOT_SPEED
-        self.vy = aim_y / length * SHOT_SPEED
+        self.vx = aim_x / length * speed
+        self.vy = aim_y / length * speed
         self.age = 0
         self.image = self.base_image
         self.rect = self.image.get_rect(center=(round(x), round(y)))

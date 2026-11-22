@@ -5,8 +5,11 @@ FLOOR = 622
 FPS = 60
 
 LIVES = 3
-# 800 acertos a 20 tiros/s preservam os 40 s de fogo da versão difícil
-# anterior (480 a 12/s), sem perder a resposta rápida do pão de queijo.
+# O dragão usa a arma e a vida do ZIP difícil enviado pelo grupo.
+DRAGON_HP = 480
+DRAGON_SHOT_SPEED = 1450
+DRAGON_SHOT_INTERVAL = 1 / 12
+# Comilão e Pirâmide mantêm a arma rápida e a resistência correspondente.
 BOSS_HP = 800
 PLAYER_SPEED = 310
 GRAVITY = 1850

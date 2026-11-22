@@ -1,6 +1,8 @@
 # Git em equipe — Cuphead-Mineirinho-2
 
-Repositório atual: https://github.com/barrosojoaomarcelo-coder/Cuphead-Mineirinho-2. As branches existentes são main, moises, davi e cajarelo. A fase 2 foi preparada separadamente em codex/fase-2-comilao. Não misturem commits do repositório antigo.
+Repositório: https://github.com/barrosojoaomarcelo-coder/Cuphead-Mineirinho-2.
+
+Esta operação distribui a base com três fases para as branches pessoais moises, davi e cajarelo, preservando seus históricos. A main continua aguardando revisão e integração do [pedido #1](https://github.com/barrosojoaomarcelo-coder/Cuphead-Mineirinho-2/pull/1), preparado em codex/fase-2-comilao. Até essa integração, baixar apenas a main pode trazer a versão antiga. Não misturem commits do repositório anterior.
 
 ## Baixar uma vez
 
@@ -10,38 +12,72 @@ cd Cuphead-Mineirinho-2
 python -m pip install -r requirements.txt
 ~~~
 
-## Começar uma tarefa
+Depois escolham sua branch conforme a seção seguinte. Cada integrante usa sua própria conta e identidade no Git.
 
-Primeiro terminem e enviem as alterações pendentes da branch atual; git status mostra se há arquivos ainda não registrados. Cada integrante usa sua conta e identidade no Git.
+## Atualizar a branch pessoal
+
+**Antes de trocar de branch ou baixar alterações, executem git status.** Se houver arquivos modificados ou novos, revisem e façam commit do trabalho que deve ser preservado na branch atual. Não apaguem os commits locais; se a atualização recusar por divergência, sigam a orientação abaixo. Não substituam uma pasta de trabalho pelo conteúdo de um ZIP para tentar sincronizá-la.
+
+Com o trabalho registrado e a pasta limpa, usem o bloco da própria pessoa.
+
+Moisés:
 
 ~~~sh
-git switch main
-git pull origin main
-git switch -c feat/descricao-da-tarefa
+git status
+git switch moises
+git pull --ff-only origin moises
 ~~~
 
-Exemplos: Moisés feat/comilao-equilibrio, Davi feat/comilao-animacoes, João feat/fluxo-entrega. As branches pessoais existentes podem continuar sendo usadas por quem já trabalha nelas; não apaguem alterações nem usem reset para tentar sincronizar. Uma nova branch por tarefa facilita revisar apenas aquela mudança.
+Davi:
 
-## Testar e enviar
+~~~sh
+git status
+git switch davi
+git pull --ff-only origin davi
+~~~
+
+João Marcelo:
+
+~~~sh
+git status
+git switch cajarelo
+git pull --ff-only origin cajarelo
+~~~
+
+Se git switch informar que a branch não foi encontrada, executem git fetch origin e tentem novamente. Confirmem no GitHub se a sincronização da branch foi concluída.
+
+Se pull --ff-only recusar por divergência, isso protege os commits locais: **não usem force push nem reset**. Confiram git status, registrem o trabalho pendente, executem git fetch origin e revisem os dois históricos com o colega. Só depois façam merge da branch remota correspondente. Exemplo para Moisés:
+
+~~~sh
+git log --oneline --left-right HEAD...origin/moises
+git merge origin/moises
+~~~
+
+Davi troca moises por davi; João troca por cajarelo. Se houver conflito, comparem os dois trechos com a pessoa responsável, preservem as duas contribuições, retirem as marcações e testem antes de concluir o commit do merge. Não escolham um lado inteiro sem revisar.
+
+## Trabalhar, testar e enviar
+
+Moisés cuida das regras; Davi, do desenho e som; João, dos menus e entrega. Combinem antes de editar o mesmo arquivo. A lista concreta está em [TAREFAS_ATE_SEGUNDA.md](TAREFAS_ATE_SEGUNDA.md).
 
 ~~~sh
 python -m unittest discover -s tests -v
 python main.py
 git status
-git add nome-do-arquivo.py
-git commit -m "Descreve a mudança e seu resultado"
-git push -u origin feat/descricao-da-tarefa
 ~~~
 
-Troquem os exemplos pelos nomes reais. Confiram o que git status mostra antes de adicionar arquivos. Não enviem .venv, senhas, arquivos de preferências, caches ou o ZIP como substituto do código.
+Revisem as diferenças, adicionem somente os arquivos da tarefa com git add CAMINHO_DO_ARQUIVO e façam git commit -m "Descreve a mudança e seu resultado". Substituam os exemplos pelos arquivos e mensagens reais. Depois enviem pela branch pessoal:
 
-## Juntar na main sem perder trabalho
+~~~sh
+git push origin moises
+~~~
 
-1. No GitHub, abram um pull request da sua branch para main. Expliquem a mudança e como testar.
-2. Davi revisa Moisés; João revisa Davi; Moisés revisa João. O revisor baixa a branch e executa o jogo.
-3. Se a main mudou, tragam as alterações para sua branch: git fetch origin e depois git merge origin/main.
-4. Havendo conflito, confiram os dois trechos com o colega responsável. Removam as marcações de conflito, preservem o comportamento das duas contribuições, testem e façam um novo commit.
-5. Depois da revisão e dos testes, usem Merge pull request no GitHub. A integração soma o histórico. Não usem force push na main.
-6. Todos voltam à main e executam git pull origin main antes da próxima tarefa.
+Davi usa git push origin davi; João usa git push origin cajarelo. Não enviem .venv, senhas, preferências pessoais, caches nem um ZIP no lugar do código. Registrem contribuições reais, sem criar commits só para aparentar participação.
 
-Moisés altera regras/colisões; Davi imagens/som/desenho; João entradas/menus/entrega. Combinem antes de editar o mesmo arquivo. A base foi preparada com auxílio de IA; cada um deve registrar contribuições próprias reais em USO_DE_IA.md. O acesso de Davi ainda deve ser resolvido com João Marcelo, se o convite continuar pendente.
+## Integrar a versão final à main
+
+1. João coordena a revisão do pedido #1 e sua integração à main antes da entrega. Os três precisam executar e compreender a versão final; sincronizar branches não comprova revisão humana.
+2. As correções posteriores passam por pull request para main, com explicação do problema, da mudança e dos testes. Davi revisa Moisés; João revisa Davi; Moisés revisa João.
+3. Depois que a main receber a base e outras correções, cada um traz essa versão para sua branch pessoal: com trabalho registrado e pasta limpa, executa git fetch origin e git merge origin/main, confere os testes e envia sua branch.
+4. João confere um clone novo da main, seguindo apenas o README. É essa versão final que precisa estar acessível no endereço entregue ao professor.
+
+A base foi preparada com auxílio de IA. Cada um deve compreender o código e registrar suas próprias alterações em USO_DE_IA.md. Se o convite de Davi continuar pendente, João precisa resolvê-lo e Davi precisa aceitar; sincronizar a branch remota não concede acesso à conta.

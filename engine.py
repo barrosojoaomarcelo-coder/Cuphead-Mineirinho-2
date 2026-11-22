@@ -39,7 +39,11 @@ class GameModel:
         self.stats = {'shots': 0, 'hits': 0, 'dashes': 0}
         self.player = Player(self.assets)
         self.boss = Boss(self.assets)
-        if stage_index == 1:
+        if stage_index == 0:
+            self.boss.hp = self.boss.max_hp = c.DRAGON_HP
+            self.player.shot_speed = c.DRAGON_SHOT_SPEED
+            self.player.shot_interval = c.DRAGON_SHOT_INTERVAL
+        elif stage_index == 1:
             self.boss = Comilao(self.assets)
         elif stage_index == 2:
             self.boss = Piramide(self.assets)
@@ -137,7 +141,7 @@ class GameModel:
             play_sound(self.assets, 'dash')
         if p.shooting and p.shot_cooldown <= .000001:
             self.shots.add(p.shoot())
-            p.shot_cooldown += c.SHOT_INTERVAL
+            p.shot_cooldown += p.shot_interval
             self.stats['shots'] += 1
             play_sound(self.assets, 'shoot')
 
@@ -237,6 +241,7 @@ class GameModel:
         self.shots.empty()
         self.pattern_index = 0
         self.breath_count = 0
+        self.horizontal_count = 0
         play_sound(self.assets, 'transform')
 
     def update_transformation(self, dt, controls):

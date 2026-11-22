@@ -2,7 +2,7 @@
 
 Esta atualização foi preparada para a versão difícil com Comilão do repositório Cuphead-Mineirinho-2, commit e6a50a641ec8695ac4b2df7c527809268f147042. Mantém dragão e Comilão antes da Pirâmide. Os dois levels pedidos são as duas formas da terceira luta.
 
-Este guia descreve a primeira integração da fase 3. Se você já baixou a edição com três chefes e quer a correção que restaura a dificuldade, use COMO_ATUALIZAR_DIFICULDADE.md. A edição atual do jogo completo já tem essa correção e os três chefes com 800 pontos de vida.
+Este guia descreve a primeira integração da fase 3. Se você já baixou a edição com três chefes e quer a correção fiel ao ZIP do dragão, use COMO_ATUALIZAR_DIFICULDADE.md. A edição atual usa 480 pontos e a arma original no dragão; Comilão e Pirâmide têm 800 pontos e a arma rápida.
 
 ## Opção mais simples: jogo completo
 
