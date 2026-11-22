@@ -14,7 +14,7 @@ from audio import start_music, update_volume
 from engine import GameModel
 from scene import Renderer
 
-RULESET = 'tres-chefes-20tiros-2026-11'
+RULESET = 'tres-chefes-dificil-800-2026-11'
 
 
 def save_folder():

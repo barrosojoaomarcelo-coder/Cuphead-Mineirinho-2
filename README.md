@@ -11,9 +11,9 @@ Jogo de ação lateral em **Python + Pygame**, inspirado em **Cuphead**. O prota
 
 ## Versão difícil e animações
 
-A fase 1 incorpora o perfil HARD_ATTACKS de A_Fornalha_do_Castelo_Boss_Dificil.zip: 480 pontos de vida, dez famílias de ataques, fileiras horizontais baixas/altas, até duas bolas gigantes e ondas adicionais. Os 40 parâmetros de cada um dos quatro níveis foram mantidos em dicionários de boss_attacks.py. As três vidas e os controles do jogador foram preservados.
+A fase 1 incorpora o perfil HARD_ATTACKS de A_Fornalha_do_Castelo_Boss_Dificil.zip: dez famílias de ataques, fileiras horizontais baixas/altas, até duas bolas gigantes e ondas adicionais. Os 40 parâmetros de cada um dos quatro níveis foram mantidos em dicionários de boss_attacks.py. Os três chefes agora exigem 800 acertos para compensar a cadência de 20 tiros/s e recuperar a duração da versão difícil anterior, que exigia 480 acertos a 12 tiros/s. As três vidas e os controles do jogador foram preservados.
 
-O Comilão também tem 480 pontos de vida, intervalos menores, até cinco raios, combos de língua com aviso individual e até três ondas de espinhos com faixa segura. As duas formas têm 12 poses novas: respiração, piscada, preparação, disparo e recuperação. O personagem e o dragão usam compressão/alongamento visual, com rastros de dash, estrelas de impacto e nuvem na transformação. São recursos inspirados em animação cartunesca dos anos 1930, sem usar sprites oficiais de Cuphead.
+O Comilão também tem 800 pontos de vida, intervalos menores, até cinco raios, combos de língua com aviso individual e até três ondas de espinhos com faixa segura. As duas formas têm 12 poses novas: respiração, piscada, preparação, disparo e recuperação. O personagem e o dragão usam compressão/alongamento visual, com rastros de dash, estrelas de impacto e nuvem na transformação. São recursos inspirados em animação cartunesca dos anos 1930, sem usar sprites oficiais de Cuphead.
 
 Use S ou seta para baixo para agachar nas fileiras horizontais altas; pule as baixas. O recorde do perfil anterior é separado do novo, preservando a preferência de som. Consulte [os detalhes do balanceamento](docs/DIFICULDADE_E_ANIMACAO.md).
 
@@ -24,6 +24,8 @@ A luta acontece nas ruínas de um lago roxo, conforme as referências do grupo. 
 Ao perder metade da vida, o chefe se divide em dois olhos nas laterais. Eles compartilham a mesma vida e usam lasers horizontais, cruzados, em losango, com reflexo no chão e com mira fixada antes do disparo. Os caminhos aparecem antes dos raios; as faixas verdes indicam espaço seguro para o jogador em pé.
 
 O jogo tem **três vidas por fase, 20 tiros por segundo a 1800 pixels/s e nenhuma barra de vida dos chefes**. A evolução aparece nas formas e nos padrões. As regras de ataques difíceis do dragão e do Comilão continuam presentes. O novo ritmo de tiro tem recorde separado do anterior.
+
+O ajuste de dificuldade mantém aproximadamente 40 segundos de acertos contínuos, além de transformação e deslocamento dos tiros: cerca de 44–45 segundos nas medições de fluxo. Errar tiros ou parar para esquivar aumenta esse tempo. O recorde da edição com chefes de 480 pontos é separado deste perfil. Para atualizar uma cópia já baixada, veja [COMO_ATUALIZAR_DIFICULDADE.md](COMO_ATUALIZAR_DIFICULDADE.md).
 
 [Guia para integrar a fase 3 à versão anterior](COMO_INTEGRAR_FASE_3.md) · [Artes e prompts](docs/ARTES_PIRAMIDE.md)
 

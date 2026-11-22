@@ -5,7 +5,9 @@ FLOOR = 622
 FPS = 60
 
 LIVES = 3
-BOSS_HP = 480
+# 800 acertos a 20 tiros/s preservam os 40 s de fogo da versão difícil
+# anterior (480 a 12/s), sem perder a resposta rápida do pão de queijo.
+BOSS_HP = 800
 PLAYER_SPEED = 310
 GRAVITY = 1850
 JUMP_SPEED = 680
