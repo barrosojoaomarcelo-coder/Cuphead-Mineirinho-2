@@ -33,7 +33,7 @@ def load_assets():
     """Imagens e sons ficam prontos antes do loop, como no exemplo da aula."""
     with open(ROOT / 'assets' / 'manifest.json', encoding='utf-8') as file:
         manifest = json.load(file)
-    assets = {'manifest': manifest, 'frames': {}, 'flipped': {}, 'muted': False}
+    assets = {'manifest': manifest, 'frames': {}, 'flipped': {}, 'muted': False, 'animated': {}}
     for name, spec in manifest['player']['actions'].items():
         frames = load_sheet(spec, (174, 174))
         assets['frames'][name] = frames
@@ -43,7 +43,8 @@ def load_assets():
     for name, spec in manifest['dragon'].items():
         assets['frames'][name] = load_sheet(spec, (442, 442))
     for name in ('comilao-corpo', 'comilao-boca'):
-        spec = {'url': 'assets/' + name + '.png', 'cols': 4, 'rows': 2, 'count': 8}
+        filename = 'comilao-corpo-animado' if name == 'comilao-corpo' else 'comilao-boca-animada'
+        spec = {'url': 'assets/' + filename + '.png', 'cols': 4, 'rows': 3, 'count': 12}
         assets['frames'][name] = load_sheet(spec, (442, 442))
     assets['valley'] = load_image('assets/vale-comilao.png', (WIDTH, HEIGHT))
     assets['day'] = load_image(manifest['background']['day'], (WIDTH, HEIGHT))

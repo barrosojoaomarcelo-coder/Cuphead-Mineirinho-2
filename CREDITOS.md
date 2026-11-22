@@ -42,3 +42,7 @@ A adaptação e a simplificação foram produzidas com auxílio de Codex/ChatGPT
 Referência do personagem: Chefe Comilão, de Mineirinho, indicado pelo grupo. O grupo forneceu dois desenhos próprios de formas/ataques e uma captura como referência de cenário. Cuphead é referência de combate e apresentação.
 
 assets/comilao-corpo.png, assets/comilao-boca.png e assets/vale-comilao.png foram gerados pela ferramenta de imagens integrada do Codex/ChatGPT, a partir dessas referências. Não são sprites oficiais extraídos dos jogos. Os prompts e a função de cada referência estão em docs/ARTES_COMILAO.md. Raios, língua e espinhos são desenhados pelo Pygame. A equipe deve conferir as regras da disciplina para declarar e usar esse material.
+
+## Versão difícil e novas animações
+
+Regras da fase 1 adaptadas de A_Fornalha_do_Castelo_Boss_Dificil.zip, fornecido pelo grupo em 22/11/2026; a autoria externa do conteúdo recebido deve ser confirmada pelo grupo. assets/comilao-corpo-animado.png e assets/comilao-boca-animada.png foram gerados pela ferramenta integrada de imagens do Codex/ChatGPT a partir das folhas anteriores. Prompts em docs/ARTES_COMILAO.md. Nenhum sprite oficial de Cuphead foi extraído. Efeitos de alongamento, compressão, rastros, estrelas e nuvem são desenhados pelo Pygame.

@@ -103,7 +103,14 @@ class Renderer:
             target.blit(self.night, (0, 0))
         model.boss_group.draw(target)
         self._warnings(target, model)
+        self._horizontal_cues(target, model)
         pygame.draw.ellipse(target, (70, 53, 43), (round(model.player.x - 34), FLOOR - 2, 68, 8))
+        if model.player.dash > 0:
+            p = model.player
+            for index in range(3):
+                x = p.x - p.dash_direction * (40 + index * 22)
+                pygame.draw.line(target, CREAM, (x, p.y - 35 - index * 12),
+                                 (x - p.dash_direction * 35, p.y - 35 - index * 12), 3)
         model.player_group.draw(target)
         model.shots.draw(target)
         model.beams.draw(target)
@@ -118,7 +125,24 @@ class Renderer:
             progress = max(.01, 1 - p.dash_cooldown / DASH_COOLDOWN)
             pygame.draw.arc(target, CREAM, rect, -math.pi / 2, -math.pi / 2 + math.tau * progress, 3)
         for p in self.particles:
-            pygame.draw.circle(target, GOLD, (round(p['x']), round(p['y'])), max(1, round(p['r'] * min(1, p['life'] * 3))))
+            radius = max(1, round(p['r'] * min(1, p['life'] * 3)))
+            x, y = round(p['x']), round(p['y'])
+            if p['r'] >= 5:
+                pygame.draw.polygon(target, GOLD, [(x, y-radius*2), (x+radius, y-radius),
+                    (x+radius*2, y), (x+radius, y+radius), (x, y+radius*2),
+                    (x-radius, y+radius), (x-radius*2, y), (x-radius, y-radius)])
+            else:
+                pygame.draw.circle(target, GOLD, (x, y), radius)
+        if model.state == 'transform':
+            # Nuvem cartunesca na troca de forma; cresce e desaparece junto da transição.
+            strength = math.sin(model.boss.transform * math.pi)
+            for index in range(7):
+                x = 960 + index * 43
+                y = 560 - math.sin(index * 2 + self.time * 8) * 22
+                radius = round((25 + index % 3 * 8) * strength)
+                if radius > 0:
+                    pygame.draw.circle(target, INK, (round(x), round(y)), radius + 3)
+                    pygame.draw.circle(target, CREAM, (round(x), round(y)), radius)
         if self.flash > 0:
             self.layer.fill((255, 235, 194, round(self.flash * 300)))
             target.blit(self.layer, (0, 0))
@@ -152,6 +176,8 @@ class Renderer:
             if w['type'] == 'comilao':
                 draw_comilao_warning(self, target, w, color)
                 continue
+            if w['type'] == 'horizontal':
+                continue
             if w['type'] == 'rain':
                 for x in w['lanes']:
                     for y in range(65, FLOOR, 24):
@@ -167,6 +193,23 @@ class Renderer:
                 jump_now = w['type'] == 'flame' and w['mode'] == 'low' and w['remaining'] < .2
                 self.text(target, 'PULE AGORA!' if jump_now else w['guidance'], (640, 105), 30 if jump_now else 23,
                           GOLD, True, outline=True)
+
+    def _horizontal_cues(self, target, model):
+        chain = model.boss.horizontal
+        if chain is None:
+            return
+        rows = chain['rows']
+        index = chain['row_index']
+        row = rows[index]
+        if chain['state'] == 'recover':
+            return
+        for x in range(30, 930, 30):
+            pygame.draw.line(target, GOLD, (x, row['y']), (x + 10, row['y']), 2)
+        message = 'BAIXA: PULE OU USE DASH' if row['mode'] == 'low' else 'ALTA: AGACHE'
+        if index + 1 < len(rows):
+            next_mode = 'BAIXA' if rows[index + 1]['mode'] == 'low' else 'ALTA'
+            message += ' · DEPOIS ' + next_mode
+        self.text(target, f'FILEIRA {index + 1}/{len(rows)} — {message}', (640, 105), 23, GOLD, True, outline=True)
 
     def _orb(self, target, x, y, radius, angle, giant=False):
         r = max(3, round(radius))
@@ -211,7 +254,7 @@ class Renderer:
             sound_label = 'SEM ÁUDIO'
         self._button(target, 'sound', sound_label, (1065, 10, 185, 40))
         pygame.draw.rect(target, INK, (0, 674, WIDTH, 46))
-        self.text(target, 'A/D  MOVER    ESPAÇO  PULAR    J  ATIRAR    W  MIRAR    SHIFT  DASH    P  PAUSA    R  REINICIAR', (640, 698), 18, CREAM, True)
+        self.text(target, 'A/D MOVER    S AGACHAR    ESPAÇO PULAR    J ATIRAR    W MIRAR    SHIFT DASH    P PAUSA    R REINICIAR', (640, 698), 17, CREAM, True)
 
     def _panel(self, target, rect):
         self.layer.fill((24, 15, 18, 125))
@@ -225,7 +268,7 @@ class Renderer:
     def _overlay(self, target, model, best):
         self._panel(target, (80, 158, 720, 445))
         state = model.state
-        badges = {'title': 'UM DUELO À MODA MINEIRA', 'paused': 'PARTIDA PAUSADA'}
+        badges = {'title': 'VERSÃO DIFÍCIL · UM DUELO À MODA MINEIRA', 'paused': 'PARTIDA PAUSADA'}
         badge = badges.get(state, 'FIM DO DUELO')
         title = {'title': 'A Fornalha do Castelo', 'paused': 'Uma pausa para respirar', 'dead': 'Essa foi por pouco...', 'victory': 'NOCAUTE!'}[state]
         self.text(target, badge, (120, 186), 19, RED)
@@ -233,7 +276,7 @@ class Renderer:
         lines = {
             'title': ('Do castelo ao vale: um chefe em cada cenário.', 'Dragão Vermelho → Chefe Comilão → terceiro chefe.', 'Jogo estudantil inspirado em Cuphead e Mineirinho.'),
             'paused': ('A batalha espera por você.', 'Pressione P ou Esc para continuar.', 'Use F11 para alternar a tela cheia.'),
-            'dead': ('Respire, observe os ataques e tente de novo.', 'Pule os ataques baixos; fique no chão nos altos.', 'Você recomeça esta fase com três vidas.'),
+            'dead': ('Respire, observe os ataques e tente de novo.', 'Agache as fileiras altas; pule as baixas.', 'Você recomeça esta fase com três vidas.'),
             'victory': (f'{STAGES[model.stage_index]} derrotado!',
                         'O próximo cenário é o vale do Chefe Comilão.' if model.stage_index == 0 else 'Fase 2 concluída. A terceira vem depois.',
                         'Enter avança; R repete esta fase.' if model.stage_index == 0 else 'O terceiro chefe ainda está em desenvolvimento.'),

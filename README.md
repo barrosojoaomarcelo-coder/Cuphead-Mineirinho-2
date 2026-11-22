@@ -7,6 +7,16 @@ Jogo de ação lateral em **Python + Pygame**, inspirado em **Cuphead**. O prota
 
 ![Menu do jogo em Pygame](docs/preview.png)
 
+**[DIVISÃO DA EQUIPE: tarefas, arquivos e branches](DIVISAO_DA_EQUIPE.md)**
+
+## Versão difícil e animações
+
+A fase 1 incorpora o perfil HARD_ATTACKS de A_Fornalha_do_Castelo_Boss_Dificil.zip: 480 pontos de vida, dez famílias de ataques, fileiras horizontais baixas/altas, até duas bolas gigantes e ondas adicionais. Os 40 parâmetros de cada um dos quatro níveis foram mantidos em dicionários de boss_attacks.py. As três vidas e os controles do jogador foram preservados.
+
+O Comilão também tem 480 pontos de vida, intervalos menores, até cinco raios, combos de língua com aviso individual e até três ondas de espinhos com faixa segura. As duas formas têm 12 poses novas: respiração, piscada, preparação, disparo e recuperação. O personagem e o dragão usam compressão/alongamento visual, com rastros de dash, estrelas de impacto e nuvem na transformação. São recursos inspirados em animação cartunesca dos anos 1930, sem usar sprites oficiais de Cuphead.
+
+Use S ou seta para baixo para agachar nas fileiras horizontais altas; pule as baixas. O recorde do perfil anterior é separado do novo, preservando a preferência de som. Consulte [os detalhes do balanceamento](docs/DIFICULDADE_E_ANIMACAO.md).
+
 ## Como executar
 
 Use **Python 3.12**, versão usada nos testes locais. Extraia o ZIP inteiro e abra o terminal na pasta que contém main.py:
@@ -45,7 +55,7 @@ A partida pausa ao perder o foco da janela ou abrir a ajuda durante a luta.
 - Movimento, pulo de altura variável, tiro contínuo, mira e dash.
 - Fase 1: Dragão Vermelho com duas formas, quatro níveis de ataque e transição dia/noite.
 - Fase 2: Chefe Comilão com duas formas, vale rochoso, raios do olho, língua baixa/alta, rasteira, língua móvel e espinhos.
-- Nove padrões: bola gigante, sopro, leque, mira fixa, rajada, alturas alternadas, onda, quique e chuva.
+- Dez famílias: rajadas horizontais, bola gigante, sopro, leque, mira fixa, rajada, alturas alternadas, onda, quique e chuva.
 - Avisos antecipados, animações, partículas, som e trilha.
 - Menu, instruções, pausa, derrota, vitória, reinício, redimensionamento e tela cheia.
 - Recorde do dragão e preferência de som salvos na pasta de dados do usuário.
@@ -91,8 +101,8 @@ Foram retirados dataclass, a função de ligação da posição do tiro, a fila 
 
 | Integrante | Responsabilidade | Arquivos |
 | --- | --- | --- |
-| Moisés | Movimento, colisões, ataques e dificuldade | config.py, sprites.py, engine.py, attacks.py, comilao.py |
-| Davi | Carregamento, animações, desenho e áudio | assets.py, scene.py, audio.py, assets/ |
+| Moisés | Movimento, colisões, ataques e dificuldade | config.py, sprites.py, engine.py, attacks.py, comilao.py, boss_attacks.py |
+| Davi | Carregamento, animações, desenho e áudio | assets.py, animation.py, scene.py, audio.py, assets/ |
 | João Marcelo | Janela, teclado, menus, instalação e integração | main.py, requirements.txt, INICIAR_WINDOWS.bat, documentação |
 
 Essa divisão indica as responsabilidades sobre a base adaptada com IA. Cada integrante deve realizar e registrar suas próprias contribuições. Consulte [o plano até segunda-feira](docs/DIVISAO_E_PRAZOS.md) e [as instruções de Git](CONTRIBUTING.md).

@@ -14,6 +14,8 @@ from audio import start_music, update_volume
 from engine import GameModel
 from scene import Renderer
 
+RULESET = 'dificil-2026-11'
+
 
 def save_folder():
     """Dados pessoais ficam fora da pasta do código."""
@@ -30,6 +32,8 @@ def load_preferences(filename):
         with open(filename, encoding='utf-8') as file:
             data = json.load(file)
         best = data.get('best')
+        if data.get('ruleset') != RULESET:
+            best = None  # O recorde antigo não compara lutas com regras diferentes.
         if type(best) not in (int, float) or not math.isfinite(best) or best <= 0:
             best = None
         return best, data.get('muted') is True
@@ -42,7 +46,7 @@ def save_preferences(ui):
         filename = ui['save_file']
         filename.parent.mkdir(parents=True, exist_ok=True)
         with open(filename, 'w', encoding='utf-8') as file:
-            json.dump({'best': ui['best'], 'muted': ui['assets']['muted']}, file)
+            json.dump({'best': ui['best'], 'muted': ui['assets']['muted'], 'ruleset': RULESET}, file)
     except OSError:
         pass  # Ainda é possível jogar sem gravar o recorde.
 

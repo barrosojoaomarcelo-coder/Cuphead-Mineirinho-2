@@ -30,6 +30,7 @@ class GameModel:
         self.night = 0
         self.pattern_index = 0
         self.breath_count = 0
+        self.horizontal_count = 0
         self.attack_timer = .85
         self.warnings = []
         self.scheduled = []
@@ -164,6 +165,10 @@ class GameModel:
         self.scheduled.clear()
         self.boss.warning = None
         self.boss.breathing = False
+        self.boss.horizontal = None
+        self.boss.dip_active = False
+        self.boss.dip_y = 0
+        self.boss.pulse = 0
 
     def damage_boss(self, amount):
         """Vida do chefe decide os níveis, a transformação e a vitória."""

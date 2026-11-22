@@ -7,10 +7,14 @@ import pygame
 from config import (FLOOR, LIVES, BOSS_HP, PLAYER_SPEED, GRAVITY, JUMP_SPEED,
                     SHOT_SPEED, DASH_SPEED, DASH_TIME, DASH_COOLDOWN, clamp)
 from assets import player_pose, fire_image, flame_image
+from animation import animated_frame
 
 
 def hitboxes_overlap(first, second):
     """Caixas menores que as imagens deixam a esquiva mais justa."""
+    if hasattr(second, 'previous_center'):
+        area = first.hitbox.inflate(second.hitbox.width, second.hitbox.height)
+        return bool(area.clipline(second.previous_center, second.hitbox.center))
     return first.hitbox.colliderect(second.hitbox)
 
 
@@ -142,7 +146,15 @@ class Player(pygame.sprite.Sprite):
         if self.facing < 0:
             frames = self.assets['flipped']
             pivot_x = 174 - pivot_x
-        image = frames[self.action][self.frame]
+        pose = 0
+        if self.land_time > .05:
+            pose = 1
+        elif self.dash > 0:
+            pose = 3
+        elif not self.on_ground and self.vy < -200:
+            pose = 2
+        image = animated_frame(self.assets, self.action, self.frame, pose, self.facing < 0,
+                               (round(pivot_x), round(240 * 174 / 256)))
         if self.invulnerable > 0 and int(self.anim_time * 16) % 2 == 0:
             image = image.copy()
             image.set_alpha(100)
@@ -186,6 +198,14 @@ class Boss(pygame.sprite.Sprite):
         self.mouth_lock = None
         self.warning = None
         self.breathing = False
+        self.horizontal = None
+        self.dip_active = False
+        self.dip_y = 0
+        self.dip_from = 0
+        self.dip_target = 0
+        self.dip_age = 0
+        self.dip_duration = .3
+        self.pulse = 0
         self.refresh_image(0, 'title')
 
     def mouth(self, elapsed):
@@ -193,6 +213,8 @@ class Boss(pygame.sprite.Sprite):
         if self.mouth_lock is not None:
             return self.mouth_lock
         bob = math.sin(elapsed * 1.7) * 12
+        if self.dip_active:
+            bob = self.dip_y
         if self.phase < 3:
             return 1059, 341 + bob
         return 1090, 439 + bob
@@ -200,7 +222,20 @@ class Boss(pygame.sprite.Sprite):
     def update(self, dt, elapsed, state):
         self.flash = max(0, self.flash - dt)
         self.cast = max(0, self.cast - dt)
+        self.pulse = max(0, self.pulse - dt)
+        if self.dip_active:
+            self.dip_age = min(self.dip_duration, self.dip_age + dt)
+            t = self.dip_age / self.dip_duration
+            self.dip_y = self.dip_from + (self.dip_target - self.dip_from) * t * t * (3 - 2 * t)
         self.refresh_image(elapsed, state)
+
+    def move_mouth(self, mouth_y, elapsed, duration=.3):
+        """Abaixa o dragão até a altura da próxima fileira, sem teletransporte."""
+        self.dip_from = self.dip_y if self.dip_active else math.sin(elapsed * 1.7) * 12
+        self.dip_target = mouth_y - (341 if self.phase < 3 else 439)
+        self.dip_age, self.dip_duration = 0, duration
+        self.dip_active = True
+        self.mouth_lock = None
 
     def refresh_image(self, elapsed, state):
         form = 'base'
@@ -214,20 +249,28 @@ class Boss(pygame.sprite.Sprite):
             form = 'base'
             x, y = 858, 181
         bob = math.sin(elapsed * 1.7) * 12
+        if self.dip_active:
+            bob = self.dip_y
         if self.mouth_lock is not None:
             bob = self.mouth_lock[1] - mouth_y
-        index = int(elapsed * 7) % 4
+        index = int(elapsed * 12) % 4
+        pose = 1 if int(elapsed * 6) % 2 else 0
         if self.breathing:
             index = 6
+            pose = 3
         elif self.warning is not None:
+            pose = 2
             index = 5
             if self.warning['remaining'] / self.warning['total'] > .42:
                 index = 4
         elif self.cast > 0:
+            pose = 4
             index = 7
             if self.cast > .1:
                 index = 6
-        image = self.assets['frames'][form][index]
+        if self.pulse > 0:
+            pose = 3
+        image = animated_frame(self.assets, form, index, pose, bright=self.flash > 0)
         if state == 'transform':
             image = image.copy()
             if form == 'base':
@@ -235,9 +278,6 @@ class Boss(pygame.sprite.Sprite):
             else:
                 alpha = clamp((self.transform - .48) / .3, 0, 1)
             image.set_alpha(round(255 * alpha))
-        if self.flash > 0:
-            image = image.copy()
-            image.fill((55, 45, 20, 0), special_flags=pygame.BLEND_RGBA_ADD)
         self.image = image
         self.rect = image.get_rect(topleft=(x, round(y + bob)))
         if self.phase < 3:
@@ -296,8 +336,10 @@ class Fire(pygame.sprite.Sprite):
         self.base_y = self.y
         self.age = 0
         self.refresh_image()
+        self.previous_center = self.hitbox.center
 
     def update(self, dt):
+        self.previous_center = self.hitbox.center
         self.age += dt
         self.x += self.vx * dt
         if self.kind == 'sine':
@@ -336,9 +378,9 @@ class Flame(pygame.sprite.Sprite):
         self.y = warning['y']
         self.end_x = warning['end_x']
         self.end_y = warning['end_y']
-        self.half_width = 22
+        self.half_width = warning.get('half_width', 22)
         self.age = 0
-        self.duration = .5
+        self.duration = warning.get('duration', .5)
         self.touched = False
         self.image, self.rect = flame_image(self)
 
