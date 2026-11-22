@@ -4,7 +4,9 @@
 
 O pacote A_Fornalha_do_Castelo_Boss_Dificil.zip usa outro motor, com dataclasses e subdivisão do tempo. Para manter a organização próxima da aula, foram portadas suas regras de ataque para Sprites, Groups, listas e dicionários do projeto atual. Nenhuma fase foi substituída por uma tela vazia.
 
-Os quatro dicionários HARD_ATTACKS em boss_attacks.py reproduzem exatamente os 40 parâmetros por nível do perfil homônimo do ZIP. Vida do dragão: 480. Três vidas, velocidade do jogador 310, salto 680 e dash de 0,21 segundo foram preservados. Nesta edição de três chefes, o tiro do jogador foi acelerado a pedido do grupo para 20/s a 1800 pixels/s.
+Os quatro dicionários HARD_ATTACKS em boss_attacks.py reproduzem exatamente os 40 parâmetros por nível do perfil homônimo do ZIP. A versão difícil anterior tinha 480 pontos de vida e 12 tiros/s. A edição inicial de três chefes passou a 20 tiros/s a 1800 pixels/s, mas manteve 480 pontos; isso encurtou a luta. A correção usa 800 pontos nos três chefes: 800 / 20 = 480 / 12 = 40 segundos de fogo que acerta o alvo. Três vidas, velocidade do jogador 310, salto 680 e dash de 0,21 segundo foram preservados.
+
+Em simulação de fluxo com tiro contínuo, a luta contra o dragão passou de 44,483 s na versão anterior para 44,350 s nesta correção, a 60 atualizações/s. A proteção usada nessa medição serve somente para isolar duração e progressão. Não mede dificuldade humana. Os ataques, quantidades, velocidades, avisos e intervalos do dragão continuam iguais aos da versão difícil anterior. A 30 atualizações/s, a cadência antiga caía para cerca de 10 tiros/s; a atual mantém 20/s em 30/60/120, evitando dificuldade dependente do computador.
 
 | Parâmetro | Nível 1 | Nível 2 | Nível 3 | Nível 4 |
 | --- | --- | --- | --- | --- |
@@ -23,7 +25,13 @@ O projeto continua com uma atualização por quadro, em vez do motor com subpass
 
 ## Comilão reforçado
 
-A vida passa de 360 para 480, acompanhando a duração da primeira luta. Os avisos diminuem de 1,0 s para 0,78 s ao longo da luta; os intervalos, de 2,55 s para 1,95 s. Os combos acrescentam um novo aviso de pelo menos 0,72 s antes de cada golpe. A língua estica em 0,19 s; os raios passam de três para até cinco. A segunda forma dispara duas ou três ondas de espinhos a até 500 pixels/s, preservando o mesmo corredor anunciado. Aumentar a pressão, e não apenas a vida, foi o objetivo.
+O Comilão usa 800 pontos para acompanhar a duração do dragão com os tiros rápidos. Os avisos diminuem de 1,0 s para 0,78 s ao longo da luta; os intervalos, de 2,55 s para 1,95 s. Os combos acrescentam um novo aviso de pelo menos 0,72 s antes de cada golpe. A língua estica em 0,19 s; os raios passam de três para até cinco. A segunda forma dispara duas ou três ondas de espinhos a até 500 pixels/s, preservando o mesmo corredor anunciado.
+
+## Pirâmide e condições de esquiva
+
+A Pirâmide também tem 800 pontos, compartilhados pelos dois olhos. As duas formas e os quatro níveis internos continuam nos limites de 75%, 50% e 25% da vida. Todos os padrões mantêm aviso; os raios usam os mesmos caminhos anunciados e não perseguem o jogador depois de disparar. Na transformação, os ataques antigos desaparecem. Os lasers finais não se sobrepõem.
+
+Além dos testes de pulo/agachamento do dragão e do Comilão, as faixas de fuga dos lasers foram alcançadas com movimento e um dash quando necessário, partindo de cinco posições, em ambos os níveis finais e em 30/60/120 atualizações/s. Foram reservados 0,15 s para reação; o dash ocorre antes do disparo, sem sua proteção cobrir o raio. Segurar tiro parado leva à derrota nas três fases. Esses testes verificam pressão e saídas possíveis; a avaliação com jogadores continua necessária.
 
 ## Apresentação cartunesca
 
