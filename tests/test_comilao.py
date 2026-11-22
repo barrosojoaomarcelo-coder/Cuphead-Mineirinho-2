@@ -9,7 +9,7 @@ import pygame
 import main
 from engine import GameModel
 from comilao import Comilao, Tongue, EyeRay, Spike, prepare_comilao
-from config import FLOOR
+from config import FLOOR, BOSS_HP
 
 
 def advance(game, seconds, controls=None, hz=60):
@@ -42,11 +42,11 @@ class ComilaoTests(unittest.TestCase):
         self.assertFalse(g.next_stage())
         g.start()
         advance(g, 1.8)
-        g.damage_boss(360)
+        g.damage_boss(BOSS_HP)
         self.assertTrue(g.next_stage())
         self.assertEqual((g.stage_index, g.state, g.player.hp), (1, 'intro', 3))
         advance(g, 1.8)
-        g.damage_boss(360)
+        g.damage_boss(BOSS_HP)
         self.assertFalse(g.next_stage())
         self.assertFalse(g.start(2))
         self.assertEqual((g.stage_index, g.state), (1, 'victory'))
@@ -57,7 +57,7 @@ class ComilaoTests(unittest.TestCase):
                 g = self.game()
                 prepare_comilao(g, kind)
                 g.attack_timer = 999
-                advance(g, 1.2)
+                advance(g, g.warnings[0]['total'] - .15)
                 self.assertFalse(g.beams or g.fire)
                 advance(g, .2)
                 self.assertTrue(g.beams or g.fire)
@@ -71,7 +71,7 @@ class ComilaoTests(unittest.TestCase):
         origin = g.warnings[0]['origin']
         g.player.x = 700
         g.attack_timer = 999
-        advance(g, 1.4)
+        advance(g, 1.1)
         self.assertEqual([r.end for r in g.beams], ends)
         self.assertTrue(all(r.start == origin for r in g.beams))
 
@@ -101,7 +101,7 @@ class ComilaoTests(unittest.TestCase):
         g = self.game()
         prepare_comilao(g, 'spikes')
         warning = g.warnings[0]
-        self.assertTrue(all(abs(x - warning['safe_x']) > 180 for x in warning['lanes']))
+        self.assertTrue(all(abs(x - warning['safe_x']) > 125 for x in warning['lanes']))
         g.attack_timer = 999
         advance(g, 4)
         self.assertEqual(g.player.hp, 3)
@@ -110,7 +110,7 @@ class ComilaoTests(unittest.TestCase):
     def test_transformation_and_all_screens(self):
         g = self.game()
         self.assertIsInstance(g.boss, Comilao)
-        g.damage_boss(180)
+        g.damage_boss(BOSS_HP * .5)
         self.assertEqual(g.state, 'transform')
         advance(g, 3.7)
         self.assertEqual((g.state, g.boss.phase), ('playing', 3))
@@ -118,7 +118,7 @@ class ComilaoTests(unittest.TestCase):
             g.state = state
             self.ui['renderer'].draw(self.ui['canvas'], g)
         for name in ('comilao-corpo', 'comilao-boca'):
-            self.assertEqual(len(self.ui['assets']['frames'][name]), 8)
+            self.assertEqual(len(self.ui['assets']['frames'][name]), 12)
             self.assertEqual(self.ui['assets']['frames'][name][0].get_at((0, 0)).a, 0)
 
     def test_retry_and_keyboard_advance_preserve_correct_stage(self):
@@ -143,7 +143,7 @@ class ComilaoTests(unittest.TestCase):
                 g.player.hp = 1
                 g.hurt_player()
             else:
-                g.damage_boss(360 if state == 'victory' else 180)
+                g.damage_boss(BOSS_HP if state == 'victory' else BOSS_HP * .5)
             self.assertEqual(g.state, state)
             self.assertFalse(g.beams)
 
@@ -163,7 +163,7 @@ class ComilaoTests(unittest.TestCase):
                 g.step(1 / hz, {'shoot': True})
                 if g.state == 'victory':
                     break
-            self.assertEqual((g.state, g.stats['hits'], g.player.hp), ('victory', 360, 3))
+            self.assertEqual((g.state, g.stats['hits'], g.player.hp), ('victory', BOSS_HP, 3))
 
 
 if __name__ == '__main__':
