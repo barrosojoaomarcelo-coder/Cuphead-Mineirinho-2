@@ -35,3 +35,9 @@ Os sons são chamados diretamente por play_sound(assets, nome). audio.py carrega
 A arena é 1280 x 720, com chão em y=622. x/y do jogador indicam seus pés. Velocidades são pixels por segundo; os tempos são segundos. Mudanças em nomes públicos, controles, constantes e formatos dos avisos devem ser combinadas entre os responsáveis.
 
 Moisés altera regras e caixas; Davi altera imagem, som e escolha de animações; João altera janelas, entradas e telas. Não reescrever a parte do colega para integrar uma tarefa sem conversar e revisar.
+
+## Perfil difícil e animação
+
+boss_attacks.py contém os 40 parâmetros por nível do perfil recebido em dicionários. attacks.py prepara, avisa e dispara dez famílias de ataques. Boss.move_mouth anima a altura das fileiras; clear_attacks limpa também a pose e todas as sequências pendentes. Fire.previous_center permite conferir o trajeto de projéteis rápidos por Rect.clipline. comilao.py usa a mesma lista scheduled para ondas de espinhos e avisos de golpes seguintes.
+
+animation.py escolhe deformações visuais discretas e guarda imagens reaproveitáveis em assets["animated"], limitado a 256 entradas. Não há alteração da hitbox por efeito visual. As folhas do Comilão têm 12 quadros. O recorde salvo inclui ruleset para separar a versão difícil da anterior.

@@ -1,29 +1,34 @@
-# Validação — Dragão e Chefe Comilão
+# Validação — perfil difícil e animações
 
-Data: 22/11/2026. Ambiente local: Windows, Python 3.12.14 e Pygame 2.6.1. Vídeo/áudio virtuais do SDL.
+Data: 22/11/2026. Ambiente local: Windows, Python 3.12.14, Pygame 2.6.1 e vídeo/áudio virtuais do SDL.
 
 ## Resultado
 
-Comando: python -m unittest discover -s tests -v
+Comando: python -m unittest discover -s tests -q
 
-**47 testes aprovados, sem falhas ou testes ignorados.** Os 36 casos anteriores continuam aprovados, com as expectativas do menu atualizadas para incluir a história. Outros 11 casos verificam a fase 2 e a passagem entre cenários.
+**58 testes aprovados**, sem falhas ou testes ignorados. São os 47 casos anteriores adaptados aos novos valores e 11 casos adicionais de dificuldade e animação.
 
-Cobertura nova: avanço somente após vitória; ausência de um terceiro chefe jogável; seis ataques sempre precedidos por aviso; direções dos raios fixadas no aviso; língua baixa causa um único dano; língua alta passa sobre jogador no chão; pulo e dash evitam a língua baixa; faixa segura dos espinhos; remoção de ataques; segunda forma; pausa; reinício na fase atual; telas; transparência das artes; separação do recorde do dragão.
+A comparação com boss_attacks.py do ZIP fornecido confirmou os **40 parâmetros de cada um dos quatro níveis do dragão**, sem diferenças. Vida do chefe: 480, como no ZIP. A portabilidade conserva os números, mas usa o loop simples do projeto; não promete equivalência numérica quadro a quadro com o outro motor.
 
-As duas lutas chegaram à vitória com 360 acertos em 30, 60 e 120 atualizações por segundo. Nesses casos foi ativada proteção prolongada somente no teste: isso verifica o fluxo, não a dificuldade para uma pessoa. O jogo normal começa com três vidas.
+## Esquivas sem proteção adicional
 
-## Verificação visual
+- Rajadas horizontais: quatro níveis × duas ordens de altura × duas posições × 30/60/120 atualizações por segundo; pulo nas baixas e agachamento nas altas, mantendo três vidas.
+- Duas bolas gigantes: níveis 3 e 4, duas posições, 30/60/120 atualizações por segundo; dois pulos separados, mantendo três vidas.
+- Comilão: combo final de língua baixa/alta/baixa em 30/60/120 atualizações por segundo; pulo/agachamento conservam três vidas. Cada golpe tem um aviso próprio de pelo menos 0,72 s.
+- Três ondas de espinhos do Comilão: quatro posições iniciais; andar para o corredor anunciado conserva três vidas.
 
-Foram renderizados e inspecionados menu, história, dragão, corpo do Comilão, aviso dos raios, língua estendida, segunda forma e vitória da fase 2. Também foram renderizados os espinhos e seus avisos. Capturas representativas estão em docs/preview.png, docs/comilao-corpo.png e docs/comilao-boca.png.
+Outros casos verificam direção fixa, volume/altura das fileiras, exclusividade da segunda bola agendada, pausa, limpeza em morte/vitória/transformação/reinício, colisão no trajeto de projétil rápido, 12 poses distintas por forma, hitbox independente da deformação e limite de 256 imagens de animação em cache. Um jogador parado perde suas três vidas no combate natural do dragão.
 
-Um roteiro adicional usou main.update_game e main.draw_screen por 180 quadros na fase 2, incluindo tiros e espinhos: média local de 15,67 ms por quadro; percentil 95 de 25,44 ms. É uma amostra local com saída de vídeo virtual, não uma garantia de desempenho em todos os computadores.
+As lutas completas dos dois chefes continuam chegando à vitória em 30/60/120 atualizações por segundo, agora com 480 acertos. Somente esses testes de fluxo usam proteção prolongada; isso não mede dificuldade humana.
 
-## Pacote ZIP
+## Verificação visual e desempenho
 
-O pacote final contém 60 arquivos. Foi extraído em uma pasta nova; os 60 conteúdos foram comparados por SHA-256 com a pasta de origem. Os 47 testes também passaram na cópia extraída.
+Foram renderizados e inspecionados o menu com identificação da versão difícil, o dragão abaixando para a rajada, as duas formas do Comilão, o alinhamento dos raios/língua, a chuva e o corredor seguro. A prévia docs/comilao-animacao.gif contém 122 quadros e 12,2 segundos de execução gravada, incluindo a transformação, sem proteção de teste. O jogador terminou essa amostra com duas vidas.
 
-## Limites e pendências
+Amostra local de update e desenho durante a captura: média de 9,35 ms; percentil 95 de 18,08 ms por quadro. Não é uma garantia de desempenho em outros computadores. As imagens transformadas e os flashes são reaproveitados pelo cache.
 
-A execução virtual não substitui jogar com teclado físico, ouvir volumes e avaliar dificuldade com pessoas. O grupo precisa testar nos três computadores e gravar o vídeo. O iniciador Windows requer Python e internet na primeira instalação. A terceira fase e o encerramento completo ainda não estão implementados.
+## Pacote e limites
 
-Os resultados acima são locais. A publicação em uma branch não significa que o jogo foi integrado à main ou que uma verificação remota tenha sido executada.
+O pacote contém 68 arquivos. O ZIP é extraído em pasta nova e todos os conteúdos são comparados por SHA-256 antes da entrega; os testes são executados também na cópia extraída.
+
+O grupo precisa jogar com teclado físico, ouvir os volumes e testar a instalação nos três computadores. A terceira fase e o encerramento ainda estão pendentes. Os resultados são locais; atualizar uma branch não significa integrar à main nem executar testes remotos.

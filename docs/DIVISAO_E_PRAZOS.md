@@ -15,7 +15,7 @@ Revisor: Davi. Alterações de hitbox ou posição devem ser combinadas com quem
 
 ## Davi — artes, animação e som
 
-Arquivos: assets.py, scene.py, audio.py, assets/player/, demais imagens e assets/sounds/.
+Arquivos: assets.py, animation.py, scene.py, audio.py, assets/player/, demais imagens e assets/sounds/.
 
 1. Estudar load_assets, load_sheet, player_pose e o desenho da interface.
 2. Conferir animações, leitura dos avisos, alinhamento do tiro e volume dos WAV.

@@ -85,3 +85,7 @@ Davi: como uma folha vira uma lista de quadros? Como o programa escolhe o quadro
 João Marcelo: qual é a ordem do loop? Como um clique é convertido para a arena? O que pausa o jogo e onde o recorde é salvo?
 
 Todos devem conseguir acompanhar o caminho inteiro de uma ação, mesmo quando o arquivo principal é responsabilidade de outro colega.
+
+## Arquivos acrescentados no perfil difícil
+
+boss_attacks.py usa tuplas e dicionários para os números do ZIP, sem dataclasses. animation.py usa Surface e transform.smoothscale para poses elásticas e guarda as imagens prontas em um dicionário limitado. O loop continua fazendo uma atualização por quadro. Na bola rápida, Rect.clipline verifica o caminho entre a posição anterior e a atual. A divisão em responsabilidades está também no arquivo DIVISAO_DA_EQUIPE.md, na raiz.
