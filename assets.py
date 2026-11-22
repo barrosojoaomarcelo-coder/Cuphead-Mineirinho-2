@@ -42,6 +42,10 @@ def load_assets():
             assets['flipped'][name].append(pygame.transform.flip(frame, True, False))
     for name, spec in manifest['dragon'].items():
         assets['frames'][name] = load_sheet(spec, (442, 442))
+    for name in ('comilao-corpo', 'comilao-boca'):
+        spec = {'url': 'assets/' + name + '.png', 'cols': 4, 'rows': 2, 'count': 8}
+        assets['frames'][name] = load_sheet(spec, (442, 442))
+    assets['valley'] = load_image('assets/vale-comilao.png', (WIDTH, HEIGHT))
     assets['day'] = load_image(manifest['background']['day'], (WIDTH, HEIGHT))
     assets['night'] = load_image(manifest['background']['night'], (WIDTH, HEIGHT))
     assets['bread'] = load_image(manifest['bread']['url'], (22, 22))

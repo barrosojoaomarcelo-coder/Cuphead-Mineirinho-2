@@ -8,6 +8,9 @@ import config as c
 from sprites import Player, Boss, hitboxes_overlap
 from audio import play_sound
 from attacks import update_attacks
+from comilao import Comilao, update_comilao
+
+STAGES = ('Dragão Vermelho', 'Chefe Comilão')
 
 
 class GameModel:
@@ -17,9 +20,10 @@ class GameModel:
         self.assets = assets
         self.reset()
 
-    def reset(self):
+    def reset(self, stage_index=0):
         """Cria uma partida limpa e devolve o jogo ao menu."""
         self.state = 'title'
+        self.stage_index = stage_index
         self.previous_state = 'playing'
         self.elapsed = 0
         self.state_time = 0
@@ -32,17 +36,32 @@ class GameModel:
         self.stats = {'shots': 0, 'hits': 0, 'dashes': 0}
         self.player = Player(self.assets)
         self.boss = Boss(self.assets)
+        if stage_index == 1:
+            self.boss = Comilao(self.assets)
         self.player_group = pygame.sprite.Group(self.player)
         self.boss_group = pygame.sprite.Group(self.boss)
         self.shots = pygame.sprite.Group()
         self.fire = pygame.sprite.Group()
         self.beams = pygame.sprite.Group()
 
-    def start(self):
+    def start(self, stage_index=0):
         """Enter começa uma nova partida com uma breve apresentação."""
-        self.reset()
+        if stage_index not in (0, 1):
+            return False
+        self.reset(stage_index)
         self.state = 'intro'
         play_sound(self.assets, 'start')
+        return True
+
+    def start_story(self):
+        self.reset()
+        self.state = 'story'
+
+    def next_stage(self):
+        """Só avança após vencer; o terceiro chefe ainda será definido pelo grupo."""
+        if self.state == 'victory' and self.stage_index == 0:
+            return self.start(1)
+        return False
 
     def pause(self):
         if self.state in ('playing', 'intro', 'transform'):
@@ -59,7 +78,7 @@ class GameModel:
         """Uma atualização por quadro; dt é o tempo em segundos de Clock.tick."""
         if not math.isfinite(dt) or dt <= 0:
             return
-        if self.state in ('title', 'paused', 'dead', 'victory'):
+        if self.state in ('title', 'story', 'paused', 'dead', 'victory'):
             return
         dt = min(dt, .05)  # Evita um salto grande após uma travada da janela.
         self.state_time += dt
@@ -75,10 +94,15 @@ class GameModel:
         limit = 920
         if self.boss.phase >= 3:
             limit = 860
+        if self.stage_index == 1:
+            limit = 850
         self.player_group.update(dt, controls, True, limit)
         self.boss_group.update(dt, self.elapsed, self.state)
         self.player_actions()
-        update_attacks(self, dt)
+        if self.stage_index == 1:
+            update_comilao(self, dt)
+        else:
+            update_attacks(self, dt)
         self.shots.update(dt)
         self.fire.update(dt)
         self.beams.update(dt)

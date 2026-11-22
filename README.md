@@ -1,9 +1,9 @@
 # A Fornalha do Castelo — versão próxima da aula
 
-Jogo de ação lateral em **Python + Pygame**, inspirado em **Cuphead**. O protagonista mineiro atira pães de queijo e precisa derrotar as duas formas do Dragão Vermelho.
+Jogo de ação lateral em **Python + Pygame**, inspirado em **Cuphead**. O protagonista mineiro atira pães de queijo e enfrenta o Dragão Vermelho na fase 1 e o Chefe Comilão na fase 2, ambos com duas formas. A terceira fase ainda será desenvolvida.
 
 **Integrantes:** Davi, Moisés e João Marcelo.  
-**Repositório:** [Cuphead-Mineirinho-](https://github.com/barrosojoaomarcelo-coder/Cuphead-Mineirinho-).
+**Repositório:** [Cuphead-Mineirinho-2](https://github.com/barrosojoaomarcelo-coder/Cuphead-Mineirinho-2).
 
 ![Menu do jogo em Pygame](docs/preview.png)
 
@@ -30,12 +30,12 @@ No Windows, também é possível abrir **INICIAR_WINDOWS.bat**. O iniciador cria
 | Agachar | S ou seta para baixo |
 | Dash / esquiva | Shift ou K |
 | Pausa / continuar | P ou Esc |
-| Reiniciar | R |
+| Reiniciar a fase atual | R |
 | Som | M ou botão no topo |
-| Começar / tentar novamente | Enter ou botão no menu |
+| Começar / avançar / tentar novamente | Enter ou botão no menu |
 | Ajuda | H ou botão Como jogar |
 | Tela cheia | F11 |
-| Sair | Fechar a janela; Esc no menu inicial ou nas telas finais |
+| Sair | Fechar a janela; Esc no menu inicial |
 
 A partida pausa ao perder o foco da janela ou abrir a ajuda durante a luta.
 
@@ -43,13 +43,34 @@ A partida pausa ao perder o foco da janela ou abrir a ajuda durante a luta.
 
 - Três vidas e proteção temporária após receber dano.
 - Movimento, pulo de altura variável, tiro contínuo, mira e dash.
-- Um chefe com duas formas, quatro níveis de ataque e transição dia/noite.
+- Fase 1: Dragão Vermelho com duas formas, quatro níveis de ataque e transição dia/noite.
+- Fase 2: Chefe Comilão com duas formas, vale rochoso, raios do olho, língua baixa/alta, rasteira, língua móvel e espinhos.
 - Nove padrões: bola gigante, sopro, leque, mira fixa, rajada, alturas alternadas, onda, quique e chuva.
 - Avisos antecipados, animações, partículas, som e trilha.
 - Menu, instruções, pausa, derrota, vitória, reinício, redimensionamento e tela cheia.
-- Recorde e preferência de som salvos na pasta de dados do usuário.
+- Recorde do dragão e preferência de som salvos na pasta de dados do usuário.
 
-Os chefes II e III continuam fora do escopo. Não há modo multijogador ou controles de toque. A vida do chefe fica interna; as mudanças de forma indicam o progresso.
+## Fluxo completo planejado
+
+**Página inicial → Introdução → Fase 1: Dragão → Fase 2: Comilão → Fase 3 → Encerramento.**
+
+As três fases fazem parte do escopo do jogo. A primeira fase é a luta contra o dragão, incluindo suas duas formas; essas formas não são as fases 2 e 3.
+
+| Parte | Situação nesta base |
+| --- | --- |
+| Página inicial/menu | Implementada |
+| Introdução narrativa antes da primeira fase | Implementada, antes do dragão |
+| Fase 1 — Dragão | Implementada, com duas formas |
+| Fase 2 — Chefe Comilão | Implementada, com duas formas e seis ataques |
+| Fase 3 | A definir e desenvolver |
+| Transição Dragão → Comilão | Implementada; Enter na vitória da fase 1 |
+| Encerramento após a fase 3 | Pendente, junto com o terceiro chefe |
+
+Manter controles, movimento, tiro, colisões e vidas em uma base comum. Cada fase deve ter seus dados e regras específicas separados, preservando o estilo simples do handout. Não apresentar as fases futuras como prontas antes de implementá-las e testá-las.
+
+Use COMEÇAR A AVENTURA para jogar a sequência. TREINAR A FASE 2 abre o Comilão diretamente. Cada cenário começa com três vidas; R repete o cenário atual. Esc nas telas de história e resultado volta ao menu. A barra no topo mostra a vida do chefe.
+
+A terceira fase faz parte do projeto final, mas este pacote implementa somente as duas primeiras. Não há modo multijogador ou controles de toque.
 
 ## Como o código se aproxima da aula
 
@@ -70,9 +91,9 @@ Foram retirados dataclass, a função de ligação da posição do tiro, a fila 
 
 | Integrante | Responsabilidade | Arquivos |
 | --- | --- | --- |
-| Moisés | Movimento, colisões, ataques e dificuldade | config.py, sprites.py, engine.py, attacks.py |
+| Moisés | Movimento, colisões, ataques e dificuldade | config.py, sprites.py, engine.py, attacks.py, comilao.py |
 | Davi | Carregamento, animações, desenho e áudio | assets.py, scene.py, audio.py, assets/ |
-| João Marcelo | Janela, teclado, menus, instalação e integração | main.py, requirements.txt, INICIAR_WINDOWS.bat, documentação e .github/ |
+| João Marcelo | Janela, teclado, menus, instalação e integração | main.py, requirements.txt, INICIAR_WINDOWS.bat, documentação |
 
 Essa divisão indica as responsabilidades sobre a base adaptada com IA. Cada integrante deve realizar e registrar suas próprias contribuições. Consulte [o plano até segunda-feira](docs/DIVISAO_E_PRAZOS.md) e [as instruções de Git](CONTRIBUTING.md).
 
@@ -98,6 +119,6 @@ python main.py --frames 5 --screenshot abertura.png
 
 Referência criativa: **Cuphead**, da Studio MDHR — [site oficial](https://cupheadgame.com/). A inspiração está no combate contra chefes, nos tiros, nas esquivas e na apresentação cartunesca.
 
-As artes vieram do ZIP fornecido pelo grupo. A origem de cada recurso deve ser confirmada em [CREDITOS.md](CREDITOS.md).
+As artes da fase 1 vieram do ZIP do grupo. As três novas imagens da fase 2 foram geradas com IA a partir dos desenhos e da referência de cenário enviados pelo grupo. Os prompts estão em [ARTES_COMILAO.md](docs/ARTES_COMILAO.md). A origem dos recursos recebidos deve ser confirmada em [CREDITOS.md](CREDITOS.md).
 
 Esta base foi adaptada e simplificada com auxílio de Codex/ChatGPT. A equipe deve compreender o código, declarar o uso de IA e anexar o histórico conforme as orientações da disciplina. Veja [USO_DE_IA.md](USO_DE_IA.md).

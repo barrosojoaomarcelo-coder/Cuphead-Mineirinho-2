@@ -107,9 +107,24 @@ def button_action(ui, name):
     elif name == 'play':
         if game.state == 'paused':
             game.resume()
-        else:
+        elif game.state == 'title':
+            game.start_story()
+        elif game.state == 'story':
             game.start()
-            ui['renderer'].particles.clear()
+        elif game.state == 'victory':
+            if not game.next_stage():
+                game.reset()
+        elif game.state == 'dead':
+            game.start(game.stage_index)
+        else:
+            return
+        ui['renderer'].particles.clear()
+    elif name == 'practice':
+        game.start(1)
+        ui['renderer'].particles.clear()
+    elif name == 'menu':
+        game.reset()
+        ui['renderer'].particles.clear()
 
 
 def handle_key(ui, key):
@@ -125,18 +140,21 @@ def handle_key(ui, key):
         if key in (pygame.K_ESCAPE, pygame.K_RETURN, pygame.K_KP_ENTER):
             toggle_help(ui)
     elif key in (pygame.K_RETURN, pygame.K_KP_ENTER):
-        if game.state in ('title', 'dead', 'victory', 'paused'):
+        if game.state in ('title', 'story', 'dead', 'victory', 'paused'):
             button_action(ui, 'play')
     elif key in (pygame.K_ESCAPE, pygame.K_p):
         if game.state == 'paused':
             game.resume()
-        elif game.state in ('title', 'dead', 'victory'):
+        elif game.state in ('story', 'dead', 'victory'):
+            if key == pygame.K_ESCAPE:
+                button_action(ui, 'menu')
+        elif game.state == 'title':
             if key == pygame.K_ESCAPE:
                 ui['running'] = False
         else:
             game.pause()
     elif key == pygame.K_r and game.state != 'title':
-        game.start()
+        game.start(game.stage_index)
         ui['renderer'].particles.clear()
 
 
@@ -178,7 +196,7 @@ def update_game(ui, dt, controls):
     game = ui['game']
     game.step(dt, controls)
     ui['renderer'].update(dt, game)
-    if game.state == 'victory':
+    if game.state == 'victory' and game.stage_index == 0:
         if ui['best'] is None or game.elapsed < ui['best']:
             ui['best'] = game.elapsed
             save_preferences(ui)

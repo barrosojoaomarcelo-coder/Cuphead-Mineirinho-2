@@ -5,6 +5,8 @@ As artes e o manifesto vêm do ZIP do grupo. Não altera regras da luta.
 import math
 import pygame
 from config import WIDTH, HEIGHT, FLOOR, DASH_COOLDOWN, clamp
+from engine import STAGES
+from comilao import draw_comilao_warning
 
 INK = (49, 30, 28)
 CREAM = (255, 236, 192)
@@ -94,7 +96,9 @@ class Renderer:
     def draw(self, target, model, muted=False, best=None, instructions=False, audio_available=True):
         """Desenha arena, indicadores e botões; devolve mapa de áreas clicáveis."""
         target.blit(self.day, (0, 0))
-        if model.night > 0:
+        if model.stage_index == 1:
+            target.blit(self.assets['valley'], (0, 0))
+        elif model.night > 0:
             self.night.set_alpha(round(model.night * 255))
             target.blit(self.night, (0, 0))
         model.boss_group.draw(target)
@@ -125,11 +129,17 @@ class Renderer:
         self._hud(target, model, muted, audio_available)
         if model.state == 'intro':
             self.text(target, 'VAI COMEÇAR!', (640, 300), 64, GOLD, True, True, True)
+            self.text(target, f'FASE {model.stage_index + 1} — {STAGES[model.stage_index]}',
+                      (640, 365), 28, CREAM, True, outline=True)
         if model.state == 'transform' and .2 < model.boss.transform < .8:
-            self.text(target, 'O DESPERTAR', (640, 280), 60, GOLD, True, True, True)
-            self.text(target, 'A noite chegou ao castelo', (640, 345), 24, CREAM, True, outline=True)
+            title = 'O DESPERTAR' if model.stage_index == 0 else 'FOME SEM FIM'
+            subtitle = 'A noite chegou ao castelo' if model.stage_index == 0 else 'Cuidado com a língua e os espinhos!'
+            self.text(target, title, (640, 280), 60, GOLD, True, True, True)
+            self.text(target, subtitle, (640, 345), 24, CREAM, True, outline=True)
         if instructions:
             self._instructions(target)
+        elif model.state == 'story':
+            self._story(target)
         elif model.state in ('title', 'paused', 'dead', 'victory'):
             self._overlay(target, model, best)
         return self.buttons.copy()
@@ -139,6 +149,9 @@ class Renderer:
             if w['fired']:
                 continue
             color = GOLD if int(self.time * 8) % 2 else CREAM
+            if w['type'] == 'comilao':
+                draw_comilao_warning(self, target, w, color)
+                continue
             if w['type'] == 'rain':
                 for x in w['lanes']:
                     for y in range(65, FLOOR, 24):
@@ -188,7 +201,9 @@ class Renderer:
             pygame.draw.polygon(target, color, [(x - 14, 29), (x + 14, 29), (x, 47)])
         minutes, seconds = divmod(int(model.elapsed), 60)
         self.text(target, f'{minutes:02d}:{seconds:02d}', (570, 19), 24)
-        self.text(target, 'O DESPERTAR' if model.boss.phase >= 3 else 'DRAGÃO VERMELHO', (695, 22), 19)
+        self.text(target, f'{model.stage_index + 1}. {STAGES[model.stage_index].upper()}', (680, 20), 19)
+        pygame.draw.rect(target, (87, 68, 58), (680, 49, 330, 7))
+        pygame.draw.rect(target, GOLD, (680, 49, round(330 * model.boss.hp / model.boss.max_hp), 7))
         sound_label = 'SOM: SIM'
         if muted:
             sound_label = 'SOM: NÃO'
@@ -216,10 +231,12 @@ class Renderer:
         self.text(target, badge, (120, 186), 19, RED)
         self.text(target, title, (120, 228), 42 if state != 'paused' else 36, INK, serif=True)
         lines = {
-            'title': ('Três vidas. Um dragão. Muito pão de queijo.', 'Observe os avisos e encontre a hora de atacar.', 'Jogo estudantil inspirado na ação de Cuphead.'),
+            'title': ('Do castelo ao vale: um chefe em cada cenário.', 'Dragão Vermelho → Chefe Comilão → terceiro chefe.', 'Jogo estudantil inspirado em Cuphead e Mineirinho.'),
             'paused': ('A batalha espera por você.', 'Pressione P ou Esc para continuar.', 'Use F11 para alternar a tela cheia.'),
-            'dead': ('Respire, observe os ataques e tente de novo.', 'Pule as rajadas baixas; fique no chão nas altas.', 'O dash oferece uma breve proteção.'),
-            'victory': ('O Dragão Vermelho foi derrotado!', 'Você venceu as duas formas da primeira luta.', 'Obrigado por jogar.'),
+            'dead': ('Respire, observe os ataques e tente de novo.', 'Pule os ataques baixos; fique no chão nos altos.', 'Você recomeça esta fase com três vidas.'),
+            'victory': (f'{STAGES[model.stage_index]} derrotado!',
+                        'O próximo cenário é o vale do Chefe Comilão.' if model.stage_index == 0 else 'Fase 2 concluída. A terceira vem depois.',
+                        'Enter avança; R repete esta fase.' if model.stage_index == 0 else 'O terceiro chefe ainda está em desenvolvimento.'),
         }[state]
         for i, line in enumerate(lines):
             self.text(target, line, (120, 298 + i * 32), 22, INK)
@@ -227,12 +244,17 @@ class Renderer:
             accuracy = round(model.stats['hits'] / model.stats['shots'] * 100) if model.stats['shots'] else 0
             self.text(target, f'TEMPO {model.elapsed:.1f}s  |  PRECISÃO {accuracy}%', (120, 406), 20, RED)
         elif best is not None:
-            self.text(target, f'MELHOR TEMPO: {best:.1f}s', (120, 406), 20, RED)
-        labels = {'paused': 'CONTINUAR', 'title': 'COMEÇAR O DUELO'}
+            self.text(target, f'RECORDE DO DRAGÃO: {best:.1f}s', (120, 406), 20, RED)
+        labels = {'paused': 'CONTINUAR', 'title': 'COMEÇAR A AVENTURA',
+                  'victory': 'IR PARA A FASE 2' if model.stage_index == 0 else 'VOLTAR AO MENU'}
         label = labels.get(state, 'TENTAR NOVAMENTE')
         self._button(target, 'play', label, (120, 454, 350, 54), True)
         self._button(target, 'instructions', 'COMO JOGAR', (490, 454, 270, 54))
-        self.text(target, 'ENTER  JOGAR / CONTINUAR     H  AJUDA     F11  TELA CHEIA', (120, 545), 17, INK)
+        if state == 'title':
+            self._button(target, 'practice', 'TREINAR A FASE 2', (120, 518, 350, 36))
+            self.text(target, 'Fase 3: em desenvolvimento', (490, 525), 17, RED)
+        else:
+            self.text(target, 'ENTER CONTINUAR    R REPETIR FASE    ESC MENU', (120, 545), 17, INK)
         self.text(target, 'Davi  •  Moisés  •  João Marcelo', (120, 574), 16, RED)
 
     def _instructions(self, target):
@@ -248,5 +270,19 @@ class Renderer:
         for i, (label, keys) in enumerate(rows):
             self.text(target, label, (265, 211 + i * 38), 21, RED)
             self.text(target, keys, (515, 211 + i * 38), 20, INK)
-        self.text(target, 'Acerte o dragão e sobreviva às duas formas para vencer.', (640, 505), 22, INK, True)
+        self.text(target, 'Observe os avisos e vença as duas formas de cada chefe.', (640, 505), 22, INK, True)
         self._button(target, 'back', 'VOLTAR  [ESC]', (490, 551, 300, 48), True)
+
+    def _story(self, target):
+        self._panel(target, (180, 140, 920, 470))
+        self.text(target, 'ANTES DO PRIMEIRO DUELO', (640, 185), 20, RED, True)
+        self.text(target, 'Uma jornada por três cenários', (640, 236), 38, INK, True, True)
+        lines = ('O caminho começa diante da fornalha do castelo.',
+                 'Para seguir viagem, você precisa vencer o Dragão Vermelho.',
+                 'Depois, o Chefe Comilão espera no vale rochoso.',
+                 'Cada chefe muda de forma quando perde metade da vida.')
+        for index, line in enumerate(lines):
+            self.text(target, line, (640, 310 + index * 37), 23, INK, True)
+        self._button(target, 'play', 'ENFRENTAR O DRAGÃO', (260, 495, 400, 55), True)
+        self._button(target, 'menu', 'VOLTAR AO MENU', (680, 495, 320, 55))
+        self.text(target, 'ENTER CONTINUAR     ESC MENU', (640, 580), 18, RED, True)

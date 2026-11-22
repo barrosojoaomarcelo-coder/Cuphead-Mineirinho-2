@@ -1,68 +1,47 @@
-# Trabalhando em equipe no GitHub
+# Git em equipe — Cuphead-Mineirinho-2
 
-## Publicar esta base
+Repositório atual: https://github.com/barrosojoaomarcelo-coder/Cuphead-Mineirinho-2. As branches existentes são main, moises, davi e cajarelo. A fase 2 foi preparada separadamente em codex/fase-2-comilao. Não misturem commits do repositório antigo.
 
-O ZIP contém uma pasta A_Fornalha_do_Castelo_Pygame_Aula. Copie **o conteúdo dela**, incluindo .github, .gitignore e .gitattributes, para a raiz da cópia local do repositório de vocês. main.py, README.md e requirements.txt devem aparecer diretamente na raiz do GitHub, sem uma pasta extra envolvendo o projeto.
-
-Você pode clonar pelo GitHub Desktop ou pelo terminal:
+## Baixar uma vez
 
 ~~~sh
-git clone https://github.com/barrosojoaomarcelo-coder/Cuphead-Mineirinho-.git
-cd Cuphead-Mineirinho-
+git clone https://github.com/barrosojoaomarcelo-coder/Cuphead-Mineirinho-2.git
+cd Cuphead-Mineirinho-2
+python -m pip install -r requirements.txt
 ~~~
 
-Depois de copiar os arquivos e testar, publique a base com uma mensagem que identifique a adaptação:
+## Começar uma tarefa
 
-~~~sh
-git add .
-git commit -m "Simplifica base Pygame com sprites e sons WAV; adaptacao com IA"
-git branch -M main
-git push -u origin main
-~~~
-
-Se o repositório já tiver arquivos ou commits novos, preserve o trabalho existente e revise as diferenças antes de copiar. O envio requer acesso de colaborador. Não envie o ZIP inteiro como substituto do código: o professor precisa encontrar os arquivos e o histórico de desenvolvimento.
-
-## Uma branch por tarefa
-
-Cada integrante usa sua própria conta e identidade de autor no Git. Antes de começar:
+Primeiro terminem e enviem as alterações pendentes da branch atual; git status mostra se há arquivos ainda não registrados. Cada integrante usa sua conta e identidade no Git.
 
 ~~~sh
 git switch main
 git pull origin main
-git switch -c fix/descricao-da-tarefa
+git switch -c feat/descricao-da-tarefa
 ~~~
 
-Exemplos: fix/ajustar-colisao (Moisés), feat/efeito-derrota (Davi), feat/retorno-menu (João).
+Exemplos: Moisés feat/comilao-equilibrio, Davi feat/comilao-animacoes, João feat/fluxo-entrega. As branches pessoais existentes podem continuar sendo usadas por quem já trabalha nelas; não apaguem alterações nem usem reset para tentar sincronizar. Uma nova branch por tarefa facilita revisar apenas aquela mudança.
 
-Faça mudanças pequenas e completas, registre o resultado e envie sua branch:
-
-~~~sh
-git add .
-git commit -m "Explica a mudanca e o comportamento corrigido"
-git push -u origin fix/descricao-da-tarefa
-~~~
-
-Abra um pull request para main. Explique o problema, a solução e como testar; vincule a issue. O modelo de descrição já está em .github/pull_request_template.md.
-
-## Revisão
-
-- Davi revisa Moisés; João revisa Davi; Moisés revisa João.
-- O revisor executa o jogo e confere o comportamento alterado.
-- Só incorporem quando a versão continuar abrindo e os testes apropriados passarem.
-- Combinem antes de mudar a interface entre engine, scene e main.
-- Não deixem toda a integração para domingo à noite.
-
-Se houver conflito, juntem as versões com o colega responsável pelo trecho. Não substituam o trabalho de outro integrante sem entender a diferença. Não reescrevam o histórico compartilhado nem criem commits artificiais para aparentar participação.
-
-## Antes de abrir o pull request
+## Testar e enviar
 
 ~~~sh
 python -m unittest discover -s tests -v
 python main.py
+git status
+git add nome-do-arquivo.py
+git commit -m "Descreve a mudança e seu resultado"
+git push -u origin feat/descricao-da-tarefa
 ~~~
 
-Além dos testes automatizados, jogue uma partida com a mudança. Sons, dificuldade, clareza das animações e conforto dos controles precisam de avaliação humana.
+Troquem os exemplos pelos nomes reais. Confiram o que git status mostra antes de adicionar arquivos. Não enviem .venv, senhas, arquivos de preferências, caches ou o ZIP como substituto do código.
 
-## Contribuições e IA
+## Juntar na main sem perder trabalho
 
-A base foi adaptada com auxílio de IA. A divisão dos arquivos indica responsabilidades futuras. Registrem a origem dos trechos externos, as interações relevantes e as modificações de cada integrante em USO_DE_IA.md e nos próprios pull requests, conforme as regras da disciplina.
+1. No GitHub, abram um pull request da sua branch para main. Expliquem a mudança e como testar.
+2. Davi revisa Moisés; João revisa Davi; Moisés revisa João. O revisor baixa a branch e executa o jogo.
+3. Se a main mudou, tragam as alterações para sua branch: git fetch origin e depois git merge origin/main.
+4. Havendo conflito, confiram os dois trechos com o colega responsável. Removam as marcações de conflito, preservem o comportamento das duas contribuições, testem e façam um novo commit.
+5. Depois da revisão e dos testes, usem Merge pull request no GitHub. A integração soma o histórico. Não usem force push na main.
+6. Todos voltam à main e executam git pull origin main antes da próxima tarefa.
+
+Moisés altera regras/colisões; Davi imagens/som/desenho; João entradas/menus/entrega. Combinem antes de editar o mesmo arquivo. A base foi preparada com auxílio de IA; cada um deve registrar contribuições próprias reais em USO_DE_IA.md. O acesso de Davi ainda deve ser resolvido com João Marcelo, se o convite continuar pendente.

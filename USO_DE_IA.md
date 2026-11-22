@@ -23,3 +23,9 @@ Local ou link do histórico: **pendente de inclusão pelo grupo**.
 | 22/11/2026 | Base preparada para o grupo | Simplificação descrita acima | Produzida com auxílio de Codex/ChatGPT; validação local em docs/VALIDACAO.md | Esta conversa; anexar |
 
 Adicionar linhas com as contribuições reais. Descrever concretamente as funções geradas, compreendidas e modificadas; não inventar percentuais de autoria.
+
+## Segunda fase — 22/11/2026
+
+A pedido de Moisés, Codex/ChatGPT gerou comilao.py e tests/test_comilao.py, alterou engine.py, assets.py, scene.py, main.py e os testes da interface, e atualizou a documentação. Foram adicionadas a história, a passagem do dragão ao Comilão, treino direto, repetição da fase atual e uma barra de vida. As três imagens novas foram geradas pela ferramenta integrada de imagens a partir das referências do grupo (prompts em docs/ARTES_COMILAO.md). A terceira fase permanece pendente.
+
+A base assistida não é apresentada como contribuição individual de Moisés, Davi ou João. Cada responsável deve revisar, compreender e registrar suas alterações reais. Validação: 47 testes locais aprovados, com os limites descritos em docs/VALIDACAO.md.

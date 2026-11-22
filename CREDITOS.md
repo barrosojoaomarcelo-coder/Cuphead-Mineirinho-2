@@ -36,3 +36,9 @@ Os 14 WAV em assets/sounds foram exportados dos efeitos e da pequena trilha sint
 Pygame 2.6.1: https://www.pygame.org/. A biblioteca é instalada por requirements.txt e não é distribuída dentro deste pacote.
 
 A adaptação e a simplificação foram produzidas com auxílio de Codex/ChatGPT. O grupo deve completar o histórico e a declaração de uso em USO_DE_IA.md.
+
+## Novas artes do Comilão — 22/11/2026
+
+Referência do personagem: Chefe Comilão, de Mineirinho, indicado pelo grupo. O grupo forneceu dois desenhos próprios de formas/ataques e uma captura como referência de cenário. Cuphead é referência de combate e apresentação.
+
+assets/comilao-corpo.png, assets/comilao-boca.png e assets/vale-comilao.png foram gerados pela ferramenta de imagens integrada do Codex/ChatGPT, a partir dessas referências. Não são sprites oficiais extraídos dos jogos. Os prompts e a função de cada referência estão em docs/ARTES_COMILAO.md. Raios, língua e espinhos são desenhados pelo Pygame. A equipe deve conferir as regras da disciplina para declarar e usar esse material.
