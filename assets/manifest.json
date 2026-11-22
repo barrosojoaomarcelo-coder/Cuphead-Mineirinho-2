@@ -1,0 +1,357 @@
+{
+  "version": 1,
+  "player": {
+    "cell": 256,
+    "pivot": [
+      120,
+      240
+    ],
+    "fps": 12.5,
+    "actions": {
+      "01_parado": {
+        "url": "assets/player/01_parado.webp",
+        "count": 4,
+        "cols": 4,
+        "rows": 1,
+        "loop": true,
+        "muzzles": [
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "02_corrida": {
+        "url": "assets/player/02_corrida.webp",
+        "count": 8,
+        "cols": 4,
+        "rows": 2,
+        "loop": true,
+        "muzzles": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "03_pulo": {
+        "url": "assets/player/03_pulo.webp",
+        "count": 8,
+        "cols": 4,
+        "rows": 2,
+        "loop": false,
+        "muzzles": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "04_atirar_frente": {
+        "url": "assets/player/04_atirar_frente.webp",
+        "count": 4,
+        "cols": 4,
+        "rows": 1,
+        "loop": true,
+        "muzzles": [
+          [
+            222.5,
+            124.0
+          ],
+          [
+            240.5,
+            116.0
+          ],
+          [
+            222.5,
+            125.0
+          ],
+          [
+            222.0,
+            123.5
+          ]
+        ]
+      },
+      "05_atirar_cima": {
+        "url": "assets/player/05_atirar_cima.webp",
+        "count": 4,
+        "cols": 4,
+        "rows": 1,
+        "loop": true,
+        "muzzles": [
+          [
+            175.0,
+            51.5
+          ],
+          [
+            174.0,
+            20.0
+          ],
+          [
+            177.5,
+            38.0
+          ],
+          [
+            175.0,
+            51.5
+          ]
+        ]
+      },
+      "06_dash": {
+        "url": "assets/player/06_dash.webp",
+        "count": 4,
+        "cols": 4,
+        "rows": 1,
+        "loop": false,
+        "muzzles": [
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "07_correr_atirar": {
+        "url": "assets/player/07_correr_atirar.webp",
+        "count": 8,
+        "cols": 4,
+        "rows": 2,
+        "loop": true,
+        "muzzles": [
+          [
+            226.0,
+            120.5
+          ],
+          [
+            228.5,
+            124.5
+          ],
+          [
+            234.0,
+            122.0
+          ],
+          [
+            229.0,
+            119.0
+          ],
+          [
+            226.5,
+            121.5
+          ],
+          [
+            229.0,
+            124.5
+          ],
+          [
+            234.5,
+            121.5
+          ],
+          [
+            229.0,
+            119.0
+          ]
+        ]
+      },
+      "08_pular_atirar": {
+        "url": "assets/player/08_pular_atirar.webp",
+        "count": 8,
+        "cols": 4,
+        "rows": 2,
+        "loop": false,
+        "muzzles": [
+          [
+            223.0,
+            118.0
+          ],
+          [
+            229.5,
+            146.5
+          ],
+          [
+            223.5,
+            116.0
+          ],
+          [
+            228.0,
+            115.0
+          ],
+          [
+            240.0,
+            112.0
+          ],
+          [
+            226.5,
+            115.0
+          ],
+          [
+            226.0,
+            147.0
+          ],
+          [
+            221.5,
+            120.5
+          ]
+        ]
+      },
+      "09_atirar_diagonal": {
+        "url": "assets/player/09_atirar_diagonal.webp",
+        "count": 4,
+        "cols": 4,
+        "rows": 1,
+        "loop": true,
+        "muzzles": [
+          [
+            201.0,
+            120.0
+          ],
+          [
+            213.0,
+            56.5
+          ],
+          [
+            208.0,
+            75.0
+          ],
+          [
+            200.0,
+            120.5
+          ]
+        ]
+      }
+    }
+  },
+  "bread": {
+    "url": "assets/bread.webp"
+  },
+  "dragon": {
+    "base": {
+      "url": "assets/dragon-base.webp",
+      "cols": 4,
+      "rows": 2,
+      "count": 8,
+      "cell": 512,
+      "bounds": [
+        [
+          110,
+          23,
+          401,
+          494
+        ],
+        [
+          38,
+          23,
+          474,
+          494
+        ],
+        [
+          79,
+          39,
+          432,
+          494
+        ],
+        [
+          42,
+          44,
+          470,
+          494
+        ],
+        [
+          114,
+          18,
+          398,
+          494
+        ],
+        [
+          36,
+          18,
+          475,
+          494
+        ],
+        [
+          31,
+          23,
+          480,
+          494
+        ],
+        [
+          77,
+          48,
+          435,
+          494
+        ]
+      ],
+      "fps": 8,
+      "facing": "left"
+    },
+    "head": {
+      "url": "assets/dragon-head.webp",
+      "cols": 4,
+      "rows": 2,
+      "count": 8,
+      "cell": 512,
+      "bounds": [
+        [
+          64,
+          35,
+          447,
+          477
+        ],
+        [
+          58,
+          32,
+          453,
+          480
+        ],
+        [
+          55,
+          34,
+          456,
+          478
+        ],
+        [
+          61,
+          32,
+          451,
+          480
+        ],
+        [
+          66,
+          33,
+          445,
+          478
+        ],
+        [
+          65,
+          26,
+          447,
+          485
+        ],
+        [
+          60,
+          18,
+          452,
+          494
+        ],
+        [
+          62,
+          25,
+          450,
+          486
+        ]
+      ],
+      "fps": 8,
+      "facing": "left"
+    }
+  },
+  "background": {
+    "day": "assets/castle-day.webp",
+    "night": "assets/castle-night.webp"
+  }
+}
