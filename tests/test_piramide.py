@@ -191,10 +191,10 @@ class PyramidTests(unittest.TestCase):
     def test_third_stage_retry_menu_and_final_victory_controls(self):
         ui = self.ui
         main.button_action(ui, 'practice3')
-        self.assertEqual((ui['game'].stage_index, ui['game'].state), (2, 'intro'))
+        self.assertEqual((ui['game'].stage_index, ui['game'].state), (0, 'intro'))
         ui['game'].player.hp = 1
         main.handle_key(ui, pygame.K_r)
-        self.assertEqual((ui['game'].stage_index, ui['game'].player.hp), (2, 3))
+        self.assertEqual((ui['game'].stage_index, ui['game'].player.hp), (0, 3))
         ui['game'].state = 'victory'
         main.handle_key(ui, pygame.K_RETURN)
         self.assertEqual(ui['game'].state, 'title')
@@ -205,7 +205,14 @@ class PyramidTests(unittest.TestCase):
             g.start(stage)
             g.state = 'playing'
             self.ui['renderer'].draw(self.ui['canvas'], g)
-            self.assertEqual(self.ui['canvas'].get_at((700, 52))[:3], (49, 30, 28))
+            background = self.assets[('day', 'valley', 'pyramid')[stage]]
+            # As artes têm pixels semitransparentes; compare a composição,
+            # não os canais crus do PNG, para detectar uma faixa de HUD.
+            expected = pygame.Surface((1280, 720)).convert()
+            expected.blit(self.assets['day'], (0, 0))
+            if stage:
+                expected.blit(background, (0, 0))
+            self.assertEqual(self.ui['canvas'].get_at((700, 52)), expected.get_at((700, 52)))
 
     def test_twenty_fast_shots_per_second_at_multiple_frame_rates(self):
         for hz in (30, 60, 120):
@@ -214,7 +221,7 @@ class PyramidTests(unittest.TestCase):
             self.assertEqual(g.stats['shots'], 20)
             shot = g.player.shoot()
             self.assertEqual(shot.vx, SHOT_SPEED)
-            self.assertEqual(SHOT_SPEED, 1800)
+            self.assertEqual(SHOT_SPEED, 1350)
 
     def test_complete_third_encounter_takes_real_projectile_damage(self):
         for hz in (30, 60, 120):

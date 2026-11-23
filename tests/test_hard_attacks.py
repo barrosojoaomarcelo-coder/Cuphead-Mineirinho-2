@@ -124,7 +124,7 @@ class HardAttackTests(unittest.TestCase):
                             break
                     self.assertEqual((g.state, g.player.hp), ('dead', 0))
 
-    def test_dragon_zip_weapon_is_restored_without_leaking_to_other_stages(self):
+    def test_stage_profiles_keep_health_and_cadence_with_slower_shots(self):
         for hz in (30, 60, 120):
             g = GameModel(self.assets)
             for stage in (0, 1, 2, 0):
@@ -132,7 +132,7 @@ class HardAttackTests(unittest.TestCase):
                     g.start(stage)
                     advance(g, 1.8, hz=hz)
                     g.attack_timer = 999
-                    expected_hp, expected_shots, expected_speed = (480, 12, 1450) if stage == 0 else (800, 20, 1800)
+                    expected_hp, expected_shots, expected_speed = (480, 12, 1350) if stage == 0 else (800, 20, 1350)
                     self.assertEqual((g.boss.hp, g.boss.max_hp), (expected_hp, expected_hp))
                     advance(g, 1, {'shoot': True}, hz=hz)
                     self.assertEqual(g.stats['shots'], expected_shots)

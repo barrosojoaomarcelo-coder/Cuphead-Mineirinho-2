@@ -12,7 +12,7 @@ Entrega: segunda-feira, 23/11/2026, até 12h, horário de São Paulo. A lista pa
 
 - **Moisés:** comparar e jogar o dragão frente ao ZIP difícil recebido; conferir pulo/agachamento, gigantes e sopro; verificar combos do Comilão, anéis e lasers da Pirâmide. Conferir três vidas, dano dos tiros, transformação e reinício; corrigir falhas reais e manter os testes.
 - **Davi:** conferir animações dos três chefes e do protagonista, origem dos tiros/raios/língua, clareza dos avisos e volumes. Completar a procedência das artes iniciais pendente nos créditos.
-- **João Marcelo:** testar menu → introdução → Dragão → Comilão → Pirâmide → encerramento, treinos, ajuda, pausa, derrota e reinício. Conferir instalação nos computadores do grupo, vídeo e documentação; coordenar integração da versão aprovada à main.
+- **João Marcelo:** testar menu → introdução → Pirâmide → Comilão → Dragão → encerramento, treinos, ajuda, pausa, derrota e reinício. Conferir instalação nos computadores do grupo, vídeo e documentação; coordenar integração da versão aprovada à main.
 
 Revisão cruzada planejada: Davi revisa Moisés; João revisa Davi; Moisés revisa João. Cada um registra correções, testes e revisões reais. A base e as artes assistidas por IA não são apresentadas como autoria individual anterior dos integrantes.
 

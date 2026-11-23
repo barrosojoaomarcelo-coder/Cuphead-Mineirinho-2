@@ -56,7 +56,7 @@ class GameModel:
         self.fire = pygame.sprite.Group()
         self.beams = pygame.sprite.Group()
         self.minions = pygame.sprite.Group()
-        # Cada chefe conserva seus valores originais, inclusive o perfil do dragão.
+        # A cadência varia por chefe; a velocidade base é comum às três fases.
         self.base_shot_interval = self.player.shot_interval
         self.base_shot_speed = getattr(self.player, 'shot_speed', c.SHOT_SPEED)
         arena = self.pepper_arena()

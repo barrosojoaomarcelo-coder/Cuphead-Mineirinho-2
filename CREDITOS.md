@@ -1,6 +1,6 @@
 # Créditos e referências
 
-## Equipe
+## Criadores de Mineirinho
 
 Davi, Moisés e João Marcelo.
 
@@ -50,3 +50,7 @@ Regras da fase 1 adaptadas de A_Fornalha_do_Castelo_Boss_Dificil.zip, fornecido 
 ## Fase 3 — Olho da Pirâmide
 
 Nome descritivo adotado para esta implementação. O grupo forneceu duas capturas do cenário/chefe, dois esboços de formas e ataques e uma imagem dos seres invocados. As seis artes novas em assets/piramide-*.png e assets/servo-*.png foram geradas pela ferramenta integrada de imagens do Codex/ChatGPT, usando essas referências e a arte do protagonista para manter o estilo. Os prompts estão em docs/ARTES_PIRAMIDE.md. Lasers e anéis são desenhados pelo Pygame. Não foram extraídos sprites oficiais dos jogos de referência.
+
+## Áudio integrado e revisão — 23/11/2026
+
+Os arquivos assets/audio/tema_mineirinho.ogg, dano_ai.ogg e pimentinha.ogg já estavam no commit 2b764c8 recebido da main. As fontes, cortes e hashes fornecidos estão em assets/audio/ORIGEM_DOS_AUDIOS.json. Esta revisão preserva esses arquivos e reduz somente a mixagem dos tiros/impactos antigos; não estabelece nova autoria nem licença dos áudios. A equipe deve completar a procedência e as permissões aplicáveis.

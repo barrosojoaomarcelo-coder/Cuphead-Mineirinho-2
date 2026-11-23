@@ -7,8 +7,8 @@ root=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(root))
 def modulo(nome,**attrs):
     m=types.ModuleType(nome);m.__dict__.update(attrs);sys.modules[nome]=m;return m
-const=dict(WIDTH=1280,HEIGHT=720,FLOOR=622,FPS=60,LIVES=3,DRAGON_HP=480,DRAGON_SHOT_SPEED=1450,
- DRAGON_SHOT_INTERVAL=1/12,BOSS_HP=800,SHOT_SPEED=1800,SHOT_INTERVAL=1/20,HURT_TIME=1.8,TRANSFORM_TIME=3.6,
+const=dict(WIDTH=1280,HEIGHT=720,FLOOR=622,FPS=60,LIVES=3,DRAGON_HP=480,DRAGON_SHOT_SPEED=1350,
+ DRAGON_SHOT_INTERVAL=1/12,BOSS_HP=800,SHOT_SPEED=1350,SHOT_INTERVAL=1/20,HURT_TIME=1.8,TRANSFORM_TIME=3.6,
  PEPPER_DURATION=8,PEPPER_VISIBLE_TIME=5,PEPPER_FIRE_RATE=1.5,PEPPER_SHOT_SPEED=1.25,
  PEPPER_FIRST_SPAWN=6,PEPPER_RESPAWN=20,STAGE_ORDER=(2,1,0))
 modulo('config',**const)
@@ -24,7 +24,7 @@ class Player(pygame.sprite.Sprite):
         self.x,self.y=100,622;self.rect=self.image.get_rect(midbottom=(self.x,self.y))
         self.hp=3;self.invulnerable=0;self.dash=0;self.facing=1;self.vx=0
         self.jump_buffer=0;self.previous_input={};self.aim_x=1;self.aim_y=0
-        self.shot_speed=1800;self.shot_interval=1/20;self.shot_cooldown=0
+        self.shot_speed=1350;self.shot_interval=1/20;self.shot_cooldown=0
         self.shooting=False;self.jumped=self.landed=self.dashed=False
     def update(self,dt,controls,*args):
         self.invulnerable=max(0,self.invulnerable-dt)
@@ -62,7 +62,7 @@ class TestIntegration(unittest.TestCase):
         m.step(.01,{})
         self.assertTrue(m.pepper.ativo)
     def test_tres_fases_coleta_tiro_expira_morte(self):
-        for stage,interval,speed in ((0,1/12,1450),(1,1/20,1800),(2,1/20,1800)):
+        for stage,interval,speed in ((0,1/12,1350),(1,1/20,1350),(2,1/20,1350)):
             with self.subTest(stage=stage):
                 m=self.model(stage)
                 self.assertEqual(m.player.shot_interval,interval);self.assertEqual(m.player.shot_speed,speed)

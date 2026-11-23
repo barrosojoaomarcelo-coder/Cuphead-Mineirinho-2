@@ -4,7 +4,7 @@ As artes e o manifesto vêm do ZIP do grupo. Não altera regras da luta.
 """
 import math
 import pygame
-from config import WIDTH, HEIGHT, FLOOR, STAGE_ORDER
+from config import WIDTH, HEIGHT, FLOOR, STAGE_ORDER, GAME_TITLE, CREATORS_LABEL
 from engine import STAGES
 from pausa_menu import MenuPausa
 from poder_pimenta import desenhar_vidas
@@ -266,7 +266,7 @@ class Renderer:
         self._panel(target, (80, 158, 720, 445))
         state = model.state
         final = model.stage_index == STAGE_ORDER[-1]
-        title = {'title': 'A Fornalha do Castelo',
+        title = {'title': GAME_TITLE,
                  'dead': 'Essa foi por pouco...', 'victory': 'NOCAUTE!'}[state]
         if state == 'victory' and final:
             title = 'AVENTURA CONCLUÍDA!'
@@ -286,7 +286,7 @@ class Renderer:
         elif final:
             lines = ('Dragão Vermelho derrotado!',
                      'O castelo voltou a ficar em paz.',
-                     'Obrigado por jogar. Davi, Moisés e João Marcelo.')
+                     'Obrigado por jogar Mineirinho!')
             label = 'VOLTAR AO MENU'
         else:
             next_position = STAGE_ORDER.index(model.stage_index) + 1
@@ -304,7 +304,7 @@ class Renderer:
             self._button(target, 'practice3', 'TREINAR A FASE 3', (490, 518, 270, 36))
         else:
             self.text(target, 'ENTER CONTINUAR    R REPETIR FASE    ESC MENU', (120, 545), 17, INK)
-        self.text(target, 'Davi  •  Moisés  •  João Marcelo', (120, 574), 16, RED)
+        self.text(target, CREATORS_LABEL, (120, 574), 16, RED)
 
     def _instructions(self, target):
         self._panel(target, (230, 115, 820, 510))
@@ -331,7 +331,7 @@ class Renderer:
         self.text(target, 'Uma jornada por três cenários', (640, 236), 38, INK, True, True)
         lines = ('A jornada começa nas ruínas do Olho da Pirâmide.',
                  'Depois, o Chefe Comilão espera no vale rochoso.',
-                 'Por fim, o Dragão Vermelho guarda a fornalha do castelo.',
+                 'Por fim, o Dragão Vermelho espera no castelo.',
                  'Observe os ataques e use a pimenta na hora certa.')
         for index, line in enumerate(lines):
             self.text(target, line, (640, 310 + index * 37), 23, INK, True)

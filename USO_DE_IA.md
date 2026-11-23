@@ -37,3 +37,7 @@ Codex/ChatGPT portou o perfil do ZIP difícil para boss_attacks.py/attacks.py e 
 ## Terceiro chefe — 22/11/2026
 
 Codex/ChatGPT implementou piramide.py e piramide_attacks.py, integrou três fases em engine/main/scene/assets, acrescentou testes e documentou a integração. Foram geradas seis artes pela ferramenta integrada de imagens a partir das referências do grupo. O jogo passou a usar 20 tiros/s a 1800 pixels/s e a ocultar a barra de vida dos chefes, conforme o pedido. A cadência mantém o restante do intervalo de tiro, e acertos simultâneos respeitam a transformação/vitória única. A equipe deve compreender e revisar o código e registrar as suas contribuições reais.
+
+## Revisão da main — 23/11/2026
+
+A pedido de Moisés, Codex revisou o commit 2b764c8, preservando a integração de pimenta, pausa, controle, sons e a ordem Pirâmide → Comilão → Dragão. Foram ajustados o nome para Mineirinho, o papel dos integrantes como criadores, a velocidade base dos tiros para 1350 pixels/s em todas as fases e os volumes de tiro/impacto. A introdução foi ligada ao novo menu e a conversão de cliques após redimensionar foi corrigida. Testes e documentação foram atualizados. Esta revisão não atribui contribuições individuais fictícias; o grupo deve revisar, compreender e registrar suas alterações e completar os anexos pendentes.

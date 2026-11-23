@@ -1,7 +1,8 @@
 """Música, efeitos e vozes originais. Responsável: Davi."""
 from pathlib import Path
 import pygame
-from config import MUSIC_VOLUME, MUSIC_DURING_VOICE, VOICE_VOLUME, EFFECT_VOLUME
+from config import (MUSIC_VOLUME, MUSIC_DURING_VOICE, VOICE_VOLUME, EFFECT_VOLUME,
+                    SHOT_VOLUME, HIT_VOLUME)
 
 MUSIC_CHANNEL = 0
 VOICE_CHANNEL = 1
@@ -24,7 +25,8 @@ def load_sounds():
     root = Path(__file__).resolve().parent / 'assets'
     for filename in (root / 'sounds').glob('*.wav'):
         sound = pygame.mixer.Sound(str(filename))
-        sound.set_volume(1 if filename.stem == 'music' else EFFECT_VOLUME)
+        volumes = {'music': 1.0, 'shoot': SHOT_VOLUME, 'hit': HIT_VOLUME}
+        sound.set_volume(volumes.get(filename.stem, EFFECT_VOLUME))
         sounds[filename.stem] = sound
     additions = {'music': 'tema_mineirinho.ogg', 'hurt': 'dano_ai.ogg',
                  'pimentinha': 'pimentinha.ogg'}

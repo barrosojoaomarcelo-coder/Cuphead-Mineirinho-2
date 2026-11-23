@@ -1,5 +1,7 @@
 # Dificuldade e animação
 
+> Registro da edição de 22/11/2026. Na main atual, o jogo chama-se Mineirinho, a ordem é Pirâmide → Comilão → Dragão e a velocidade base do pão é 1350 pixels/s nas três fases. A cadência e os padrões difíceis foram preservados. Use o README da raiz para instalar/jogar a versão atual; os números e pacotes abaixo documentam a edição anterior.
+
 ## Fase 1 recebida no ZIP
 
 O pacote A_Fornalha_do_Castelo_Boss_Dificil.zip usa outro motor, com dataclasses e subdivisão do tempo. Para manter a organização próxima da aula, foram portadas suas regras de ataque para Sprites, Groups, listas e dicionários do projeto atual. Nenhuma fase foi substituída por uma tela vazia.

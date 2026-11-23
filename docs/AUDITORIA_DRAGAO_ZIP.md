@@ -1,5 +1,7 @@
 # Auditoria direta do dragão difícil
 
+> Registro da edição de 22/11/2026. Na main atual, o jogo chama-se Mineirinho, a ordem é Pirâmide → Comilão → Dragão e a velocidade base do pão é 1350 pixels/s nas três fases. A cadência e os padrões difíceis foram preservados. Use o README da raiz para instalar/jogar a versão atual; os números e pacotes abaixo documentam a edição anterior.
+
 Referência fornecida pelo grupo: A_Fornalha_do_Castelo_Boss_Dificil.zip. SHA256: b801f875ff662d849b78f22306d08c87e96d80c01266fb7756274784ffd4249d. Comparação realizada em 22/11/2026.
 
 Os quatro níveis de HARD_ATTACKS foram lidos diretamente da configuração do ZIP e comparados aos dicionários de boss_attacks.py: **160 valores comparados e nenhuma diferença**. Foram conferidos também a sequência dos padrões e o agendamento em engine.py/attacks.py.

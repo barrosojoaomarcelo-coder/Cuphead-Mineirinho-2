@@ -1,130 +1,48 @@
-ATUALIZAÇÃO INTEGRADA — PIMENTA, VOZES, INTERFACE E JOYSTICK
+MINEIRINHO — PROJETO COMPLETO
+Criadores: Davi, Moisés e João Marcelo.
 
-Esta versão já conecta os recursos aos códigos que você enviou.
-É uma atualização do projeto existente, não uma cópia completa das fases.
+COMO JOGAR
+1. Extraia o ZIP inteiro em uma pasta nova, preservando a pasta assets.
+2. No Windows, abra INICIAR_WINDOWS.bat com Python instalado.
+   Ou instale requirements.txt e execute python main.py.
+3. Escolha 1 e INICIAR JOGO para ver a introdução e começar a campanha.
+   Ordem: Pirâmide -> Comilão -> Dragão -> encerramento.
+   Selecionar 2 ou 3 abre diretamente aquela fase para treino.
 
-INSTALAÇÃO NO VS CODE / WINDOWS
+ATUALIZAÇÕES DESTA REVISÃO
+- Nome do jogo: Mineirinho; os três integrantes aparecem como criadores.
+- Tiros de pão de queijo: velocidade base 1350 pixels/s nas três fases.
+- Cadência preservada: 12 tiros/s no dragão e 20 nos demais chefes.
+- Volume base: tiro 8%, impacto 12%, demais efeitos 40%.
+- Música 20%, reduzida a 12% durante vozes; vozes 95% em canal reservado.
+- Introdução integrada ao novo menu e cliques corrigidos após redimensionar.
+- Pimenta, pausa, controle e ordem das fases da main foram preservados.
 
-1. Feche a janela do jogo e salve os arquivos no VS Code.
-2. Guarde uma cópia da pasta atual do jogo.
-3. Extraia este ZIP em uma pasta temporária.
-4. Copie TODO o conteúdo extraído para dentro de Cuphead-Mineirinho-2,
-   no mesmo local do main.py e do engine.py.
-5. Aceite substituir os arquivos de mesmo nome. Mescle a pasta assets,
-   preservando as artes, folhas de sprites e sons que já estavam nela.
-6. No terminal aberto nessa pasta, execute:
+PIMENTA
+Surge após 6 segundos de combate, disponível por 5 segundos.
+Ao coletar, por 8 segundos aumenta a cadência 1,5x e a velocidade 1,25x.
+O dano não muda. O bônus não acumula; os tiros novos retornam a pão de queijo
+e 1350 pixels/s ao terminar. A próxima coleta surge após 20 segundos.
+Pausa e transformação congelam os tempos. Morte/vitória/reinício/saída limpam.
 
-   py -3.13 main.py
+CONTROLES
+A/D ou setas: mover. Espaço/Z: pular. J/X: atirar, pode segurar.
+W/cima: mirar acima. S/baixo: agachar. Shift/K: dash.
+P/Esc: pausa. R: reiniciar. M: som. H: ajuda. F11: tela cheia.
+Na pausa: RETORNAR, REINICIAR, COMO JOGAR, MENU.
+Controle: analógico/direcional move; inferior pula/confirma; esquerdo/R1
+atira; direito/L1 usa dash; superior mira; Start/Options pausa.
+Solte os botões de confirmação antes de pular/dar dash ao voltar à luta.
 
-Use o mesmo Python com o qual seu jogo já funciona se não for o 3.13.
-Execute main.py; tela_inicial.py isolado continua sendo apenas prévia do menu.
-Não é necessário inserir imports ou copiar trechos manualmente.
+GITHUB E EQUIPE
+Leia README.md e DIVISAO_DA_EQUIPE.md.
+Branches: moises, davi, cajarelo. Instruções de Git em CONTRIBUTING.md.
+Não extraia por cima de alterações não enviadas de um colega.
+Esta distribuição contém todos os módulos e artes das três fases.
 
-ARQUIVOS QUE A ATUALIZAÇÃO ENTREGA
-
-Arquivos já existentes, agora integrados:
-main.py, engine.py, scene.py, audio.py, assets.py, config.py, tela_inicial.py.
-
-Novos módulos usados automaticamente pelo jogo:
-poder_pimenta.py, pausa_menu.py, controle.py.
-
-Novos recursos:
-assets/powerups/pimenta.png
-assets/audio/dano_ai.ogg
-assets/audio/pimentinha.ogg
-assets/audio/tema_mineirinho.ogg
-
-Os módulos dos chefes, sprites.py, ataques e suas artes continuam vindo do
-seu projeto. A atualização não inclui substitutos para esses arquivos.
-A pasta qa contém apenas verificações; não precisa executá-la para jogar.
-
-PIMENTA EM TODAS AS FASES
-
-- Aparece após 6 segundos de combate; a introdução não conta.
-- Fica 5 segundos disponível para pegar e desaparece se não for coletada.
-- Ao tocar nela, o personagem fala PIMENTINHA.
-- O poder dura 8 segundos: cadência dos tiros 1,5x, velocidade dos projéteis 1,25x.
-- Os novos tiros são desenhados como pimentas. O dano por tiro não muda.
-- Depois de 8 segundos, os tiros novos voltam a pão de queijo e ao perfil normal.
-- Cada tiro antigo conserva seu desenho e trajetória até sair da tela/acertar.
-- Pimenta reaparece 20 segundos após pegar ou deixar desaparecer.
-- Pausa e transformação congelam ambos os temporizadores.
-- Morte, vitória, reinício e saída da fase limpam o bônus.
-
-O dragão mantém seus valores base próprios; as outras fases mantêm os seus.
-O bônus é calculado a partir desses valores, sem acumular multiplicadores.
-A coleta fica numa área alcançável, ajustada aos limites da forma atual do chefe.
-
-ÁUDIO
-
-- Dano confirmado toca AI AI AI AI; não repete durante a invulnerabilidade.
-- O dano durante dash continua bloqueado, conforme o código original.
-- Tema da tela inicial nas três fases: volume 20%.
-- Falas: volume 95%; durante a fala, música baixa a 12% e depois volta a 20%.
-- Demais efeitos: volume base 40%, mantendo seus WAV existentes.
-- Música no canal 0; voz no canal 1, sem ser interrompida pelos tiros.
-- M mantém o mute; não faz falas antigas reaparecerem ao reativar.
-
-INTERFACE E ORDEM DAS FASES
-
-- Pirâmide -> Comilão -> Dragão, incluindo introduções e avanço após vitória.
-- Sem faixas superior/inferior, cronômetro, botão de som ou informações ao redor.
-- Apenas três corações no canto inferior esquerdo durante a luta.
-- O cenário continua inteiro, sem recorte e sem alterar chão ou colisões.
-- Avisos visuais dos ataques continuam para permitir esquiva.
-- Pausa: RETORNAR, REINICIAR, COMO JOGAR e MENU.
-- Como jogar aberto pela pausa volta para a pausa; aberto na luta retoma ao fechar.
-- Setas/W/S ou mouse escolhem; Enter confirma; Esc/P retorna.
-
-JOYSTICK / GAMEPAD
-
-Conecte por USB ou Bluetooth e deixe o Windows reconhecer o dispositivo.
-Abra o jogo; também é possível conectar/desconectar com o jogo já aberto.
-O primeiro controle disponível fica ativo. Desconectar o ativo pausa a partida.
-Teclado e mouse continuam funcionando.
-
-Controles Xbox / PlayStation reconhecidos pelo SDL:
-- Analógico esquerdo ou direcional: mover, agachar, mirar acima e navegar.
-- A / Cruz (botão inferior): pular; confirmar nos menus.
-- X / Quadrado (botão esquerdo) ou RB / R1: atirar, pode segurar.
-- B / Círculo (botão direito) ou LB / L1: dash; voltar nos menus.
-- Y / Triângulo (botão superior): mirar para cima.
-- Start / Options: pausar ou retornar; confirma nas outras telas.
-- Back / Select: voltar ou pausar.
-
-Para confirmar pelo botão inferior na seleção inicial, escolha a fase,
-pressione para focar INICIAR e pressione novamente para entrar.
-Ao confirmar/resumir, pulo/dash ficam bloqueados até soltar o botão usado.
-O analógico navega uma opção por movimento; volte ao centro para repetir.
-
-Controles genéricos usam o mapa de botões/eixos no início de controle.py:
-BOTOES_GENERICOS e EIXOS_GENERICOS. A zona morta padrão é 0,22.
-Se um botão estiver diferente no seu modelo, esses mapas podem ser ajustados.
-Não há dependências novas além do Pygame que o jogo já utiliza.
-
-COMO AJUSTAR OS VALORES MAIS TARDE
-
-Abra config.py:
-PEPPER_VISIBLE_TIME = segundos para pegar
-PEPPER_DURATION = duração do poder
-PEPPER_FIRST_SPAWN = espera inicial
-PEPPER_RESPAWN = espera até reaparecer
-PEPPER_FIRE_RATE = multiplicador de cadência
-PEPPER_SHOT_SPEED = multiplicador de velocidade
-MUSIC_VOLUME, MUSIC_DURING_VOICE, VOICE_VOLUME, EFFECT_VOLUME = mixagem
-
-VERIFICAÇÃO REALIZADA
-
-Python 3.12 / Pygame 2.6.1: compilação de todos os módulos, carregamento dos
-novos sprites/OGG, integração dos seis códigos recebidos, seleção das três
-fases, coleta/expiração/restauração, dano/invulnerabilidade/dash, áudio,
-pausa/ajuda/reinício/menu, ordem das vitórias, redimensionamento e mute.
-9 testes de controle cobrem mapeamento normalizado/genérico, zona morta,
-menu, duplicação de eventos, bloqueio de ação ao confirmar e conexão/desconexão.
-
-Limites: sprites.py e os módulos atuais de ataques/chefes não foram enviados;
-os testes usaram dublês apenas dessas dependências e miniaturas de teste para
-as artes ausentes. Esses dublês ficam restritos a qa e não são usados pelo jogo.
-A execução completa das lutas no seu projeto e um controle físico ainda
-precisam ser conferidos no seu computador. Se surgir um erro, envie o traceback
-completo para corrigirmos o ponto exato.
+VERIFICAÇÃO
+Execute python -m unittest discover -s tests -v para usar os chefes reais.
+Scripts em qa são testes isolados com dublês e rodam separadamente.
+Resultados e limites em docs/VALIDACAO.md.
+Ainda confiram som, dificuldade e controles físicos nos computadores do grupo.
+Vídeo, fontes pendentes e histórico/anexo de IA precisam ser completados.

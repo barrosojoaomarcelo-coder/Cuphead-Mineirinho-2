@@ -93,3 +93,7 @@ boss_attacks.py usa tuplas e dicionários para os números do ZIP, sem dataclass
 ## Leitura da terceira fase
 
 Leia primeiro Servant.update em piramide.py: posição, velocidade, escolha de quadro, image, rect, hitbox e kill. Depois veja PyramidLaser, que usa Rect.clipline em uma lista de segmentos. piramide_attacks.py prepara um dicionário de aviso e, ao vencer o prazo, cria os sprites. O grupo minions usa groupcollide contra os pães; a vida do chefe continua interna. A colisão do anel vazado usa a equação simples de uma elipse e é uma parte que vai além do handout. A integração completa está em COMO_INTEGRAR_FASE_3.md.
+
+## Integrações posteriores — 23/11/2026
+
+A main inclui também Pirâmide, pimenta, menu novo, pausa e controle. O componente poder_pimenta.py usa uma dataclass para suas regras; portanto, a simplificação das dataclasses descrita acima se refere ao motor original, não a todos os módulos atuais. Esses recursos exigem estudar também composição, objetos de configuração e entradas de joystick. O fluxo principal continua com eventos, atualização, desenho, Sprites e Groups. A ordem do menu é Pirâmide → Comilão → Dragão.

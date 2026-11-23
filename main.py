@@ -8,7 +8,7 @@ import math
 import os
 from pathlib import Path
 import pygame
-from config import WIDTH, HEIGHT, FPS, STAGE_ORDER
+from config import WIDTH, HEIGHT, FPS, STAGE_ORDER, GAME_TITLE
 from assets import load_assets
 from audio import start_music, update_volume, stop_voices
 from engine import GameModel
@@ -16,7 +16,7 @@ from scene import Renderer
 from tela_inicial import TelaInicial
 from controle import ControleJoystick
 
-RULESET = 'dragao-zip480-outros800-2026-11'
+RULESET = 'mineirinho-1350-pir-com-dra-2026-11'
 
 # Posições no menu -> índices físicos do GameModel existente.
 # O motor mantém 0=Dragão, 1=Comilão e 2=Pirâmide.
@@ -25,11 +25,14 @@ ORDEM_CHEFES = STAGE_ORDER
 
 def save_folder():
     """Dados pessoais ficam fora da pasta do código."""
+    if 'MINEIRINHO_SAVE_DIR' in os.environ:
+        return Path(os.environ['MINEIRINHO_SAVE_DIR'])
+    # Compatibilidade com quem já configurou a pasta na edição anterior.
     if 'FORNALHA_SAVE_DIR' in os.environ:
         return Path(os.environ['FORNALHA_SAVE_DIR'])
     if os.name == 'nt':
-        return Path(os.environ.get('LOCALAPPDATA', Path.home())) / 'FornalhaDoCastelo'
-    return Path(os.environ.get('XDG_DATA_HOME', Path.home() / '.local' / 'share')) / 'FornalhaDoCastelo'
+        return Path(os.environ.get('LOCALAPPDATA', Path.home())) / GAME_TITLE
+    return Path(os.environ.get('XDG_DATA_HOME', Path.home() / '.local' / 'share')) / GAME_TITLE
 
 
 def load_preferences(filename):
@@ -62,7 +65,7 @@ def initialize(size=(1152, 648), save_dir=None, muted=False):
     pygame.mixer.pre_init(22050, -16, 1, 512)
     pygame.init()
     window = pygame.display.set_mode(size, pygame.RESIZABLE)
-    pygame.display.set_caption('A Fornalha do Castelo | Davi, Moisés e João Marcelo')
+    pygame.display.set_caption(GAME_TITLE)
     if pygame.mixer.get_init():
         pygame.mixer.set_num_channels(24)
         pygame.mixer.set_reserved(2)
@@ -70,7 +73,12 @@ def initialize(size=(1152, 648), save_dir=None, muted=False):
     if save_dir is not None:
         folder = Path(save_dir)
     filename = folder / 'preferences.json'
-    best, saved_mute = load_preferences(filename)
+    preference_source = filename
+    if save_dir is None and folder.name == GAME_TITLE and not filename.exists():
+        legacy = folder.with_name('FornalhaDoCastelo') / 'preferences.json'
+        if legacy.is_file():
+            preference_source = legacy
+    best, saved_mute = load_preferences(preference_source)
     assets = load_assets()
     assets['muted'] = muted or saved_mute
     ui = {'window': window, 'windowed_size': size, 'fullscreen': False,
@@ -121,6 +129,17 @@ def start_selected_stage(ui, number):
     sync_title_menu(ui)
 
 
+def start_campaign(ui):
+    """Começa a aventura com a introdução antes da Pirâmide."""
+    stop_voices(ui['assets'])
+    ui['instructions'] = False
+    ui['resume_after_help'] = False
+    ui['game'].start_story()
+    ui['renderer'].particles.clear()
+    ui['buttons'].clear()
+    sync_title_menu(ui)
+
+
 def next_stage_in_order(ui):
     """Depois da vitória: Pirâmide -> Comilão -> Dragão -> menu."""
     position = ORDEM_CHEFES.index(ui['game'].stage_index)
@@ -130,13 +149,30 @@ def next_stage_in_order(ui):
     return True
 
 
+def logical_mouse_position(ui, position):
+    """Converte o mouse da janela para a arena, ignorando as margens."""
+    width, height = ui['window'].get_size()
+    scale = min(width / WIDTH, height / HEIGHT)
+    size = max(1, round(WIDTH * scale)), max(1, round(HEIGHT * scale))
+    viewport = pygame.Rect((width - size[0]) // 2, (height - size[1]) // 2, *size)
+    if not viewport.collidepoint(position):
+        return None
+    return ((position[0] - viewport.x) * WIDTH / viewport.w,
+            (position[1] - viewport.y) * HEIGHT / viewport.h)
+
+
 def handle_title_event(ui, event):
     """Encaminha cliques/teclas ao menu e confirma a fase escolhida."""
     menu = ui['title_menu']
+    point = None
+    if event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP):
+        point = logical_mouse_position(ui, event.pos)
+        if point is None:
+            return
     if event.type == pygame.KEYDOWN and event.key == pygame.K_h:
         toggle_help(ui)
         return
-    chosen = menu.handle_event(event)
+    chosen = menu.handle_event(event, posicao_logica=point)
     # M e o botão de som continuam usando a preferência do jogo.
     muted = not menu.som
     if muted != ui['assets']['muted']:
@@ -145,7 +181,10 @@ def handle_title_event(ui, event):
     if menu.encerrado:
         ui['running'] = False
     elif chosen is not None:
-        start_selected_stage(ui, chosen)
+        if chosen == 1:
+            start_campaign(ui)
+        else:
+            start_selected_stage(ui, chosen)
 
 
 def toggle_fullscreen(ui):
@@ -211,7 +250,7 @@ def button_action(ui, name):
         if game.state == 'paused':
             game.resume()
         elif game.state == 'title':
-            start_selected_stage(ui, 1)
+            start_campaign(ui)
         elif game.state == 'story':
             start_selected_stage(ui, 1)
         elif game.state == 'victory':
@@ -308,22 +347,19 @@ def handle_event(ui, event):
         handle_title_event(ui, event)
     elif (ui['game'].state == 'paused' and not ui['instructions']
           and event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONDOWN)):
-        width, height = ui['window'].get_size()
-        scale = min(width / WIDTH, height / HEIGHT)
-        vx, vy = (width - WIDTH * scale) / 2, (height - HEIGHT * scale) / 2
-        point = ((event.pos[0] - vx) / scale, (event.pos[1] - vy) / scale)
+        point = logical_mouse_position(ui, event.pos)
+        if point is None:
+            return
         action = ui['renderer'].pause_menu.handle_event(event, posicao_logica=point)
         if action:
             button_action(ui, action)
     elif event.type == pygame.KEYDOWN:
         handle_key(ui, event.key)
     elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-        viewport = ui['viewport']
-        if viewport.collidepoint(event.pos):
-            x = (event.pos[0] - viewport.x) * WIDTH / viewport.w
-            y = (event.pos[1] - viewport.y) * HEIGHT / viewport.h
+        point = logical_mouse_position(ui, event.pos)
+        if point is not None:
             for name, rect in ui['buttons'].items():
-                if rect.collidepoint(x, y):
+                if rect.collidepoint(point):
                     button_action(ui, name)
                     break
 
@@ -411,7 +447,7 @@ def game_screen(ui, max_frames=None, screenshot=None):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='A Fornalha do Castelo — versão da aula')
+    parser = argparse.ArgumentParser(description=f'{GAME_TITLE} — jogo em Pygame')
     parser.add_argument('--mute', action='store_true')
     parser.add_argument('--frames', type=int, help='encerrar após N quadros para testar')
     parser.add_argument('--screenshot', type=Path)

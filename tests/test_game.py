@@ -171,7 +171,7 @@ class GameTests(unittest.TestCase):
             g.player.update(1 / 60, dict(controls, shoot=True))
             shot = g.player.shoot()
             self.assertEqual((g.player.aim_x, g.player.aim_y), direction)
-        self.assertAlmostEqual(math.hypot(shot.vx, shot.vy), 1450)
+        self.assertAlmostEqual(math.hypot(shot.vx, shot.vy), 1350)
         g.shots.add(shot)
         shot.update(2)
         self.assertFalse(g.shots)
@@ -370,6 +370,10 @@ class InterfaceTests(unittest.TestCase):
         self.ui['resume_after_help'] = False
         self.ui['running'] = True
         self.ui['best'] = None
+        self.ui['title_menu'].selecionado = 0
+        self.ui['title_menu'].foco = -1
+        self.ui['renderer'].pause_menu.reset()
+        main.sync_title_menu(self.ui)
 
     def key(self, key):
         main.handle_event(self.ui, pygame.event.Event(pygame.KEYDOWN, key=key))
@@ -379,7 +383,7 @@ class InterfaceTests(unittest.TestCase):
             self.ui['game'].state = state
             main.draw_screen(self.ui)
         self.assertEqual(len(self.ui['assets']['frames']['head']), 8)
-        self.assertEqual(len(self.ui['assets']['sounds']), 14)
+        self.assertTrue({'music', 'shoot', 'hit', 'hurt', 'pimentinha'} <= self.ui['assets']['sounds'].keys())
 
     def test_start_pause_restart(self):
         g = self.ui['game']
@@ -422,7 +426,7 @@ class InterfaceTests(unittest.TestCase):
     def test_resize_and_scaled_click(self):
         main.handle_event(self.ui, pygame.event.Event(pygame.VIDEORESIZE, w=1000, h=800))
         main.draw_screen(self.ui)
-        rect = self.ui['buttons']['play']
+        rect = self.ui['title_menu'].iniciar_rect
         view = self.ui['viewport']
         point = (round(view.x + rect.centerx * view.w / 1280), round(view.y + rect.centery * view.h / 720))
         main.handle_event(self.ui, pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=point))

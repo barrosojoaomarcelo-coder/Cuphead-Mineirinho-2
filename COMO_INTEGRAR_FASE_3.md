@@ -1,5 +1,7 @@
 # Como acrescentar a terceira fase
 
+> Registro da edição de 22/11/2026. Na main atual, o jogo chama-se Mineirinho, a ordem é Pirâmide → Comilão → Dragão e a velocidade base do pão é 1350 pixels/s nas três fases. A cadência e os padrões difíceis foram preservados. Use o README da raiz para instalar/jogar a versão atual; os números e pacotes abaixo documentam a edição anterior.
+
 Esta atualização foi preparada para a versão difícil com Comilão do repositório Cuphead-Mineirinho-2, commit e6a50a641ec8695ac4b2df7c527809268f147042. Mantém dragão e Comilão antes da Pirâmide. Os dois levels pedidos são as duas formas da terceira luta.
 
 Este guia descreve a primeira integração da fase 3. Se você já baixou a edição com três chefes e quer a correção fiel ao ZIP do dragão, use COMO_ATUALIZAR_DIFICULDADE.md. A edição atual usa 480 pontos e a arma original no dragão; Comilão e Pirâmide têm 800 pontos e a arma rápida.
