@@ -27,10 +27,11 @@ import random
 import sys
 import zlib
 import pygame
+from config import GAME_TITLE, CREATORS_LABEL
 
 # ---------------- CONFIGURAÇÃO QUE VOCÊ PODE EDITAR ----------------
 LARGURA, ALTURA = 1280, 720
-TITULO = 'MINEIRINHO'
+TITULO = GAME_TITLE.upper()
 NOMES_CHEFES = ('PIRÂMIDE', 'COMILÃO', 'DRAGÃO')
 VOLUME_MUSICA = 0.55
 FPS_ANIMACAO = 9.0
@@ -213,7 +214,7 @@ class TelaInicial:
         self.selecionado=indice
         self.foco=indice
 
-    def handle_event(self,evento):
+    def handle_event(self,evento,*,posicao_logica=None):
         """Retorna o número do chefe só ao confirmar INICIAR JOGO."""
         if evento.type==pygame.QUIT:
             self.encerrado=True; self.parar_audio()
@@ -222,12 +223,12 @@ class TelaInicial:
         elif evento.type==pygame.WINDOWFOCUSGAINED:
             if self.canal: self.canal.unpause()
         elif evento.type==pygame.MOUSEMOTION:
-            self.mouse=self._ponto(evento.pos)
+            self.mouse=posicao_logica if posicao_logica is not None else self._ponto(evento.pos)
             if self.iniciar_rect.collidepoint(self.mouse): self.foco=-1
             for i,r in enumerate(self.nivel_rects):
                 if r.collidepoint(self.mouse): self.foco=i
         elif evento.type==pygame.MOUSEBUTTONDOWN and evento.button==1:
-            pos=self._ponto(evento.pos)
+            pos=posicao_logica if posicao_logica is not None else self._ponto(evento.pos)
             if self.som_rect.collidepoint(pos): self.alternar_som()
             elif self.iniciar_rect.collidepoint(pos): return self.confirmar()
             else:
@@ -302,7 +303,9 @@ class TelaInicial:
         audio=self._texto('M · SOM '+('ON' if self.som else 'OFF'),13,'#e9bd8d',1)
         s.blit(audio,audio.get_rect(center=self.som_rect.center))
         rodape=self._texto('← → / 1 2 3  ESCOLHER     ENTER  INICIAR     ESC  SAIR',12,'#d5ae8e',0)
-        s.blit(rodape,rodape.get_rect(center=(640,694)))
+        s.blit(rodape,rodape.get_rect(center=(410,696)))
+        criadores=self._texto(CREATORS_LABEL,14,'#d5ae8e',0)
+        s.blit(criadores,criadores.get_rect(center=(920,696)))
         s.blit(self.granulados[int(self.tempo*12)%4],(0,0))
         # Riscos de filme suaves e determinísticos, sem flashes fortes.
         if int(self.tempo*8)%13==0:

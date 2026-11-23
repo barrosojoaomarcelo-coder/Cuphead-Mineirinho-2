@@ -4,7 +4,7 @@ Equipe: Moisés, Davi e João Marcelo. Prazo: **23/11/2026 até 12h**, horário 
 
 ## Situação da base e das branches
 
-O jogo reúne introdução, Dragão, Comilão, Pirâmide e encerramento. Esta operação distribui a base de três fases para moises, davi e cajarelo, preservando seus históricos. A main continua aguardando a revisão e integração do [pedido #1](https://github.com/barrosojoaomarcelo-coder/Cuphead-Mineirinho-2/pull/1). João coordena essa integração antes da entrega; os colegas revisam e testam.
+A main recebida no commit 2b764c8 já contém as três fases, pimenta, pausa, controle e novos sons. A revisão de 23/11 ajusta Mineirinho, créditos de criadores, volume, tiros nas três fases e fluxo do menu. Ordem atual: introdução → Pirâmide → Comilão → Dragão → encerramento. Cada colega deve trazer a main aprovada para sua branch por merge, preservando seus commits; não substituir a pasta de trabalho.
 
 Antes de baixar, executem git status e registrem com commit o trabalho pendente. Depois troquem para sua branch e usem git pull --ff-only origin NOME. Se divergir, revisem os históricos antes de fazer fetch/merge; não usem force push ou reset. Os comandos de cada pessoa estão em [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -31,10 +31,10 @@ Arquivos: assets.py, animation.py, scene.py, audio.py, assets/ e CREDITOS.md.
 
 ## João Marcelo — branch cajarelo
 
-- [ ] Testar menu → introdução → Dragão → Comilão → Pirâmide → encerramento; conferir treinos diretos das fases 2 e 3.
+- [ ] Testar menu → introdução → Pirâmide → Comilão → Dragão → encerramento; conferir treinos diretos das fases 2 e 3.
 - [ ] Testar ajuda, pausa/retomada, perda de foco, derrota, reinício da fase atual, redimensionamento e fechamento.
 - [ ] Conferir instalação nos computadores do grupo usando apenas o README/iniciador; corrigir instruções ou defeitos encontrados.
-- [ ] Coordenar revisão do pedido #1 e integração da versão aprovada e das correções à main; testar um clone novo depois.
+- [ ] Revisar a atualização atual da main e integrar correções dos colegas; testar um clone novo depois.
 - [ ] Gravar/publicar vídeo curto do jogo funcionando e incluir endereço acessível no README; ele continua marcado como pendente na base examinada.
 - [ ] Reunir o histórico/anexo de IA com os colegas e completar o link pendente em USO_DE_IA.md; cada pessoa registra suas alterações reais.
 - [ ] Conferir acesso do professor e envio do endereço correto no Blackboard; verificar se proposta e acompanhamentos já foram enviados.
@@ -46,13 +46,10 @@ Arquivos: main.py, requirements.txt, INICIAR_WINDOWS.bat, README e documentaçã
 
 | Quando | Meta do grupo |
 | --- | --- |
-| Hoje, primeira rodada | Cada pessoa baixa sua branch, executa o jogo e anota problemas da própria área |
-| Hoje, antes da rodada final | Correções necessárias revisadas entre colegas; evitar ampliar o escopo |
-| Hoje à noite | Jogar com teclado físico, ouvir sons e fechar vídeo, fontes e histórico de IA |
-| Amanhã, 8h–10h | Main com versão aprovada; clone novo funciona seguindo apenas o README |
-| Amanhã, 10h–11h | Conferir repositório, vídeo, acesso e entrega no Blackboard |
-| Amanhã, 11h–12h | Reserva para imprevistos; concluir o envio antes do limite |
-| Amanhã, 12h–14h | Os três participam da Feira de Jogos |
+| Segunda, até 10h | Rodada de jogo nos três computadores; revisar sons, pimenta, controles e dificuldade |
+| Segunda, 10h–11h | Correções necessárias integradas; clone novo, README, vídeo, fontes e histórico de IA conferidos |
+| Segunda, 11h–12h | Conferir acesso e enviar o repositório antes do limite; reserva para imprevistos |
+| Segunda, 12h–14h | Participação dos três na Feira de Jogos, conforme a agenda já registrada pelo grupo |
 
 ## Conferência conjunta
 

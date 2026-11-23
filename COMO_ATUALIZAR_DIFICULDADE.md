@@ -1,5 +1,7 @@
 # Atualização de dificuldade dos três chefes
 
+> Registro da edição de 22/11/2026. Na main atual, o jogo chama-se Mineirinho, a ordem é Pirâmide → Comilão → Dragão e a velocidade base do pão é 1350 pixels/s nas três fases. A cadência e os padrões difíceis foram preservados. Use o README da raiz para instalar/jogar a versão atual; os números e pacotes abaixo documentam a edição anterior.
+
 A correção parte da edição de três chefes do commit 306ffd40f7c3ec1b7661129f6eb481b51d301b36, na branch codex/fase-2-comilao. O dragão volta ao perfil do ZIP enviado: 480 pontos de vida, 12 tiros/s a 1450 pixels/s e os 160 valores de ataque originais. Comilão e Pirâmide continuam com 800 pontos e 20 tiros/s a 1800 pixels/s. Três vidas, avisos e faixas de fuga continuam disponíveis.
 
 ## Para jogar
