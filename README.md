@@ -78,7 +78,7 @@ Preferências e recorde ficam fora do código, na pasta de dados **Mineirinho** 
 | Davi / davi | Recursos, animações, desenho e áudio | assets.py, animation.py, scene.py, audio.py, assets/, CREDITOS.md |
 | João Marcelo / cajarelo | Janela, entradas, menus, instalação e integração | main.py, tela_inicial.py, pausa_menu.py, controle.py, requirements.txt, INICIAR_WINDOWS.bat, documentação |
 
-A divisão indica responsabilidade por revisão e novas contribuições; cada integrante deve registrar seu trabalho real. Combinem alterações em arquivos compartilhados e usem pull requests antes de integrar à main. Consulte [DIVISAO_DA_EQUIPE.md](DIVISAO_DA_EQUIPE.md).
+**Davi fez a parte de som e animações, conforme informado pelo grupo em 23/11/2026.** Moisés acompanha regras, dificuldade e integrações; João Marcelo acompanha menus, ordem das fases e entrega. A base e as artes assistidas por IA estão discriminadas abaixo. Contribuições e evidências constam em [DIVISAO_DA_EQUIPE.md](DIVISAO_DA_EQUIPE.md); o fechamento por pessoa está em [TAREFAS_ATE_SEGUNDA.md](TAREFAS_ATE_SEGUNDA.md).
 
 ## Código e testes
 
@@ -106,4 +106,10 @@ Os números seguem o menu: 1 Pirâmide, 2 Comilão, 3 Dragão. Para salvar uma i
 
 Inspiração: [Cuphead, da Studio MDHR](https://cupheadgame.com/), e Mineirinho. Não foram usados sprites oficiais de Cuphead. Artes recebidas, artes geradas com IA, sons e pendências de procedência estão em [CREDITOS.md](CREDITOS.md). Prompts das novas artes: [Comilão](docs/ARTES_COMILAO.md) e [Pirâmide](docs/ARTES_PIRAMIDE.md).
 
-Completem o histórico e a declaração de IA em [USO_DE_IA.md](USO_DE_IA.md), as fontes pendentes e os testes em computadores reais antes da entrega.
+## Declaração de uso de IA
+
+Uma parte substancial do código foi gerada, adaptada ou refatorada com auxílio de Codex/ChatGPT: motor e chefes em Python/Pygame, menus e integrações, testes e documentação. Novas artes do Comilão e da Pirâmide também foram geradas por IA a partir das referências do grupo. O uso por arquivo, a procedência dos recursos e os limites da validação estão em [USO_DE_IA.md](USO_DE_IA.md).
+
+[Histórico completo informado pela equipe](https://chatgpt.com/share/e/6b0448e9-8114-83e9-8f44-5879332642e9) · [Anexo e confirmação de acesso do professor](ANEXO_IA.md).
+
+Moisés confirmou que o histórico está completo e o professor tem acesso; a checagem automática encontrou uma tela de login. Os integrantes são responsáveis por compreender e revisar todo o material entregue e confirmar a orientação sobre ferramenta institucional. As fontes ainda pendentes estão em CREDITOS.md. Vídeo e testes em computadores reais continuam no checklist da equipe.

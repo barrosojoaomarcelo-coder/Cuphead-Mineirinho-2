@@ -1,4 +1,4 @@
-"""Invocações, anéis e lasers da fase 3. Frente: Moisés; avisos: Davi."""
+"""Invocações, anéis e lasers do Olho da Pirâmide. Frente: Moisés; avisos: Davi."""
 import pygame
 from config import FLOOR
 from piramide import Servant, EnergyRing, PyramidLaser
@@ -46,6 +46,11 @@ def safe_floor_lanes(paths):
 
 
 def prepare_piramide(game, kind=None):
+    """Escolhe um padrão da forma atual e devolve o aviso guardado em game.warnings.
+
+    Na primeira forma prepara criaturas ou anéis; na segunda fixa trajetos de
+    laser e calcula as faixas verdes. A mira é definida antes do disparo.
+    """
     phase = game.boss.phase
     sequence = ['snakes', 'rings_low', 'bats', 'rings_high', 'swarm', 'rings_fan']
     if phase >= 3:
@@ -93,6 +98,11 @@ def prepare_piramide(game, kind=None):
 
 
 def release_piramide(game, warning):
+    """Libera lasers ou agenda criaturas e anéis a partir dos pontos do aviso.
+
+    Os dois olhos usam os mesmos padrões de laser; a vida compartilhada é
+    tratada pelo motor, não por esta função de criação dos perigos.
+    """
     w = warning
     kind, phase = w['kind'], w['phase']
     game.boss.pulse = .16
@@ -120,6 +130,10 @@ def release_piramide(game, warning):
 
 
 def update_piramide(game, dt):
+    """Avança os atrasos e avisos e inicia outro padrão quando os lasers terminam.
+
+    Limita as criaturas simultâneas a seis e retira ações já executadas da fila.
+    """
     game.attack_timer -= dt
     for data in list(game.scheduled):
         data['delay'] -= dt
@@ -142,6 +156,7 @@ def update_piramide(game, dt):
 
 
 def draw_piramide_warning(renderer, target, warning, color):
+    """Desenha trajetos anunciados e faixas seguras sem modificar a lógica dos ataques."""
     w = warning
     if 'paths' in w:
         for points in w['paths']:

@@ -9,6 +9,7 @@ VOICE_CHANNEL = 1
 
 
 def _reserve_channels():
+    """Reserva os canais de música e voz antes de reproduzir os efeitos."""
     if pygame.mixer.get_init():
         if pygame.mixer.get_num_channels() < 3:
             pygame.mixer.set_num_channels(8)

@@ -2,7 +2,7 @@
 
 Repositório: https://github.com/barrosojoaomarcelo-coder/Cuphead-Mineirinho-2.
 
-Esta operação distribui a base com três fases para as branches pessoais moises, davi e cajarelo, preservando seus históricos. A main continua aguardando revisão e integração do [pedido #1](https://github.com/barrosojoaomarcelo-coder/Cuphead-Mineirinho-2/pull/1), preparado em codex/fase-2-comilao. Até essa integração, baixar apenas a main pode trazer a versão antiga. Não misturem commits do repositório anterior.
+A main já contém o jogo de três fases e a revisão integrada no [PR #5](https://github.com/barrosojoaomarcelo-coder/Cuphead-Mineirinho-2/pull/5). Ela é a referência para executar e entregar. As branches pessoais moises, davi e cajarelo podem estar atrás dessa versão; atualizem por merge, preservando os históricos. Não misturem commits do repositório anterior.
 
 ## Baixar uma vez
 
@@ -55,6 +55,16 @@ git merge origin/moises
 
 Davi troca moises por davi; João troca por cajarelo. Se houver conflito, comparem os dois trechos com a pessoa responsável, preservem as duas contribuições, retirem as marcações e testem antes de concluir o commit do merge. Não escolham um lado inteiro sem revisar.
 
+Com o trabalho local registrado e a pasta limpa, tragam também a main atual para a branch pessoal antes de continuar:
+
+~~~sh
+git fetch origin
+git merge origin/main
+python -m unittest discover -s tests -v
+~~~
+
+Se houver conflitos, resolvam com a pessoa responsável e concluam o merge antes de trabalhar em outra tarefa. O envio da branch está explicado abaixo; a main só muda depois da integração do pull request.
+
 ## Trabalhar, testar e enviar
 
 Moisés cuida das regras; Davi, do desenho e som; João, dos menus e entrega. Combinem antes de editar o mesmo arquivo. A lista concreta está em [TAREFAS_ATE_SEGUNDA.md](TAREFAS_ATE_SEGUNDA.md).
@@ -75,9 +85,9 @@ Davi usa git push origin davi; João usa git push origin cajarelo. Não enviem .
 
 ## Integrar a versão final à main
 
-1. João coordena a revisão do pedido #1 e sua integração à main antes da entrega. Os três precisam executar e compreender a versão final; sincronizar branches não comprova revisão humana.
+1. João coordena a revisão das correções finais. A base já está na main; o pedido #1 não é uma etapa necessária para obter a versão atual. Os três precisam executar e compreender o resultado; sincronizar branches não comprova revisão humana.
 2. As correções posteriores passam por pull request para main, com explicação do problema, da mudança e dos testes. Davi revisa Moisés; João revisa Davi; Moisés revisa João.
-3. Depois que a main receber a base e outras correções, cada um traz essa versão para sua branch pessoal: com trabalho registrado e pasta limpa, executa git fetch origin e git merge origin/main, confere os testes e envia sua branch.
+3. Depois de novas correções na main, cada um traz essa versão para sua branch pessoal: com trabalho registrado e pasta limpa, executa git fetch origin e git merge origin/main, confere os testes e envia sua branch.
 4. João confere um clone novo da main, seguindo apenas o README. É essa versão final que precisa estar acessível no endereço entregue ao professor.
 
 A base foi preparada com auxílio de IA. Cada um deve compreender o código e registrar suas próprias alterações em USO_DE_IA.md. Se o convite de Davi continuar pendente, João precisa resolvê-lo e Davi precisa aceitar; sincronizar a branch remota não concede acesso à conta.

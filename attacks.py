@@ -7,11 +7,20 @@ from boss_attacks import HARD_ATTACKS
 
 
 def schedule(game, delay, data):
+    """Inclui em game.scheduled um disparo ou movimento para depois de delay segundos.
+
+    O dicionário data recebe a contagem regressiva; update_attacks executa a ação.
+    """
     data['delay'] = delay
     game.scheduled.append(data)
 
 
 def update_attacks(game, dt):
+    """Avança avisos e ações agendadas do dragão usando dt em segundos.
+
+    Libera ataques anunciados, limita bolas de fogo e só prepara outro padrão
+    quando os ataques especiais anteriores deixam a arena.
+    """
     game.attack_timer -= dt
     for warning in list(game.warnings):
         warning['remaining'] -= dt
@@ -53,6 +62,12 @@ def update_attacks(game, dt):
 
 
 def prepare_attack(game, kind=None):
+    """Escolhe um padrão do nível atual e devolve seu dicionário de aviso.
+
+    kind permite escolher um padrão nos testes; None percorre a sequência da luta.
+    A mira, alturas e corredores são definidos antes do disparo. O aviso fica
+    em game.warnings e os parâmetros de dificuldade vêm de HARD_ATTACKS.
+    """
     phase = game.boss.phase
     tuning = HARD_ATTACKS[phase - 1]
     sequence = ['horizontal', 'giant', 'flame', 'fan', 'horizontal', 'aimed', 'steps', 'sine', 'bounce', 'burst']
@@ -111,6 +126,11 @@ def prepare_attack(game, kind=None):
 
 
 def prepare_flame(game, warning):
+    """Preenche o aviso do sopro alternando as alturas baixa e alta.
+
+    Fixa os pontos do raio e a boca do chefe para o desenho e a colisão
+    continuarem usando o mesmo trajeto depois que o jogador se mover.
+    """
     mode = 'low'
     target_y = FLOOR - 18
     guidance = 'RAJADA BAIXA: PREPARE O PULO'
@@ -125,6 +145,11 @@ def prepare_flame(game, warning):
 
 
 def release_attack(game, warning):
+    """Converte o aviso em sopro ou ações de disparo agendadas.
+
+    Usa a mira e os parâmetros guardados no aviso; update_attacks cria as bolas
+    quando cada atraso termina. Também atualiza a pose e o som do ataque.
+    """
     w = warning
     w['fired'] = True
     phase, kind = w['phase'], w['type']

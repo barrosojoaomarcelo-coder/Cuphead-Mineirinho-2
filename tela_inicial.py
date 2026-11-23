@@ -97,6 +97,7 @@ class TelaInicial:
         self._calcular_viewport(pygame.display.get_surface().get_size())
 
     def fonte(self,tamanho):
+        """Carrega e reutiliza a fonte do menu no tamanho solicitado."""
         if tamanho not in self.fontes:
             origem=str(Path(__file__).resolve().parent/FONTE_MENU) if FONTE_MENU else BytesIO(self._buffer_fonte)
             self.fontes[tamanho]=pygame.font.Font(origem,tamanho)
@@ -185,6 +186,7 @@ class TelaInicial:
                 (pos[1]-self.viewport.y)*ALTURA/self.viewport.h)
 
     def ativar_audio(self):
+        """Inicia a música embutida do menu no canal reservado, se o som estiver ativo."""
         if not self.som or self.canal is not None: return
         try:
             if not pygame.mixer.get_init(): pygame.mixer.init()
@@ -201,11 +203,13 @@ class TelaInicial:
             self.som=False
 
     def parar_audio(self):
+        """Interrompe a música do menu e libera sua reserva de canal."""
         if self.canal is not None:
             self.canal.stop(); self.canal=None
             if pygame.mixer.get_init(): pygame.mixer.set_reserved(0)
 
     def alternar_som(self):
+        """Alterna a preferência local de som e inicia ou interrompe a música do menu."""
         self.som=not self.som
         if self.som: self.ativar_audio()
         else: self.parar_audio()
@@ -251,14 +255,17 @@ class TelaInicial:
         return None
 
     def confirmar(self):
+        """Devolve 1, 2 ou 3 para a fase selecionada e interrompe a música do menu."""
         if not self.disponiveis[self.selecionado]: return None
         self.parar_audio()
         return self.selecionado+1
 
     def update(self,dt):
+        """Avança o tempo visual do menu, limitando intervalos grandes entre quadros."""
         self.tempo+=max(0,min(float(dt),.1))
 
     def draw(self,destino):
+        """Desenha logo, personagem, seleção, créditos e controles mantendo a proporção da tela."""
         s=self.canvas; s.blit(self.fundo,(0,0))
         # Letreiro e subtítulo permanecem estáveis para boa leitura.
         s.blit(self.logo,(40,43))

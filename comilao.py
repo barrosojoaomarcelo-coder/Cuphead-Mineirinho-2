@@ -16,16 +16,19 @@ class Comilao(Boss):
     """Reaproveita vida e transformação do chefe, com outra arte e posição."""
 
     def mouth(self, elapsed):
+        """Devolve a posição de emissão da língua conforme a forma atual do Comilão."""
         if self.phase < 3:
             return 1020, 447
         return 960, 520
 
     def eye(self):
+        """Devolve a posição do olho usada para preparar os raios da forma atual."""
         if self.phase < 3:
             return 1025, 300
         return 1005, 280
 
     def refresh_image(self, elapsed, state):
+        """Escolhe pose, transparência e caixa de colisão da forma e do ataque atuais."""
         form = 'comilao-corpo'
         position = (870, 190)
         if self.phase >= 3:
@@ -81,11 +84,13 @@ class EyeRay(pygame.sprite.Sprite):
             pygame.draw.line(self.image, color, first, last, width)
 
     def update(self, dt):
+        """Avança a idade do raio em segundos e o remove quando sua duração termina."""
         self.age += dt
         if self.age >= self.duration:
             self.kill()
 
     def touches(self, player):
+        """Verifica contato do jogador com o segmento do raio se ele ainda não atingiu."""
         return not self.touched and bool(player.hitbox.inflate(8, 8).clipline(self.start, self.end))
 
 
@@ -103,6 +108,7 @@ class Tongue(pygame.sprite.Sprite):
         self.refresh_image()
 
     def update(self, dt):
+        """Avança o ciclo da língua e a remove depois de esticar e recolher."""
         self.age += dt
         if self.age >= self.duration:
             self.kill()
@@ -111,6 +117,7 @@ class Tongue(pygame.sprite.Sprite):
 
     def refresh_image(self):
         # Um quarto para esticar, um pequeno intervalo ativo, depois recolher.
+        """Calcula a extensão da língua e desenha os pontos também usados na colisão."""
         extension = min(1, self.age / .19, (self.duration - self.age) / .18)
         extension = clamp(extension, 0, 1)
         height = FLOOR - 22
@@ -140,6 +147,7 @@ class Tongue(pygame.sprite.Sprite):
         pygame.draw.circle(self.image, (243, 144, 145), local[-1], 8)
 
     def touches(self, player):
+        """Testa os segmentos da língua contra a caixa do jogador antes do primeiro acerto."""
         if self.touched:
             return False
         box = player.hitbox.inflate(14, 14)
@@ -164,6 +172,7 @@ class Spike(pygame.sprite.Sprite):
         self.hitbox = self.rect.inflate(-14, -18)
 
     def update(self, dt):
+        """Move o espinho para baixo em dt segundos e o remove após passar do chão."""
         self.y += self.speed * dt
         self.rect.midtop = self.x, round(self.y)
         self.hitbox.center = self.rect.center
@@ -217,6 +226,11 @@ def prepare_comilao(game, kind=None, chain=None):
 
 
 def release_comilao(game, warning):
+    """Cria raios, língua ou ondas de espinhos usando o aviso já apresentado.
+
+    Golpes seguintes de um combo são agendados para receber seu próprio aviso
+    antes de serem liberados; não são disparados todos de uma vez.
+    """
     kind = warning['kind']
     phase = warning['phase']
     game.boss.pulse = .16
@@ -241,6 +255,7 @@ def release_comilao(game, warning):
 
 
 def update_comilao(game, dt):
+    """Avança avisos e combos do Comilão e prepara outro ataque ao terminar os perigos."""
     game.attack_timer -= dt
     for data in list(game.scheduled):
         data['delay'] -= dt

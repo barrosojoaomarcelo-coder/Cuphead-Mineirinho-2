@@ -3,6 +3,12 @@
 Data: 23/11/2026. Base recebida: commit 2b764c84693e205b7bc2d8d764516baeca2185a6.
 Ambiente: Windows, Python 3.12.14, Pygame 2.6.1, vídeo e áudio virtuais SDL.
 
+## Revisão documental de 23/11/2026
+
+Base desta revisão: cee1c1b6aa155669217a26f4905d9732647fcfef. Foram acrescentadas 75 docstrings em 13 módulos, corrigidas instruções antigas sobre a main e organizados o registro de contribuições e o anexo de IA. O grupo confirmou que o histórico informado está completo e o professor tem acesso; a checagem automática do link encontrou uma tela de login.
+
+Os 17 módulos Python da raiz foram comparados por árvore de sintaxe, desconsiderando apenas docstrings: a estrutura de execução permaneceu idêntica à base. Os links locais dos documentos revisados foram conferidos sem arquivos ausentes. Depois das alterações, os mesmos **85 testes passaram novamente**, em 27,270 segundos, sem falhas ou testes ignorados. Não são 85 testes adicionais; é a repetição da suíte existente. As verificações de qa descritas abaixo pertencem à rodada anterior e não foram repetidas nesta revisão de documentação.
+
 ## Resultado
 
 Comando: python -m unittest discover -s tests -q
@@ -40,4 +46,4 @@ A main recebida acrescentou sons, pimenta, pausa, controle e a ordem Pirâmide �
 
 ## Limites e pendências
 
-A verificação usa dispositivos virtuais: o grupo deve ouvir a mixagem e testar teclado/controle físicos nos três computadores. A dificuldade humana, instalação local dos colegas e desempenho na máquina da feira ainda precisam de conferência. Completar vídeo de apresentação, fontes pendentes, histórico/anexo de IA e envio ao professor continua sendo tarefa do grupo.
+A verificação usa dispositivos virtuais: o grupo deve ouvir a mixagem e testar teclado/controle físicos nos três computadores. A dificuldade humana, instalação local dos colegas e desempenho na máquina da feira ainda precisam de conferência. Vídeo de apresentação, fontes pendentes, adequação das ferramentas de IA à orientação institucional e envio no Blackboard continuam na lista do grupo. O anexo de IA já referencia o histórico informado e a confirmação de acesso do professor. Pendências por pessoa em TAREFAS_ATE_SEGUNDA.md.

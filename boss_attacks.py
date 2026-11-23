@@ -6,6 +6,11 @@ Os números são os mesmos do arquivo recebido; não usamos dataclasses.
 
 
 def dragon_stage(index):
+    """Devolve os parâmetros do nível interno index, de 0 a 3, do dragão.
+
+    Tempos são segundos, velocidades são pixels por segundo e contagens são
+    quantidades de projéteis ou ondas. HARD_ATTACKS reúne os quatro dicionários.
+    """
     return {
         'normal_speed': (440, 490, 550, 610)[index],
         'interval': (1.95, 1.80, 1.65, 1.50)[index],

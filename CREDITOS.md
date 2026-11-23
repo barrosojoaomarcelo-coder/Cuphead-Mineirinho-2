@@ -4,6 +4,8 @@
 
 Davi, Moisés e João Marcelo.
 
+**Davi realizou a parte de som e animações, conforme informado pelo grupo por Moisés em 23/11/2026.** Essa atribuição de participação não altera as fontes dos recursos recebidos ou gerados com IA, descritas a seguir.
+
 ## Inspiração
 
 Cuphead, da Studio MDHR: https://cupheadgame.com/.
@@ -54,3 +56,7 @@ Nome descritivo adotado para esta implementação. O grupo forneceu duas captura
 ## Áudio integrado e revisão — 23/11/2026
 
 Os arquivos assets/audio/tema_mineirinho.ogg, dano_ai.ogg e pimentinha.ogg já estavam no commit 2b764c8 recebido da main. As fontes, cortes e hashes fornecidos estão em assets/audio/ORIGEM_DOS_AUDIOS.json. Esta revisão preserva esses arquivos e reduz somente a mixagem dos tiros/impactos antigos; não estabelece nova autoria nem licença dos áudios. A equipe deve completar a procedência e as permissões aplicáveis.
+
+## Histórico e evidências da equipe
+
+O [anexo de IA](ANEXO_IA.md) reúne o link do histórico completo informado pela equipe. As contribuições registradas e os arquivos de cada área estão em [DIVISAO_DA_EQUIPE.md](DIVISAO_DA_EQUIPE.md). Davi deve complementar a identificação dos recursos de som/animação que trabalhou e suas fontes. A origem/licença da fonte e de outras mídias embutidas em tela_inicial.py também deve ser identificada pela equipe se ainda não estiver coberta pelo histórico.

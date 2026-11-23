@@ -51,6 +51,7 @@ def load_preferences(filename):
 
 
 def save_preferences(ui):
+    """Grava recorde, regra de comparação e preferência de som; tolera falha de disco."""
     try:
         filename = ui['save_file']
         filename.parent.mkdir(parents=True, exist_ok=True)
@@ -188,6 +189,7 @@ def handle_title_event(ui, event):
 
 
 def toggle_fullscreen(ui):
+    """Alterna tela cheia e janela, preservando o tamanho anterior da janela."""
     ui['fullscreen'] = not ui['fullscreen']
     if ui['fullscreen']:
         ui['windowed_size'] = ui['window'].get_size()
@@ -197,6 +199,7 @@ def toggle_fullscreen(ui):
 
 
 def toggle_help(ui):
+    """Abre ou fecha as instruções e retoma a luta apenas se ela estava em andamento."""
     game = ui['game']
     if ui['instructions']:
         ui['instructions'] = False
@@ -210,6 +213,7 @@ def toggle_help(ui):
 
 
 def pause_game(ui):
+    """Pausa o modelo e seleciona a primeira opção do menu ao entrar na pausa."""
     previous = ui['game'].state
     ui['game'].pause()
     if previous != 'paused' and ui['game'].state == 'paused':
@@ -217,6 +221,7 @@ def pause_game(ui):
 
 
 def restart_stage(ui):
+    """Reinicia o cenário atual com três vidas, sem bônus, partículas ou vozes antigas."""
     stop_voices(ui['assets'])
     ui['instructions'] = False
     ui['resume_after_help'] = False
@@ -317,6 +322,11 @@ def handle_key(ui, key):
 
 
 def handle_event(ui, event):
+    """Encaminha eventos de janela, teclado, mouse e controle para a tela ativa.
+
+    Converte o mouse para a arena lógica uma única vez e pausa quando a janela
+    perde foco ou o controle ativo é desconectado.
+    """
     controle = ui['joystick']
     em_menu = ui['instructions'] or ui['game'].state in ('title', 'story', 'paused', 'dead', 'victory')
     teclas = controle.handle_event(event, menu=em_menu,
@@ -381,6 +391,7 @@ def read_controls(ui=None):
 
 
 def update_game(ui, dt, controls):
+    """Atualiza menu ou luta e coordena desenho animado, áudio e recorde do dragão."""
     sync_title_menu(ui)
     game = ui['game']
     if game.state == 'title':
@@ -447,6 +458,11 @@ def game_screen(ui, max_frames=None, screenshot=None):
 
 
 def main():
+    """Lê opções de execução, inicia o jogo e libera os recursos ao encerrar.
+
+    --stage usa a ordem visível do menu; --frames e --screenshot auxiliam a
+    validação. Devolve 0 ao encerrar normalmente e 1 se a inicialização falhar.
+    """
     parser = argparse.ArgumentParser(description=f'{GAME_TITLE} — jogo em Pygame')
     parser.add_argument('--mute', action='store_true')
     parser.add_argument('--frames', type=int, help='encerrar após N quadros para testar')
