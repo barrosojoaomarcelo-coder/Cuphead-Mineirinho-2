@@ -82,6 +82,7 @@ class GameModel:
         return True
 
     def start_story(self):
+        """Reinicia na primeira fase de STAGE_ORDER e abre a introdução narrativa."""
         self.reset(c.STAGE_ORDER[0])
         self.state = 'story'
 
@@ -95,12 +96,14 @@ class GameModel:
         return False
 
     def pause(self):
+        """Congela luta, introdução ou transformação e guarda o estado para retomar."""
         if self.state in ('playing', 'intro', 'transform'):
             self.previous_state = self.state
             self.state = 'paused'
             self.player.jump_buffer = 0
 
     def resume(self):
+        """Restaura o estado anterior à pausa e limpa a memória de entradas do jogador."""
         if self.state == 'paused':
             self.state = self.previous_state
             self.player.previous_input = {}
@@ -242,6 +245,7 @@ class GameModel:
             self.hurt_player()
 
     def clear_attacks(self):
+        """Remove perigos, avisos e ações pendentes e limpa poses ligadas aos ataques."""
         self.fire.empty()
         self.beams.empty()
         self.minions.empty()
@@ -277,12 +281,18 @@ class GameModel:
             self.change_phase(2)
 
     def change_phase(self, phase):
+        """Avança o nível interno do chefe sem trocar de cenário nem retroceder níveis."""
         if phase > self.boss.phase:
             self.boss.phase = phase
             self.attack_timer = max(self.attack_timer, .9)
             play_sound(self.assets, 'phase')
 
     def begin_transformation(self):
+        """Inicia a segunda forma, limpa os tiros e reinicia as sequências de ataques.
+
+        A mudança ocorre na metade da vida. A fase de cenário permanece a mesma;
+        boss.phase passa ao nível interno 3.
+        """
         self.boss.phase = 3
         self.state = 'transform'
         self.state_time = 0
@@ -299,6 +309,11 @@ class GameModel:
         play_sound(self.assets, 'transform')
 
     def update_transformation(self, dt, controls):
+        """Avança a animação de troca de forma sem liberar novos tiros do jogador.
+
+        Ao concluir TRANSFORM_TIME, retoma a luta e dá uma curta proteção ao jogador.
+        Os temporizadores da pimenta ficam congelados nesse estado.
+        """
         self.boss.transform = min(1, self.state_time / c.TRANSFORM_TIME)
         self.night = self.boss.transform
         left_limit, right_limit = (195, 1085) if self.stage_index == 2 else (53, 860)

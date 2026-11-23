@@ -1,70 +1,46 @@
-# Revisão e entrega até segunda-feira
+# Fechamento da entrega — 23/11/2026 até 12h
 
-Equipe: Moisés, Davi e João Marcelo. Prazo: **23/11/2026 até 12h**, horário de São Paulo. Todos os itens ficam pendentes até serem conferidos pelo responsável.
+Criadores: Davi, Moisés e João Marcelo. Horários de São Paulo. Os horários intermediários abaixo são uma organização proposta para o tempo restante; o prazo oficial é 12h.
 
-## Situação da base e das branches
+## Já registrado
 
-A main recebida no commit 2b764c8 já contém as três fases, pimenta, pausa, controle e novos sons. A revisão de 23/11 ajusta Mineirinho, créditos de criadores, volume, tiros nas três fases e fluxo do menu. Ordem atual: introdução → Pirâmide → Comilão → Dragão → encerramento. Cada colega deve trazer a main aprovada para sua branch por merge, preservando seus commits; não substituir a pasta de trabalho.
+- [x] Main com três fases, introdução e encerramento; ordem Pirâmide → Comilão → Dragão.
+- [x] Revisão do nome Mineirinho, créditos de criadores, volume e velocidade dos tiros integrada pelo PR #5.
+- [x] Histórico completo de IA informado pelo grupo em ANEXO_IA.md; Moisés confirmou o acesso do professor.
+- [x] Contribuição de Davi em som e animações registrada conforme declaração do grupo.
+- [x] Responsabilidades e explicações das principais rotinas organizadas na documentação e nas docstrings.
 
-Antes de baixar, executem git status e registrem com commit o trabalho pendente. Depois troquem para sua branch e usem git pull --ff-only origin NOME. Se divergir, revisem os históricos antes de fazer fetch/merge; não usem force push ou reset. Os comandos de cada pessoa estão em [CONTRIBUTING.md](CONTRIBUTING.md).
+Testes automatizados e declarações registradas não marcam como concluídas as conferências físicas abaixo.
 
-## Moisés — branch moises
+## Moisés — concluir até 11h40
 
-- [ ] Comparar e jogar o dragão frente ao ZIP difícil: quantidade/velocidade dos ataques, avisos, gigantes, sopro, rajadas baixas/altas e transformação.
-- [ ] Conferir três vidas, dano dos tiros, pulo, agachamento e dash nas três fases; verificar uma solução de esquiva para cada ataque.
-- [ ] Jogar combos do Comilão; conferir criaturas, anéis, vida compartilhada e trajetos de laser da Pirâmide.
-- [ ] Executar os testes; corrigir falhas reais e explicar causa, resultado e validação no PR.
-- [ ] Explicar entrada → movimento/tiro → colisão → dano ao grupo; revisar as mudanças de João.
+- [ ] Jogar as três fases na versão da main e conferir três vidas, tiro, pulo, agachamento, dash, pimenta, transformação e reinício; anotar/corrigir apenas falhas que impeçam a entrega.
+- [ ] Confirmar com o professor a adequação das ferramentas de IA usadas à orientação institucional; o histórico registra Codex/ChatGPT.
+- [ ] Conferir se os créditos refletem as fontes originais que o grupo conhece; fornecer as informações que ainda faltam a Davi.
+- [ ] Conferir com João a versão final e explicar aos colegas o fluxo entrada → movimento/tiro → colisão → dano.
 
-Arquivos: config.py, sprites.py, engine.py, attacks.py, boss_attacks.py, comilao.py, piramide.py, piramide_attacks.py e testes. Davi revisa as alterações de Moisés.
+## Davi — concluir até 11h40
 
-## Davi — branch davi
+- [ ] Ouvir música, falas, tiros e impactos nas três fases no computador real; testar M e confirmar que as falas não são cortadas pelos tiros.
+- [ ] Conferir animações do protagonista e dos chefes, transformação, origem dos disparos e clareza dos avisos em janela e tela cheia.
+- [ ] Completar as fontes pendentes em CREDITOS.md e identificar arquivos, recursos, esboços ou registros reais da parte de som/animação que realizou.
+- [ ] Se precisar enviar arquivos pelo GitHub, aceitar o convite de colaborador e enviar alterações próprias após combinar com João; não é necessário inventar commits para igualar contagens.
 
-- [ ] Conferir animações e legibilidade: emissões dos tiros/raios/língua, criaturas, avisos e marcas de perigo.
-- [ ] Ouvir trilha e efeitos no computador real, ajustar volumes se necessário e testar o botão de som.
-- [ ] Conferir textos, avisos e vidas em janela menor e tela cheia; combinar mudanças de posição com Moisés.
-- [ ] Completar CREDITOS.md: origem do jogador/protagonista, dragão, castelos e pão continua pendente na base examinada; registrar também recursos novos e ferramentas.
-- [ ] Registrar defeitos e melhorias reais, com revisão de João; revisar as mudanças de Moisés.
-- [ ] Se ainda faltar acesso, resolver o convite com João e aceitá-lo antes de enviar alterações.
+## João Marcelo — concluir até 11h45
 
-Arquivos: assets.py, animation.py, scene.py, audio.py, assets/ e CREDITOS.md.
+- [ ] Gravar e publicar um vídeo curto do Mineirinho funcionando; inserir seu endereço acessível no README e testar o link fora da conta do autor.
+- [ ] Baixar um clone limpo da main e executar seguindo apenas README/INICIAR_WINDOWS.bat em um computador da equipe.
+- [ ] Conferir menu → introdução → Pirâmide → Comilão → Dragão → encerramento, pausa/ajuda, derrota, reinício e redimensionamento.
+- [ ] Coordenar a integração das correções indispensáveis de Moisés/Davi e conferir o último código disponível na main.
 
-## João Marcelo — branch cajarelo
+## Grupo — concluir até 11h55
 
-- [ ] Testar menu → introdução → Pirâmide → Comilão → Dragão → encerramento; conferir treinos diretos das fases 2 e 3.
-- [ ] Testar ajuda, pausa/retomada, perda de foco, derrota, reinício da fase atual, redimensionamento e fechamento.
-- [ ] Conferir instalação nos computadores do grupo usando apenas o README/iniciador; corrigir instruções ou defeitos encontrados.
-- [ ] Revisar a atualização atual da main e integrar correções dos colegas; testar um clone novo depois.
-- [ ] Gravar/publicar vídeo curto do jogo funcionando e incluir endereço acessível no README; ele continua marcado como pendente na base examinada.
-- [ ] Reunir o histórico/anexo de IA com os colegas e completar o link pendente em USO_DE_IA.md; cada pessoa registra suas alterações reais.
-- [ ] Conferir acesso do professor e envio do endereço correto no Blackboard; verificar se proposta e acompanhamentos já foram enviados.
-- [ ] Revisar Davi e pedir a revisão de Moisés sobre suas próprias correções.
+- [ ] Confirmar que o link correto do repositório e a proposta estão no Blackboard; cada integrante confere seus próprios formulários de acompanhamento. João coordena a conferência do envio do endereço.
+- [ ] Confirmar que o professor acessa repositório, vídeo e histórico de IA; o acesso ao histórico já foi informado como disponível pelo grupo.
+- [ ] Conferir a main depois da última alteração e evitar novas funcionalidades no fechamento.
+- [ ] Todos saberem explicar o código entregue e as decisões, inclusive o material assistido por IA, para a prova de 25/11.
+- [ ] Os três participarem da Feira de Jogos, das 12h às 14h.
 
-Arquivos: main.py, requirements.txt, INICIAR_WINDOWS.bat, README e documentação. Cada colega continua responsável pelo conteúdo de sua parte.
+## Referências e limites
 
-## Agenda de fechamento
-
-| Quando | Meta do grupo |
-| --- | --- |
-| Segunda, até 10h | Rodada de jogo nos três computadores; revisar sons, pimenta, controles e dificuldade |
-| Segunda, 10h–11h | Correções necessárias integradas; clone novo, README, vídeo, fontes e histórico de IA conferidos |
-| Segunda, 11h–12h | Conferir acesso e enviar o repositório antes do limite; reserva para imprevistos |
-| Segunda, 12h–14h | Participação dos três na Feira de Jogos, conforme a agenda já registrada pelo grupo |
-
-## Conferência conjunta
-
-- [ ] A main contém as três fases aprovadas; não apenas as branches pessoais.
-- [ ] Instalação, sons e dificuldade avaliados por pessoas nos computadores reais.
-- [ ] Derrota, vitória, transformação, transição e reinício foram jogados e conferidos.
-- [ ] Contribuições e revisões reais dos três estão registradas; a base gerada com IA está identificada.
-- [ ] README, vídeo, fontes e histórico/anexo foram completados.
-- [ ] O endereço entregue aponta para este repositório e o professor consegue acessá-lo.
-- [ ] Todos conseguem explicar a lógica e suas decisões, incluindo o código assistido por IA.
-
-## Referências verificadas
-
-A [página oficial](https://insper.github.io/DesignDeSoftware/projeto/) confirma a entrega às 12h de 23/11 e a coleta do código no GitHub nesse horário. Pede endereço no Blackboard e README com identificação, execução e vídeo acessível. Também trata de créditos, declaração e histórico de IA, ferramenta institucional e compreensão do código. Conferir com o professor dúvidas sobre essas orientações. A Feira exige a presença da equipe.
-
-O [handout](https://insper.github.io/DesignDeSoftware/pygame/handout/) é a referência para estudar loop, recursos, Sprites, Groups, colisões, sons, animações e estados. O projeto também espera aprender recursos além da aula. Três chefes são o escopo escolhido pelo grupo. A divisão, os testes propostos e os horários intermediários deste checklist são nossa organização de trabalho, não exigências adicionais do professor.
-
-Páginas conferidas em 22/11/2026. Testes automáticos e sincronização de branches não comprovam que os itens humanos desta lista já foram concluídos.
+[Regras do projeto, entrega e avaliação](https://insper.github.io/DesignDeSoftware/projeto/). O professor coleta o código do GitHub às 12h; alterações posteriores não entram nessa coleta. Vídeo, formulários, testes em computadores reais e compreensão individual dependem da equipe. Esta lista não certifica envios no Blackboard nem avaliações feitas pelo professor.

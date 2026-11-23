@@ -45,4 +45,7 @@ Execute python -m unittest discover -s tests -v para usar os chefes reais.
 Scripts em qa são testes isolados com dublês e rodam separadamente.
 Resultados e limites em docs/VALIDACAO.md.
 Ainda confiram som, dificuldade e controles físicos nos computadores do grupo.
-Vídeo, fontes pendentes e histórico/anexo de IA precisam ser completados.
+Vídeo e fontes pendentes precisam ser completados. O histórico de IA está
+referenciado em ANEXO_IA.md; o grupo confirmou que o professor tem acesso.
+Davi cuidou do som e das animações, conforme declaração do grupo.
+Pendências por pessoa e horários de fechamento: TAREFAS_ATE_SEGUNDA.md.

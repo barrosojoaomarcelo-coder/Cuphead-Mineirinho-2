@@ -13,6 +13,7 @@ import pygame
 
 @dataclass(frozen=True)
 class RegrasPimenta:
+    """Parâmetros imutáveis de duração, reaparição, dimensões e multiplicadores da pimenta."""
     duracao: float = 8.0
     tempo_na_tela: float = 5.0
     multiplicador_cadencia: float = 1.5
@@ -60,6 +61,7 @@ class PoderPimenta:
                                                       max(1,round(imagem.get_height()*fator))))
 
     def reiniciar(self,arena=None,chao_y=None):
+        """Limpa o bônus e inicia a espera da primeira coleta dentro da arena recebida."""
         if arena is not None: self.arena=pygame.Rect(arena)
         if chao_y is not None: self.chao_y=float(chao_y)
         if self.arena.w<self.regras.tamanho_coleta or self.arena.h<self.regras.tamanho_coleta:
@@ -148,6 +150,7 @@ class PoderPimenta:
                 velocidade_base*self.regras.multiplicador_velocidade)
 
     def desenhe_coletavel(self,tela):
+        """Desenha a pimenta disponível sem alterar seu temporizador ou caixa de coleta."""
         if self.coletavel:
             tela.blit(self.coleta_sprite,self.coleta_sprite.get_rect(center=self.retangulo.center))
 

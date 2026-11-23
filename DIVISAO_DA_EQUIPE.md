@@ -1,25 +1,35 @@
-# Divisão de trabalho — Davi, Moisés e João Marcelo
+# Contribuições e divisão da equipe — Mineirinho
 
-Entrega: segunda-feira, 23/11/2026, até 12h, horário de São Paulo. A lista para marcar a revisão está em [TAREFAS_ATE_SEGUNDA.md](TAREFAS_ATE_SEGUNDA.md); os marcos estão também em [docs/DIVISAO_E_PRAZOS.md](docs/DIVISAO_E_PRAZOS.md).
+Criadores: Davi, Moisés e João Marcelo. Entrega em 23/11/2026 até 12h, horário de São Paulo.
 
-| Integrante | Branch pessoal | Responsabilidade | Arquivos principais |
-| --- | --- | --- | --- |
-| Moisés (@mguedesjr) | moises | Movimento, tiros, dano, colisões e dificuldade dos três chefes | config.py, sprites.py, engine.py, attacks.py, boss_attacks.py, comilao.py, piramide.py, piramide_attacks.py e testes |
-| Davi (@davimoreiraesteves-beep) | davi | Artes, animações, efeitos, avisos e som | assets.py, animation.py, scene.py, audio.py, assets/ e CREDITOS.md |
-| João Marcelo (@barrosojoaomarcelo-coder) | cajarelo | Menus, introdução, transições, instalação, integração e entrega | main.py, INICIAR_WINDOWS.bat, requirements.txt, README e documentação |
+## Contribuições registradas
 
-## Revisão de cada pessoa
+| Integrante | Trabalho registrado | Área principal |
+| --- | --- | --- |
+| Moisés (@mguedesjr) | Definições de mecânica/dificuldade e acompanhamento da adaptação; integração de som/interface registrada no commit 2b764c8 | Regras, movimento, tiros, dano, colisões e dificuldade |
+| Davi (@davimoreiraesteves-beep) | Som e animações, conforme informado pelo grupo por Moisés em 23/11/2026 | Áudio, quadros de animação e apresentação dos recursos |
+| João Marcelo (@barrosojoaomarcelo-coder) | Ajustes de menu e ordem das fases registrados em a40d6d9, 1e11577 e 863115e | Aplicação, menus, integração e entrega |
 
-- **Moisés:** comparar e jogar o dragão frente ao ZIP difícil recebido; conferir pulo/agachamento, gigantes e sopro; verificar combos do Comilão, anéis e lasers da Pirâmide. Conferir três vidas, dano dos tiros, transformação e reinício; corrigir falhas reais e manter os testes.
-- **Davi:** conferir animações dos três chefes e do protagonista, origem dos tiros/raios/língua, clareza dos avisos e volumes. Completar a procedência das artes iniciais pendente nos créditos.
-- **João Marcelo:** testar menu → introdução → Pirâmide → Comilão → Dragão → encerramento, treinos, ajuda, pausa, derrota e reinício. Conferir instalação nos computadores do grupo, vídeo e documentação; coordenar integração da versão aprovada à main.
+A declaração sobre Davi registra a contribuição informada pela equipe; não altera o autor de commits existentes. O uso de IA permanece explicitado em [USO_DE_IA.md](USO_DE_IA.md) e no [anexo do histórico](ANEXO_IA.md), incluindo código e artes gerados ou refatorados com assistência.
 
-Revisão cruzada planejada: Davi revisa Moisés; João revisa Davi; Moisés revisa João. Cada um registra correções, testes e revisões reais. A base e as artes assistidas por IA não são apresentadas como autoria individual anterior dos integrantes.
+## Arquivos para revisão
 
-## Branches e entrega
+| Integrante / branch | Arquivos e responsabilidade de revisão |
+| --- | --- |
+| Moisés / moises | config.py, sprites.py, engine.py, attacks.py, boss_attacks.py, comilao.py, piramide.py, piramide_attacks.py, poder_pimenta.py e testes; conferir regras e esquivas |
+| Davi / davi | assets.py, animation.py, scene.py, audio.py, assets/ e CREDITOS.md; conferir som, animações, avisos e fontes |
+| João Marcelo / cajarelo | main.py, tela_inicial.py, pausa_menu.py, controle.py, requirements.txt, INICIAR_WINDOWS.bat, README e documentação; conferir execução, vídeo e envio |
 
-Esta operação sincroniza moises, davi e cajarelo com a base de três fases. A main continua com o [pedido #1 aberto](https://github.com/barrosojoaomarcelo-coder/Cuphead-Mineirinho-2/pull/1) para revisão e integração coordenadas por João. **Atualizar as branches pessoais não conclui a entrega na main.**
+## Evidências de trabalho conjunto
 
-Antes de baixar, confiram git status e registrem o trabalho pendente. Depois usem git switch NOME_DA_BRANCH e git pull --ff-only origin NOME_DA_BRANCH. Se houver divergência, revisem os históricos e façam fetch/merge conforme [CONTRIBUTING.md](CONTRIBUTING.md), sem force push ou reset.
+A [rúbrica](https://insper.github.io/DesignDeSoftware/projeto/#rubrica) considera contribuição significativa e equilibrada, sem fixar mínimo de commits. Design e sprites também podem compor as evidências. Cada integrante deve identificar o trabalho que realmente realizou, com arquivos, esboços, fontes ou registros de revisão quando disponíveis. A existência de uma branch ou uma contagem igual de commits, por si só, não comprova participação.
 
-Continuam por confirmar pelo grupo: revisão com teclado físico e sons; contribuições/revisões dos três; vídeo acessível; histórico/anexo de IA; procedência das artes iniciais; versão final na main e endereço correto no Blackboard. Nenhum desses itens é considerado concluído só por geração de código, testes automáticos ou sincronização de branches.
+Revisão cruzada: Davi confere regras e avisos com Moisés; João confere som/animações com Davi; Moisés confere os fluxos e a execução com João. Registrar o resultado real das revisões, sem marcar etapas como feitas apenas porque estavam planejadas.
+
+## Main e branches
+
+A versão com as três fases já foi integrada à main. O [PR #5](https://github.com/barrosojoaomarcelo-coder/Cuphead-Mineirinho-2/pull/5) registra a revisão do nome Mineirinho, créditos, som, tiros e menus. O PR #1 não é uma etapa pendente para executar a versão atual.
+
+As branches pessoais podem estar atrás da main. Antes de atualizar, salvar o trabalho local com commit; depois buscar a main e fazer merge na própria branch, resolvendo conflitos em conjunto. Não substituir pastas de colegas, reescrever autoria ou usar force push. Comandos em [CONTRIBUTING.md](CONTRIBUTING.md).
+
+O que ainda depende de cada pessoa até a entrega está em [TAREFAS_ATE_SEGUNDA.md](TAREFAS_ATE_SEGUNDA.md).

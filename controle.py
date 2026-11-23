@@ -33,6 +33,11 @@ def _tipo(nome):
 
 
 class ControleJoystick:
+    """Traduz joystick ou controle reconhecido pelo SDL para as ações do jogo.
+
+    Aceita conexão durante a execução, trata zona morta e evita que um botão
+    de confirmar menus provoque pulo ou dash antes de ser solto.
+    """
     def __init__(self):
         self.joystick = None
         self.controller = None
@@ -94,6 +99,7 @@ class ControleJoystick:
         self._hat_menu = (0, 0)
 
     def fechar(self):
+        """Libera o dispositivo ativo e limpa entradas de navegação e botões bloqueados."""
         for device in (self.controller, self.joystick):
             if device is not None:
                 try:
@@ -129,6 +135,7 @@ class ControleJoystick:
         return 0.0
 
     def read_controls(self):
+        """Devolve as ações contínuas do controle, tratando zona morta e desconexão."""
         resultado = dict.fromkeys(ACOES, False)
         if not self.conectado:
             return resultado

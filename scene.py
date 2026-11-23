@@ -189,6 +189,7 @@ class Renderer:
                 target.blit(shot.image, shot.rect)
 
     def _warnings(self, target, model):
+        """Desenha os avisos de cada chefe usando os pontos já definidos pelos ataques."""
         for w in model.warnings:
             if w['fired']:
                 continue
@@ -215,6 +216,7 @@ class Renderer:
             # O trajeto visual é mantido; o cabeçalho de instruções foi removido.
 
     def _horizontal_cues(self, target, model):
+        """Mostra a altura da fileira atual do dragão durante preparação e disparo."""
         chain = model.boss.horizontal
         if chain is None:
             return
@@ -228,6 +230,7 @@ class Renderer:
         # Somente o aviso no cenário, sem texto/contador no topo.
 
     def _orb(self, target, x, y, radius, angle, giant=False):
+        """Desenha a bola de fogo decorativa que antecipa o disparo de uma gigante."""
         r = max(3, round(radius))
         direction = pygame.Vector2(math.cos(angle), math.sin(angle))
         normal = pygame.Vector2(-direction.y, direction.x)
@@ -242,6 +245,7 @@ class Renderer:
         pygame.draw.circle(target, (255, 240, 181), (round(x + r * .15), round(y - r * .1)), max(1, round(r * .4)))
 
     def _button(self, target, name, label, rect, primary=False):
+        """Desenha o botão e registra seu retângulo lógico para tratar cliques."""
         rect = pygame.Rect(rect)
         pygame.draw.rect(target, INK, rect.move(0, 5), border_radius=7)
         pygame.draw.rect(target, GOLD if primary else CREAM, rect, border_radius=7)
@@ -254,6 +258,7 @@ class Renderer:
         desenhar_vidas(target, model.player.hp)
 
     def _panel(self, target, rect):
+        """Escurece a arena e devolve o retângulo do painel informativo desenhado."""
         self.layer.fill((24, 15, 18, 125))
         target.blit(self.layer, (0, 0))
         panel = pygame.Rect(rect)
@@ -263,6 +268,7 @@ class Renderer:
         return panel
 
     def _overlay(self, target, model, best):
+        """Mostra início antigo, derrota ou vitória, respeitando a ordem atual dos chefes."""
         self._panel(target, (80, 158, 720, 445))
         state = model.state
         final = model.stage_index == STAGE_ORDER[-1]
@@ -307,6 +313,7 @@ class Renderer:
         self.text(target, CREATORS_LABEL, (120, 574), 16, RED)
 
     def _instructions(self, target):
+        """Desenha controles e dica da pimenta e registra o botão de voltar."""
         self._panel(target, (230, 115, 820, 510))
         self.text(target, 'COMO JOGAR', (640, 158), 38, INK, True, True)
         rows = [('Mover / agachar', 'A e D ou setas / S ou seta para baixo'),
@@ -326,6 +333,7 @@ class Renderer:
         self._button(target, 'back', 'VOLTAR  [ESC]', (490, 551, 300, 48), True)
 
     def _story(self, target):
+        """Apresenta a narrativa da campanha antes da primeira luta, contra a Pirâmide."""
         self._panel(target, (180, 140, 920, 470))
         self.text(target, 'ANTES DO PRIMEIRO DUELO', (640, 185), 20, RED, True)
         self.text(target, 'Uma jornada por três cenários', (640, 236), 38, INK, True, True)

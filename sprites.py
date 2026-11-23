@@ -225,6 +225,7 @@ class Boss(pygame.sprite.Sprite):
         return 1090, 439 + bob
 
     def update(self, dt, elapsed, state):
+        """Avança brilho, preparação e movimento da boca e atualiza a imagem do chefe."""
         self.flash = max(0, self.flash - dt)
         self.cast = max(0, self.cast - dt)
         self.pulse = max(0, self.pulse - dt)
@@ -243,6 +244,7 @@ class Boss(pygame.sprite.Sprite):
         self.mouth_lock = None
 
     def refresh_image(self, elapsed, state):
+        """Seleciona corpo ou cabeça do dragão e alinha a arte com a caixa de colisão."""
         form = 'base'
         x, y = 858, 181
         mouth_y = 341
@@ -310,6 +312,7 @@ class Bread(pygame.sprite.Sprite):
         self.hitbox.center = self.rect.center
 
     def update(self, dt):
+        """Move e gira o tiro em dt segundos e o remove ao expirar ou sair da arena."""
         self.age += dt
         self.x += self.vx * dt
         self.y += self.vy * dt
@@ -344,6 +347,11 @@ class Fire(pygame.sprite.Sprite):
         self.previous_center = self.hitbox.center
 
     def update(self, dt):
+        """Move a bola conforme seu padrão, aplica quique e guarda a posição anterior.
+
+        A posição anterior permite ao motor verificar também o trajeto percorrido
+        entre quadros, evitando atravessar o jogador sem detectar o contato.
+        """
         self.previous_center = self.hitbox.center
         self.age += dt
         self.x += self.vx * dt
@@ -365,6 +373,7 @@ class Fire(pygame.sprite.Sprite):
         self.refresh_image()
 
     def refresh_image(self):
+        """Atualiza o desenho da bola e a caixa menor que oferece margem de esquiva."""
         self.image = fire_image(self.assets, self.r, math.atan2(self.vy, self.vx))
         self.rect = self.image.get_rect(center=(round(self.x), round(self.y)))
         radius = self.r * .76
@@ -390,6 +399,7 @@ class Flame(pygame.sprite.Sprite):
         self.image, self.rect = flame_image(self)
 
     def update(self, dt):
+        """Avança a duração do sopro, atualiza sua imagem e o remove ao terminar."""
         self.age += dt
         if self.age >= self.duration:
             self.kill()

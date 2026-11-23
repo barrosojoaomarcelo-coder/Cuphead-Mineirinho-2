@@ -1,4 +1,4 @@
-"""Sprites da terceira fase. Regras: Moisés; artes/animação: Davi."""
+"""Sprites do Olho da Pirâmide. Regras: Moisés; artes/animação: Davi."""
 import math
 import pygame
 from config import FLOOR, clamp
@@ -15,17 +15,20 @@ class Piramide(Boss):
         Boss.__init__(self, assets)
 
     def eye(self, side='right', height=None):
+        """Devolve a origem do olho flutuante ou de um dos olhos laterais da segunda forma."""
         if self.phase < 3:
             return 1042, 350 + math.sin(getattr(self, 'elapsed', 0) * 2) * 8
         y = self.eye_y if height is None else height
         return (145 if side == 'left' else 1130), y
 
     def update(self, dt, elapsed, state):
+        """Move os olhos até a altura desejada e atualiza os temporizadores herdados do chefe."""
         self.elapsed = elapsed
         self.eye_y += clamp(self.target_eye_y - self.eye_y, -1000 * dt, 1000 * dt)
         Boss.update(self, dt, elapsed, state)
 
     def corner_image(self, side, elapsed, state):
+        """Devolve imagem e retângulo do olho lateral, incluindo sua entrada na transformação."""
         name = 'piramide-olho-' + ('esquerdo' if side == 'left' else 'direito')
         index = 1 if int(elapsed * 8) % 20 == 16 else 0
         if self.warning is not None:
@@ -45,6 +48,7 @@ class Piramide(Boss):
         return image, rect
 
     def refresh_image(self, elapsed, state):
+        """Atualiza a arte e a caixa de colisão da pirâmide ou do olho direito."""
         if self.phase >= 3 and not (state == 'transform' and self.transform < .5):
             self.image, self.rect = self.corner_image('right', elapsed, state)
             self.hitbox = pygame.Rect(1110, max(210, round(self.eye_y - 100)), 150,
@@ -77,6 +81,7 @@ class PyramidSide(pygame.sprite.Sprite):
         self.update(0, 0, 'title')
 
     def update(self, dt, elapsed, state):
+        """Ativa o olho esquerdo na segunda forma, mantendo referência ao mesmo chefe."""
         boss = self.boss
         if boss.phase < 3 or (state == 'transform' and boss.transform < .5):
             self.image = pygame.Surface((1, 1), pygame.SRCALPHA)
@@ -104,6 +109,7 @@ class Servant(pygame.sprite.Sprite):
         self.refresh_image()
 
     def update(self, dt):
+        """Move a criatura, atualiza a animação e remove seres que expiraram ou saíram da arena."""
         self.age += dt
         self.x += self.vx * dt
         self.base_y += self.vy * dt
@@ -113,6 +119,7 @@ class Servant(pygame.sprite.Sprite):
             self.kill()
 
     def refresh_image(self):
+        """Escolhe o quadro de serpente ou morcego e posiciona sua caixa de colisão."""
         name = 'servo-serpente' if self.kind == 'snake' else 'servo-morcego'
         self.image = self.assets['frames'][name][int(self.age * 12) % 6]
         if self.kind == 'snake':
@@ -139,6 +146,7 @@ class EnergyRing(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(round(self.x), round(self.y)))
 
     def update(self, dt):
+        """Desloca o anel para a esquerda e aproxima sua altura da faixa anunciada."""
         self.age += dt
         self.x -= self.speed * dt
         progress = clamp(self.age / .55, 0, 1)
@@ -148,6 +156,7 @@ class EnergyRing(pygame.sprite.Sprite):
             self.kill()
 
     def touches(self, player):
+        """Testa contato com a borda elíptica do anel, preservando seu centro vazio."""
         if self.touched:
             return False
         # Testa a borda elíptica; o espaço vazio do anel não causa dano.
@@ -178,11 +187,13 @@ class PyramidLaser(pygame.sprite.Sprite):
             pygame.draw.circle(self.image, (255, 247, 208), p, 9, 2)
 
     def update(self, dt):
+        """Conta a duração do laser e o remove quando o intervalo de dano termina."""
         self.age += dt
         if self.age >= self.duration:
             self.kill()
 
     def touches(self, player):
+        """Testa a caixa do jogador nos mesmos segmentos fixos usados para desenhar o laser."""
         if self.touched:
             return False
         box = player.hitbox.inflate(16, 16)
