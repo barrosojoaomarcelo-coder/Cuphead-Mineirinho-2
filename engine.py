@@ -7,6 +7,7 @@ import pygame
 import config as c
 from sprites import Player, Boss, hitboxes_overlap
 from audio import play_sound
+from poder_pimenta import PoderPimenta, RegrasPimenta
 from attacks import update_attacks
 from comilao import Comilao, update_comilao
 from piramide import Piramide, PyramidSide
@@ -55,6 +56,21 @@ class GameModel:
         self.fire = pygame.sprite.Group()
         self.beams = pygame.sprite.Group()
         self.minions = pygame.sprite.Group()
+        # Cada chefe conserva seus valores originais, inclusive o perfil do dragão.
+        self.base_shot_interval = self.player.shot_interval
+        self.base_shot_speed = getattr(self.player, 'shot_speed', c.SHOT_SPEED)
+        arena = self.pepper_arena()
+        if not hasattr(self, 'pepper'):
+            regras = RegrasPimenta(
+                duracao=c.PEPPER_DURATION, tempo_na_tela=c.PEPPER_VISIBLE_TIME,
+                multiplicador_cadencia=c.PEPPER_FIRE_RATE,
+                multiplicador_velocidade=c.PEPPER_SHOT_SPEED,
+                primeira_coleta_em=c.PEPPER_FIRST_SPAWN,
+                reaparecer_em=c.PEPPER_RESPAWN)
+            self.pepper = PoderPimenta(arena, c.FLOOR, regras=regras,
+                                       imagem=self.assets.get('pepper'))
+        else:
+            self.pepper.reiniciar(arena, c.FLOOR)
 
     def start(self, stage_index=0):
         """Enter começa uma nova partida com uma breve apresentação."""
@@ -66,13 +82,16 @@ class GameModel:
         return True
 
     def start_story(self):
-        self.reset()
+        self.reset(c.STAGE_ORDER[0])
         self.state = 'story'
 
     def next_stage(self):
         """Avança após vencer; o terceiro chefe encerra a aventura."""
-        if self.state == 'victory' and self.stage_index + 1 < len(STAGES):
-            return self.start(self.stage_index + 1)
+        if self.state != 'victory':
+            return False
+        position = c.STAGE_ORDER.index(self.stage_index)
+        if position + 1 < len(c.STAGE_ORDER):
+            return self.start(c.STAGE_ORDER[position + 1])
         return False
 
     def pause(self):
@@ -115,6 +134,11 @@ class GameModel:
                 left_limit, limit = 195, 1085
         self.player_group.update(dt, controls, True, limit, left_limit)
         self.boss_group.update(dt, self.elapsed, self.state)
+        self.pepper.ajustar_arena(self.pepper_arena(left_limit, limit), c.FLOOR)
+        collected = self.pepper.atualize(dt, self.player.rect)
+        if collected:
+            play_sound(self.assets, 'pimentinha')
+        self.apply_pepper_profile()
         self.player_actions()
         if self.stage_index == 2:
             update_piramide(self, dt)
@@ -129,6 +153,29 @@ class GameModel:
         self.check_collisions()
         self.refresh_boss()
 
+    def pepper_arena(self, left_limit=None, right_limit=None):
+        """A coleta fica no espaço alcançável, longe dos chefes laterais."""
+        if left_limit is None or right_limit is None:
+            left_limit, right_limit = 53, 920
+            if self.boss.phase >= 3:
+                right_limit = 860
+            if self.stage_index == 1:
+                right_limit = 850
+            elif self.stage_index == 2:
+                left_limit, right_limit = (195, 1085) if self.boss.phase >= 3 else (53, 930)
+        return pygame.Rect(round(left_limit + 12), 0,
+                           round(right_limit - left_limit - 24), c.FLOOR + 1)
+
+    def apply_pepper_profile(self):
+        """Calcula sempre dos valores base; o bônus nunca se acumula por quadro."""
+        self.player.shot_interval, self.player.shot_speed = self.pepper.perfil_tiro(
+            self.base_shot_interval, self.base_shot_speed)
+
+    def clear_pepper(self):
+        """Sair da luta/ser derrotado remove o bônus e os coletáveis pendentes."""
+        self.pepper.reiniciar(self.pepper_arena(), c.FLOOR)
+        self.apply_pepper_profile()
+
     def player_actions(self):
         """Os sons são chamados diretamente, sem uma fila interna de eventos."""
         p = self.player
@@ -140,7 +187,13 @@ class GameModel:
             self.stats['dashes'] += 1
             play_sound(self.assets, 'dash')
         if p.shooting and p.shot_cooldown <= .000001:
-            self.shots.add(p.shoot())
+            shot = p.shoot()
+            # O Renderer troca só o desenho: hitbox e integração física continuam
+            # sendo os do tiro original, sem depender da classe concreta do sprite.
+            shot.is_pepper = self.pepper.ativo
+            dx, dy = getattr(shot, 'vx', p.aim_x), getattr(shot, 'vy', p.aim_y)
+            shot.pepper_direction = (dx, dy) if dx or dy else (p.facing, 0)
+            self.shots.add(shot)
             p.shot_cooldown += p.shot_interval
             self.stats['shots'] += 1
             play_sound(self.assets, 'shoot')
@@ -211,6 +264,7 @@ class GameModel:
         if b.hp == 0:
             self.state = 'victory'
             self.state_time = 0
+            self.clear_pepper()
             self.clear_attacks()
             self.shots.empty()
             b.mouth_lock = None
@@ -269,6 +323,7 @@ class GameModel:
         if p.hp == 0:
             self.state = 'dead'
             self.state_time = 0
+            self.clear_pepper()
             self.clear_attacks()
             self.boss.mouth_lock = None
             play_sound(self.assets, 'death')

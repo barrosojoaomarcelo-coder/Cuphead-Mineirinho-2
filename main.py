@@ -8,18 +8,19 @@ import math
 import os
 from pathlib import Path
 import pygame
-from config import WIDTH, HEIGHT, FPS
+from config import WIDTH, HEIGHT, FPS, STAGE_ORDER
 from assets import load_assets
-from audio import start_music, update_volume
+from audio import start_music, update_volume, stop_voices
 from engine import GameModel
 from scene import Renderer
 from tela_inicial import TelaInicial
+from controle import ControleJoystick
 
 RULESET = 'dragao-zip480-outros800-2026-11'
 
 # Posições no menu -> índices físicos do GameModel existente.
 # O motor mantém 0=Dragão, 1=Comilão e 2=Pirâmide.
-ORDEM_CHEFES = (2, 1, 0)
+ORDEM_CHEFES = STAGE_ORDER
 
 
 def save_folder():
@@ -64,7 +65,7 @@ def initialize(size=(1152, 648), save_dir=None, muted=False):
     pygame.display.set_caption('A Fornalha do Castelo | Davi, Moisés e João Marcelo')
     if pygame.mixer.get_init():
         pygame.mixer.set_num_channels(24)
-        pygame.mixer.set_reserved(1)
+        pygame.mixer.set_reserved(2)
     folder = save_folder()
     if save_dir is not None:
         folder = Path(save_dir)
@@ -81,6 +82,7 @@ def initialize(size=(1152, 648), save_dir=None, muted=False):
     # O menu usa a gravação enviada; a música da luta começa só ao jogar.
     ui['title_menu'] = TelaInicial(som=not assets['muted'])
     ui['title_menu_active'] = False
+    ui['joystick'] = ControleJoystick()
     sync_title_menu(ui)
     return ui
 
@@ -101,7 +103,7 @@ def sync_title_menu(ui):
         menu.parar_audio()
         # O áudio original reserva o canal zero para a trilha.
         if pygame.mixer.get_init():
-            pygame.mixer.set_reserved(1)
+            pygame.mixer.set_reserved(2)
         start_music(ui['assets'])
         ui['title_menu_active'] = False
 
@@ -112,6 +114,7 @@ def start_selected_stage(ui, number):
         raise ValueError('A fase deve ser 1, 2 ou 3.')
     ui['instructions'] = False
     ui['resume_after_help'] = False
+    stop_voices(ui['assets'])
     ui['game'].start(ORDEM_CHEFES[number - 1])
     ui['renderer'].particles.clear()
     ui['buttons'].clear()
@@ -163,8 +166,25 @@ def toggle_help(ui):
         ui['resume_after_help'] = False
     else:
         ui['resume_after_help'] = game.state in ('playing', 'intro', 'transform')
-        game.pause()
+        pause_game(ui)
         ui['instructions'] = True
+
+
+def pause_game(ui):
+    previous = ui['game'].state
+    ui['game'].pause()
+    if previous != 'paused' and ui['game'].state == 'paused':
+        ui['renderer'].pause_menu.reset()
+
+
+def restart_stage(ui):
+    stop_voices(ui['assets'])
+    ui['instructions'] = False
+    ui['resume_after_help'] = False
+    ui['game'].start(ui['game'].stage_index)
+    ui['renderer'].particles.clear()
+    ui['renderer'].pause_menu.reset()
+    sync_title_menu(ui)
 
 
 def button_action(ui, name):
@@ -181,7 +201,11 @@ def button_action(ui, name):
             else:
                 menu.parar_audio()
         save_preferences(ui)
-    elif name in ('instructions', 'back'):
+    elif name == 'retornar':
+        game.resume()
+    elif name == 'reiniciar':
+        restart_stage(ui)
+    elif name in ('instructions', 'back', 'como_jogar'):
         toggle_help(ui)
     elif name == 'play':
         if game.state == 'paused':
@@ -192,21 +216,23 @@ def button_action(ui, name):
             start_selected_stage(ui, 1)
         elif game.state == 'victory':
             if not next_stage_in_order(ui):
+                stop_voices(ui['assets'])
                 game.reset()
                 ui['title_menu'].selecionado = 0
                 ui['title_menu'].foco = -1
         elif game.state == 'dead':
-            game.start(game.stage_index)
+            restart_stage(ui)
         else:
             return
         ui['renderer'].particles.clear()
     elif name == 'practice':
-        game.start(1)
+        start_selected_stage(ui, 2)
         ui['renderer'].particles.clear()
     elif name == 'practice3':
-        game.start(ORDEM_CHEFES[2])
+        start_selected_stage(ui, 3)
         ui['renderer'].particles.clear()
     elif name == 'menu':
+        stop_voices(ui['assets'])
         game.reset()
         ui['instructions'] = False
         ui['resume_after_help'] = False
@@ -226,6 +252,13 @@ def handle_key(ui, key):
     elif ui['instructions']:
         if key in (pygame.K_ESCAPE, pygame.K_RETURN, pygame.K_KP_ENTER):
             toggle_help(ui)
+    elif game.state == 'paused':
+        if key == pygame.K_r:
+            button_action(ui, 'reiniciar')
+        else:
+            action = ui['renderer'].pause_menu.handle_event(pygame.event.Event(pygame.KEYDOWN, key=key, mod=pygame.key.get_mods()))
+            if action:
+                button_action(ui, action)
     elif key in (pygame.K_RETURN, pygame.K_KP_ENTER):
         if game.state in ('title', 'story', 'dead', 'victory', 'paused'):
             button_action(ui, 'play')
@@ -239,17 +272,27 @@ def handle_key(ui, key):
             if key == pygame.K_ESCAPE:
                 ui['running'] = False
         else:
-            game.pause()
+            pause_game(ui)
     elif key == pygame.K_r and game.state != 'title':
-        game.start(game.stage_index)
-        ui['renderer'].particles.clear()
+        restart_stage(ui)
 
 
 def handle_event(ui, event):
+    controle = ui['joystick']
+    em_menu = ui['instructions'] or ui['game'].state in ('title', 'story', 'paused', 'dead', 'victory')
+    teclas = controle.handle_event(event, menu=em_menu,
+                                  paused=ui['game'].state == 'paused' and not ui['instructions'])
+    if controle.desconectou:
+        pause_game(ui)
+    for tecla in teclas:
+        if ui['game'].state == 'title' and not ui['instructions']:
+            handle_title_event(ui, pygame.event.Event(pygame.KEYDOWN, key=tecla))
+        else:
+            handle_key(ui, tecla)
     if event.type == pygame.QUIT:
         ui['running'] = False
     elif event.type == pygame.WINDOWFOCUSLOST:
-        ui['game'].pause()
+        pause_game(ui)
         if ui['title_menu_active']:
             ui['title_menu'].handle_event(event)
     elif event.type == pygame.WINDOWFOCUSGAINED:
@@ -263,6 +306,15 @@ def handle_event(ui, event):
         toggle_fullscreen(ui)
     elif ui['game'].state == 'title' and not ui['instructions']:
         handle_title_event(ui, event)
+    elif (ui['game'].state == 'paused' and not ui['instructions']
+          and event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONDOWN)):
+        width, height = ui['window'].get_size()
+        scale = min(width / WIDTH, height / HEIGHT)
+        vx, vy = (width - WIDTH * scale) / 2, (height - HEIGHT * scale) / 2
+        point = ((event.pos[0] - vx) / scale, (event.pos[1] - vy) / scale)
+        action = ui['renderer'].pause_menu.handle_event(event, posicao_logica=point)
+        if action:
+            button_action(ui, action)
     elif event.type == pygame.KEYDOWN:
         handle_key(ui, event.key)
     elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -276,16 +328,20 @@ def handle_event(ui, event):
                     break
 
 
-def read_controls():
+def read_controls(ui=None):
     """Dicionário simples de teclas pressionadas neste quadro."""
     keys = pygame.key.get_pressed()
-    return {'left': keys[pygame.K_a] or keys[pygame.K_LEFT],
+    controls = {'left': keys[pygame.K_a] or keys[pygame.K_LEFT],
             'right': keys[pygame.K_d] or keys[pygame.K_RIGHT],
             'up': keys[pygame.K_w] or keys[pygame.K_UP],
             'down': keys[pygame.K_s] or keys[pygame.K_DOWN],
             'jump': keys[pygame.K_SPACE] or keys[pygame.K_z],
             'shoot': keys[pygame.K_j] or keys[pygame.K_x],
             'dash': keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT] or keys[pygame.K_k]}
+    if ui is not None:
+        for action, pressed in ui['joystick'].read_controls().items():
+            controls[action] = bool(controls.get(action, False) or pressed)
+    return controls
 
 
 def update_game(ui, dt, controls):
@@ -297,6 +353,8 @@ def update_game(ui, dt, controls):
     game.step(dt, controls)
     ui['renderer'].update(dt, game)
     sync_title_menu(ui)
+    if game.state != 'title':
+        update_volume(ui['assets'])
     if game.state == 'victory' and game.stage_index == 0:
         if ui['best'] is None or game.elapsed < ui['best']:
             ui['best'] = game.elapsed
@@ -340,7 +398,9 @@ def game_screen(ui, max_frames=None, screenshot=None):
                 break
         if not ui['running']:
             break
-        controls = read_controls()
+        controls = read_controls(ui)
+        if ui['joystick'].desconectou:
+            pause_game(ui)
         update_game(ui, dt, controls)
         draw_screen(ui)
         frames += 1
@@ -369,6 +429,8 @@ def main():
         print('Extraia o ZIP inteiro e instale requirements.txt com Python 3.12.')
         return 1
     finally:
+        if 'ui' in locals():
+            ui['joystick'].fechar()
         pygame.quit()
     return 0
 

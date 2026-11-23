@@ -59,6 +59,7 @@ def load_assets():
     assets['day'] = load_image(manifest['background']['day'], (WIDTH, HEIGHT))
     assets['night'] = load_image(manifest['background']['night'], (WIDTH, HEIGHT))
     assets['bread'] = load_image(manifest['bread']['url'], (22, 22))
+    assets['pepper'] = pygame.image.load(str(ROOT / 'assets' / 'powerups' / 'pimenta.png')).convert_alpha()
     assets['sounds'] = load_sounds()
     assets['fire_images'] = {}
     return assets
@@ -129,7 +130,6 @@ def fire_image(assets, radius, angle):
         pygame.draw.circle(image, (246, 138, 44), center, r)
         pygame.draw.circle(image, (255, 204, 85), center, max(1, round(r * .75)))
         pygame.draw.circle(image, (255, 240, 181), center, max(1, round(r * .4)))
-        # A bola fica centralizada no sprite; a cauda se estende para trás.
         centered = pygame.Surface((r * 7, r * 7), pygame.SRCALPHA)
         centered.blit(image, (r * .5, r * 2))
         assets['fire_images'][key] = pygame.transform.rotate(centered, -direction)

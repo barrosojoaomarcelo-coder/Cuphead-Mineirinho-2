@@ -4,8 +4,10 @@ As artes e o manifesto vêm do ZIP do grupo. Não altera regras da luta.
 """
 import math
 import pygame
-from config import WIDTH, HEIGHT, FLOOR, DASH_COOLDOWN, clamp
+from config import WIDTH, HEIGHT, FLOOR, STAGE_ORDER
 from engine import STAGES
+from pausa_menu import MenuPausa
+from poder_pimenta import desenhar_vidas
 from comilao import draw_comilao_warning
 from piramide_attacks import draw_piramide_warning
 
@@ -23,6 +25,7 @@ class Renderer:
         self.day = assets['day']
         self.night = assets['night']
         self.fonts = {}
+        self.pause_menu = MenuPausa(fonte=lambda size: self.font(size, True))
         self.time = 0
         self.particles = []
         self.shake = 0
@@ -116,8 +119,10 @@ class Renderer:
                 x = p.x - p.dash_direction * (40 + index * 22)
                 pygame.draw.line(target, CREAM, (x, p.y - 35 - index * 12),
                                  (x - p.dash_direction * 35, p.y - 35 - index * 12), 3)
+        if model.state in ('playing', 'paused', 'transform'):
+            model.pepper.desenhe_coletavel(target)
         model.player_group.draw(target)
-        model.shots.draw(target)
+        self._draw_shots(target, model)
         model.beams.draw(target)
         model.fire.draw(target)
         model.minions.draw(target)
@@ -125,11 +130,6 @@ class Renderer:
         if warning is not None and warning['type'] == 'giant':
             charge = 1 - warning['remaining'] / warning['total']
             self._orb(target, warning['x'], warning['y'], 8 + charge * 33, warning['angle'], True)
-        p = model.player
-        if p.dash_cooldown > 0:
-            rect = pygame.Rect(round(p.x - 10), round(p.y + 5), 20, 20)
-            progress = max(.01, 1 - p.dash_cooldown / DASH_COOLDOWN)
-            pygame.draw.arc(target, CREAM, rect, -math.pi / 2, -math.pi / 2 + math.tau * progress, 3)
         for p in self.particles:
             radius = max(1, round(p['r'] * min(1, p['life'] * 3)))
             x, y = round(p['x']), round(p['y'])
@@ -159,7 +159,7 @@ class Renderer:
         self._hud(target, model, muted, audio_available)
         if model.state == 'intro':
             self.text(target, 'VAI COMEÇAR!', (640, 300), 64, GOLD, True, True, True)
-            self.text(target, f'FASE {model.stage_index + 1} — {STAGES[model.stage_index]}',
+            self.text(target, f'FASE {STAGE_ORDER.index(model.stage_index) + 1} — {STAGES[model.stage_index]}',
                       (640, 365), 28, CREAM, True, outline=True)
         if model.state == 'transform' and .2 < model.boss.transform < .8:
             title = 'O DESPERTAR' if model.stage_index == 0 else 'FOME SEM FIM'
@@ -172,9 +172,21 @@ class Renderer:
             self._instructions(target)
         elif model.state == 'story':
             self._story(target)
-        elif model.state in ('title', 'paused', 'dead', 'victory'):
+        elif model.state == 'paused':
+            self.pause_menu.draw(target)
+            self.buttons.update(self.pause_menu.botoes)
+        elif model.state in ('title', 'dead', 'victory'):
             self._overlay(target, model, best)
         return self.buttons.copy()
+
+    def _draw_shots(self, target, model):
+        """O tiro conserva seu tipo de desenho desde o instante do disparo."""
+        for shot in model.shots:
+            if getattr(shot, 'is_pepper', False):
+                image = model.pepper.sprite_projetil(shot.pepper_direction)
+                target.blit(image, image.get_rect(center=shot.rect.center))
+            else:
+                target.blit(shot.image, shot.rect)
 
     def _warnings(self, target, model):
         for w in model.warnings:
@@ -200,10 +212,7 @@ class Renderer:
                 delta = pygame.Vector2(end) - start
                 for part in range(0, 100, 3):
                     pygame.draw.line(target, color, start + delta * (part / 100), start + delta * ((part + 1) / 100), 2)
-            if w.get('guidance'):
-                jump_now = w['type'] == 'flame' and w['mode'] == 'low' and w['remaining'] < .2
-                self.text(target, 'PULE AGORA!' if jump_now else w['guidance'], (640, 105), 30 if jump_now else 23,
-                          GOLD, True, outline=True)
+            # O trajeto visual é mantido; o cabeçalho de instruções foi removido.
 
     def _horizontal_cues(self, target, model):
         chain = model.boss.horizontal
@@ -216,11 +225,7 @@ class Renderer:
             return
         for x in range(30, 930, 30):
             pygame.draw.line(target, GOLD, (x, row['y']), (x + 10, row['y']), 2)
-        message = 'BAIXA: PULE OU USE DASH' if row['mode'] == 'low' else 'ALTA: AGACHE'
-        if index + 1 < len(rows):
-            next_mode = 'BAIXA' if rows[index + 1]['mode'] == 'low' else 'ALTA'
-            message += ' · DEPOIS ' + next_mode
-        self.text(target, f'FILEIRA {index + 1}/{len(rows)} — {message}', (640, 105), 23, GOLD, True, outline=True)
+        # Somente o aviso no cenário, sem texto/contador no topo.
 
     def _orb(self, target, x, y, radius, angle, giant=False):
         r = max(3, round(radius))
@@ -245,25 +250,8 @@ class Renderer:
         self.buttons[name] = rect
 
     def _hud(self, target, model, muted, audio_available):
-        pygame.draw.rect(target, INK, (0, 0, WIDTH, 65))
-        self.text(target, 'FORNALHA DO CASTELO', (25, 18), 23, GOLD, serif=True)
-        for i in range(3):
-            x = 410 + i * 35
-            color = RED if i < model.player.hp else (87, 68, 58)
-            pygame.draw.circle(target, color, (x - 6, 25), 9)
-            pygame.draw.circle(target, color, (x + 6, 25), 9)
-            pygame.draw.polygon(target, color, [(x - 14, 29), (x + 14, 29), (x, 47)])
-        minutes, seconds = divmod(int(model.elapsed), 60)
-        self.text(target, f'{minutes:02d}:{seconds:02d}', (570, 19), 24)
-        self.text(target, f'{model.stage_index + 1}. {STAGES[model.stage_index].upper()}', (680, 20), 19)
-        sound_label = 'SOM: SIM'
-        if muted:
-            sound_label = 'SOM: NÃO'
-        if not audio_available:
-            sound_label = 'SEM ÁUDIO'
-        self._button(target, 'sound', sound_label, (1065, 10, 185, 40))
-        pygame.draw.rect(target, INK, (0, 674, WIDTH, 46))
-        self.text(target, 'A/D MOVER    S AGACHAR    ESPAÇO PULAR    J ATIRAR    W MIRAR    SHIFT DASH    P PAUSA    R REINICIAR', (640, 698), 17, CREAM, True)
+        """A arena ocupa o canvas inteiro; só as três vidas ficam sobre ela."""
+        desenhar_vidas(target, model.player.hp)
 
     def _panel(self, target, rect):
         self.layer.fill((24, 15, 18, 125))
@@ -277,37 +265,38 @@ class Renderer:
     def _overlay(self, target, model, best):
         self._panel(target, (80, 158, 720, 445))
         state = model.state
-        badges = {'title': 'VERSÃO DIFÍCIL · UM DUELO À MODA MINEIRA', 'paused': 'PARTIDA PAUSADA'}
-        badge = badges.get(state, 'FIM DO DUELO')
-        title = {'title': 'A Fornalha do Castelo', 'paused': 'Uma pausa para respirar', 'dead': 'Essa foi por pouco...', 'victory': 'NOCAUTE!'}[state]
-        if state == 'victory' and model.stage_index == 2:
+        final = model.stage_index == STAGE_ORDER[-1]
+        title = {'title': 'A Fornalha do Castelo',
+                 'dead': 'Essa foi por pouco...', 'victory': 'NOCAUTE!'}[state]
+        if state == 'victory' and final:
             title = 'AVENTURA CONCLUÍDA!'
+        badge = 'UM DUELO À MODA MINEIRA' if state == 'title' else 'FIM DO DUELO'
         self.text(target, badge, (120, 186), 19, RED)
-        self.text(target, title, (120, 228), 42 if state != 'paused' else 36, INK, serif=True)
-        lines = {
-            'title': ('Três cenários. Três chefes. Uma aventura mineira.', 'Dragão → Comilão → Olho da Pirâmide.', 'Jogo estudantil inspirado em Cuphead e Mineirinho.'),
-            'paused': ('A batalha espera por você.', 'Pressione P ou Esc para continuar.', 'Use F11 para alternar a tela cheia.'),
-            'dead': ('Respire, observe os ataques e tente de novo.', 'Use os avisos, o pulo, o agachamento e o dash.', 'Você recomeça esta fase com três vidas.'),
-            'victory': (f'{STAGES[model.stage_index]} derrotado!',
-                        'O próximo cenário é o vale do Chefe Comilão.' if model.stage_index == 0 else 'Fase 2 concluída. A terceira vem depois.',
-                        'Enter avança; R repete esta fase.' if model.stage_index == 0 else 'O terceiro chefe ainda está em desenvolvimento.'),
-        }[state]
-        if state == 'victory' and model.stage_index == 1:
-            lines = ('Chefe Comilão derrotado!', 'As ruínas roxas guardam o Olho da Pirâmide.', 'Enter avança; R repete esta fase.')
-        elif state == 'victory' and model.stage_index == 2:
-            lines = ('Olho da Pirâmide derrotado!', 'As ruínas voltaram a ficar em paz.', 'Obrigado por jogar. Davi, Moisés e João Marcelo.')
+        self.text(target, title, (120, 228), 42, INK, serif=True)
+        if state == 'title':
+            lines = ('Três cenários. Três chefes. Uma aventura mineira.',
+                     'Olho da Pirâmide → Comilão → Dragão Vermelho.',
+                     'Jogo estudantil inspirado em Cuphead e Mineirinho.')
+            label = 'COMEÇAR A AVENTURA'
+        elif state == 'dead':
+            lines = ('Respire, observe os ataques e tente de novo.',
+                     'Use os avisos, o pulo, o agachamento e o dash.',
+                     'Você recomeça esta fase com três vidas.')
+            label = 'TENTAR NOVAMENTE'
+        elif final:
+            lines = ('Dragão Vermelho derrotado!',
+                     'O castelo voltou a ficar em paz.',
+                     'Obrigado por jogar. Davi, Moisés e João Marcelo.')
+            label = 'VOLTAR AO MENU'
+        else:
+            next_position = STAGE_ORDER.index(model.stage_index) + 1
+            next_name = STAGES[STAGE_ORDER[next_position]]
+            lines = (f'{STAGES[model.stage_index]} derrotado!',
+                     f'O próximo duelo é contra {next_name}.',
+                     'Enter avança; R repete esta fase.')
+            label = f'IR PARA A FASE {next_position + 1}'
         for i, line in enumerate(lines):
             self.text(target, line, (120, 298 + i * 32), 22, INK)
-        if state in ('dead', 'victory'):
-            accuracy = round(model.stats['hits'] / model.stats['shots'] * 100) if model.stats['shots'] else 0
-            self.text(target, f'TEMPO {model.elapsed:.1f}s  |  PRECISÃO {accuracy}%', (120, 406), 20, RED)
-        elif best is not None:
-            self.text(target, f'RECORDE DO DRAGÃO: {best:.1f}s', (120, 406), 20, RED)
-        labels = {'paused': 'CONTINUAR', 'title': 'COMEÇAR A AVENTURA',
-                  'victory': 'IR PARA A FASE 2' if model.stage_index == 0 else 'VOLTAR AO MENU'}
-        if state == 'victory' and model.stage_index == 1:
-            labels['victory'] = 'IR PARA A FASE 3'
-        label = labels.get(state, 'TENTAR NOVAMENTE')
         self._button(target, 'play', label, (120, 454, 350, 54), True)
         self._button(target, 'instructions', 'COMO JOGAR', (490, 454, 270, 54))
         if state == 'title':
@@ -326,23 +315,26 @@ class Renderer:
                 ('Mirar para cima', 'W ou seta para cima; combine com A/D'),
                 ('Dash / esquiva', 'Shift ou K; aguarde a recarga'),
                 ('Pausar / som', 'P ou Esc / M'),
-                ('Reiniciar / tela cheia', 'R / F11')]
+                ('Reiniciar / tela cheia', 'R / F11'),
+                ('Controle — mover', 'Analógico esquerdo ou direcional'),
+                ('Controle — ações', 'Inferior: pulo | esquerdo: tiro | direito: dash'),
+                ('Controle — pausa', 'Start/Options; inferior confirma menus')]
         for i, (label, keys) in enumerate(rows):
-            self.text(target, label, (265, 211 + i * 38), 21, RED)
-            self.text(target, keys, (515, 211 + i * 38), 20, INK)
-        self.text(target, 'Observe os avisos e vença as duas formas de cada chefe.', (640, 505), 22, INK, True)
+            self.text(target, label, (265, 209 + i * 29), 18, RED)
+            self.text(target, keys, (515, 209 + i * 29), 17, INK)
+        self.text(target, 'Colete a pimenta: tiros rápidos por 8 segundos.', (640, 505), 22, INK, True)
         self._button(target, 'back', 'VOLTAR  [ESC]', (490, 551, 300, 48), True)
 
     def _story(self, target):
         self._panel(target, (180, 140, 920, 470))
         self.text(target, 'ANTES DO PRIMEIRO DUELO', (640, 185), 20, RED, True)
         self.text(target, 'Uma jornada por três cenários', (640, 236), 38, INK, True, True)
-        lines = ('O caminho começa diante da fornalha do castelo.',
-                 'Para seguir viagem, você precisa vencer o Dragão Vermelho.',
+        lines = ('A jornada começa nas ruínas do Olho da Pirâmide.',
                  'Depois, o Chefe Comilão espera no vale rochoso.',
-                 'Por fim, o Olho da Pirâmide guarda as ruínas roxas.')
+                 'Por fim, o Dragão Vermelho guarda a fornalha do castelo.',
+                 'Observe os ataques e use a pimenta na hora certa.')
         for index, line in enumerate(lines):
             self.text(target, line, (640, 310 + index * 37), 23, INK, True)
-        self._button(target, 'play', 'ENFRENTAR O DRAGÃO', (260, 495, 400, 55), True)
+        self._button(target, 'play', 'ENFRENTAR A PIRÂMIDE', (260, 495, 400, 55), True)
         self._button(target, 'menu', 'VOLTAR AO MENU', (680, 495, 320, 55))
         self.text(target, 'ENTER CONTINUAR     ESC MENU', (640, 580), 18, RED, True)

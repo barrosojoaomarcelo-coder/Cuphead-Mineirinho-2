@@ -1,0 +1,76 @@
+[
+  {
+    "file": "pimenta_atualizacao/assets/audio/dano_ai.ogg",
+    "source": "20261123_044248(1).mp4",
+    "start_seconds": 1.6,
+    "duration_seconds": 1.06,
+    "expected_phrase": "AI AI AI AI",
+    "verified_phrase": true,
+    "cut_confidence": "high: unique dominant speech region, excludes button clicks",
+    "phrase_confidence": "User explicitly confirmed source-to-phrase association. No tool listening or ASR performed.",
+    "sha256": "03e4ebcd486e89e2d1f691a863109b80c90d791fa05de4bc031cfa75cfabd122",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "vorbis",
+          "sample_rate": "44100",
+          "channels": 1
+        }
+      ],
+      "format": {
+        "duration": "1.060000"
+      }
+    },
+    "verification_method": "user_text_confirmation"
+  },
+  {
+    "file": "pimenta_atualizacao/assets/audio/pimentinha.ogg",
+    "source": "20261123_044357(1).mp4",
+    "start_seconds": 2.46,
+    "duration_seconds": 1.34,
+    "expected_phrase": "PIMENTINHA",
+    "verified_phrase": true,
+    "cut_confidence": "high: unique dominant speech region, excludes button clicks",
+    "phrase_confidence": "User explicitly confirmed source-to-phrase association. No tool listening or ASR performed.",
+    "sha256": "de7e2a5b6e0d4c889a79c66613946eaf197699fc7b357ede537ffb2263a4121d",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "vorbis",
+          "sample_rate": "44100",
+          "channels": 1
+        }
+      ],
+      "format": {
+        "duration": "1.340000"
+      }
+    },
+    "verification_method": "user_text_confirmation"
+  },
+  {
+    "file": "pimenta_atualizacao/assets/audio/tema_mineirinho.ogg",
+    "source": "ordem_bosses/codigo/tela_inicial.py::_DADOS[musica.ogg]",
+    "source_original": "20261122_220943(1).mp4",
+    "size_bytes": 886810,
+    "sha256": "25b8d43295aabc76d66454ae4e8a9fac2aa721a8d712b3d2778eb54f65bf1193",
+    "extraction": "AST literal read, base64 decode, zlib decompress; source code not executed",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "vorbis",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "57.902041"
+      }
+    }
+  }
+]
