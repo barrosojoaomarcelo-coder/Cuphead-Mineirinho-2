@@ -7,7 +7,8 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 def stub(name,**attrs):
     m=types.ModuleType(name);m.__dict__.update(attrs);sys.modules[name]=m
-stub('config',WIDTH=1280,HEIGHT=720,FLOOR=622,STAGE_ORDER=(2,1,0))
+stub('config',WIDTH=1280,HEIGHT=720,FLOOR=622,STAGE_ORDER=(2,1,0),
+     GAME_TITLE='Mineirinho',CREATORS_LABEL='Criadores: Davi, Moisés e João Marcelo')
 stub('engine',STAGES=('Dragão Vermelho','Chefe Comilão','Olho da Pirâmide'))
 stub('comilao',draw_comilao_warning=lambda *a:None)
 stub('piramide_attacks',draw_piramide_warning=lambda *a:None)

@@ -32,6 +32,7 @@ def click(ui,p):
     main.handle_event(ui,pygame.event.Event(pygame.MOUSEBUTTONDOWN,button=1,pos=pos))
 
 def playing(ui):
+    if ui['game'].state=='story':key(ui,pygame.K_RETURN)
     while ui['game'].state=='intro':main.update_game(ui,.05,{})
     assert ui['game'].state=='playing'
 

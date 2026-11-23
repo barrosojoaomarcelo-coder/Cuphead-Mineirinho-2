@@ -19,7 +19,8 @@ class Player(pygame.sprite.Sprite):
         self.dash_cooldown=0;self.dash_direction=1
         self.hp=3;self.invulnerable=0;self.dash=0;self.facing=1;self.vx=0
         self.jump_buffer=0;self.previous_input={};self.aim_x=1;self.aim_y=0
-        self.shot_speed=1800;self.shot_interval=1/20;self.shot_cooldown=0
+        from config import SHOT_SPEED
+        self.shot_speed=SHOT_SPEED;self.shot_interval=1/20;self.shot_cooldown=0
         self.shooting=False;self.jumped=self.landed=self.dashed=False
     def update(self,dt,controls,*args):
         self.invulnerable=max(0,self.invulnerable-dt)
